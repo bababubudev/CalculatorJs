@@ -1,8 +1,10 @@
+import Display from "./components/Display"
+
 function App() {
   return (
-    <>
-      <h1>Hello Calculator</h1>
-    </>
+    <main>
+      <Display />
+    </main>
   )
 }
 
