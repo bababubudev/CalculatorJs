@@ -5,7 +5,7 @@ interface HistoryProp {
 }
 
 function History({ history, removeFromHistory, clearHistory }: HistoryProp) {
-  const onHistoryClicked = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number): void => {
+  const onHistoryClicked = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number): void => {
     navigator.clipboard.writeText(history[index]);
     removeFromHistory(index);
   }
