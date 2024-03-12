@@ -29,8 +29,9 @@ function Calculator() {
   }
 
   const modifyOutput = (output: string[]) => {
+    const comparators = new Set(["=", ">", "<"]);
     return output.map(elem => elem === "*" ? "·" : elem)
-      .filter(elem => elem !== "=")
+      .filter(elem => !comparators.has(elem))
       .join(" ");
   }
 
@@ -43,14 +44,14 @@ function Calculator() {
       const modifiedR = modifyOutput(rightInput);
 
       historyResult = `${modifiedL} ${comparison ? comparator : "!" + comparator} ${modifiedR} (${comparison.toString().toUpperCase()})`;
-      return `Current result: ${comparison}`;
+      return `${comparison}`;
     }
 
     const [tokenized, result] = output;
     const modified = modifyOutput(tokenized);
 
     historyResult = `${modified}${isNaN(result) ? "" : " = " + result}`;
-    return `${isNaN(result) ? modified : "Current result: " + result}`;
+    return `${modified}${isNaN(result) || tokenized.length <= 1 ? "" : " = " + result}`;
   }
 
 

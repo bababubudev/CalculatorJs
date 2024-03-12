@@ -25,13 +25,13 @@ function evaluateExpression(input: string): [string[], number] | ComparisonObjec
     return [tokens, result];
   }
 
-  const leftResult = evaluatePostfix(infixtoPostfix(leftInput)).toPrecision(3);
+  const leftResult = evaluatePostfix(infixtoPostfix(leftInput)).toFixed(2);
 
   if (comparator && rightInput.length === 0) {
     return [tokens, Number(leftResult)];
   }
 
-  const rightResult = evaluatePostfix(infixtoPostfix(rightInput)).toPrecision(3);
+  const rightResult = evaluatePostfix(infixtoPostfix(rightInput)).toFixed(2);
 
   switch (comparator) {
     case '=':
