@@ -10,7 +10,9 @@ function App() {
     event.preventDefault();
     if (!inputShowRef.current) return;
 
+    console.log(inputShowRef.current.textContent);
     const currentResult = `${inputValue} = ${inputShowRef.current.textContent}`;
+
     if (currentResult == null || inputShowRef.current.textContent === "NaN") return;
 
     setHistory(prev => [...prev, currentResult]);
@@ -23,7 +25,11 @@ function App() {
         style={{ fontWeight: "bolder" }}
       >
         {history.map((elem, i) => (
-          <li key={i}>{elem}</li>
+          <li key={i}>
+            <button onClick={() => setHistory(prev => prev.filter((_, ind) => ind !== i))}>
+              {elem}
+            </button>
+          </li>
         ))}
         <button
           type="button"
