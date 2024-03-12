@@ -1,40 +1,72 @@
 type SeperatedInput = [string[], string | null, string[]];
+export type ComparisonObject = {
+  comparison: boolean,
+  leftInput: string[],
+  rightInput: string[],
+  leftResult: string,
+  rightResult: string,
+  comparator: string
+}
 
-function evaluateExpression(input: string) {
+function evaluateExpression(input: string): [string[], number] | ComparisonObject {
+  let comparison: boolean = false;
+  let result: number = NaN;
+
   const tokens: string[] | null = tokenize(input);
   const [leftInput, comparator, rightInput] = seperateInput(tokens);
 
-  if (tokens.length === 0) return "";
-
-  if (!comparator) {
-    const postfix = leftInput ? infixtoPostfix([...leftInput]) : [];
-    return evaluatePostfix(postfix);
+  if (tokens.length === 0) {
+    return [tokens, NaN];
   }
 
-  const leftResult = evaluatePostfix(infixtoPostfix([...leftInput]));
-  const rightResult = evaluatePostfix(infixtoPostfix([...rightInput]));
+  if (!comparator) {
+    const postfix = leftInput ? infixtoPostfix(leftInput) : [];
+    result = evaluatePostfix(postfix);
+    return [tokens, result];
+  }
+
+  const leftResult = evaluatePostfix(infixtoPostfix(leftInput)).toPrecision(3);
+
+  if (comparator && rightInput.length === 0) {
+    return [tokens, Number(leftResult)];
+  }
+
+  const rightResult = evaluatePostfix(infixtoPostfix(rightInput)).toPrecision(3);
 
   switch (comparator) {
     case '=':
-      return (leftResult === rightResult).toString();
+      comparison = (leftResult === rightResult);
+      break;
     case '>':
-      return (leftResult > rightResult).toString();
+      comparison = (leftResult > rightResult);
+      break;
     case '<':
-      return (leftResult < rightResult).toString();
+      comparison = (leftResult < rightResult);
+      break
     default:
-      return "false";
+      comparison = false;
+      break;
   }
+
+  return {
+    comparison,
+    leftInput,
+    rightInput,
+    leftResult,
+    rightResult,
+    comparator
+  };
 }
 
 function tokenize(input: string): string[] {
   input = input.replace(/ /g, '');
+  input = input.replace(/÷/g, '/');
+  input = input.replace(/x/g, '*');
 
   const tokens = [];
   const size = input.length;
-  const operators = ['+', '-', '*', '/', '^', '(', ')'];
-  const comparators = ['=', '<', '>'];
-
-  const allowedSigns = [...operators, ...comparators];
+  const operators = new Set(['+', '-', '*', '/', '^', '(', ')']);
+  const comparators = new Set(['=', '<', '>']);
 
   let currentToken = "";
 
@@ -48,13 +80,13 @@ function tokenize(input: string): string[] {
         continue;
       }
     }
-    else if ((char === '-' || char === '+') && (i === 0 || input[i - 1] === '(' || comparators.includes(input[i - 1]))) {
+    else if ((char === '-' || char === '+') && (i === 0 || input[i - 1] === '(' || comparators.has(input[i - 1]))) {
       currentToken += char;
       if (i + 1 < size && !isNaN(parseFloat(input[i + 1]))) {
         continue;
       }
     }
-    else if (allowedSigns.includes(char)) {
+    else if (operators.has(char) || comparators.has(char) || char === " ") {
       if (currentToken) {
         tokens.push(currentToken);
         currentToken = "";
@@ -69,12 +101,6 @@ function tokenize(input: string): string[] {
       if (char === ')' && (i + 1) < size && !isNaN(parseFloat(input[i + 1]))) {
         tokens.push('*');
       }
-    }
-    else if (char === " ") {
-      continue;
-    }
-    else {
-      throw new Error(`Unexpected character: ${char}`);
     }
   }
 
@@ -135,13 +161,14 @@ function evaluatePostfix(postfix: string[]): number {
   const stack: number[] = [];
 
   for (const token of postfix) {
-    if (!isNaN(parseFloat(token)))
+    if (!isNaN(parseFloat(token))) {
       stack.push(parseFloat(token));
+    }
     else {
       const num2 = stack.pop();
       const num1 = stack.pop();
 
-      if (!num2 || !num1) return NaN;
+      if (num2 === undefined || num1 === undefined) return NaN;
 
       switch (token) {
         case '+':
