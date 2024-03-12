@@ -13,10 +13,7 @@ function CalculationForm({ inputValue, setInput, calculation, onSubmit }: Calcul
       className="userinput"
       onSubmit={onSubmit}
     >
-      <p
-        className="show-input"
-        style={{ height: "1rem" }}
-      >
+      <p className="show-input">
         {calculation}
       </p>
       <input

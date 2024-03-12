@@ -1,4 +1,4 @@
-@use "./components/Screen.scss";
+@use "./Calculator.scss";
 
 * {
   padding: 0;
@@ -10,4 +10,6 @@ main {
   display: grid;
   justify-content: center;
   align-items: center;
+
+  font-family: monospace;
 }

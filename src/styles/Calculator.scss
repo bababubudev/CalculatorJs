@@ -1,0 +1,9 @@
+@use "./components/CalculationForm.scss";
+@use "./components/History.scss";
+
+.calculator {
+  display: grid;
+  gap: 1rem;
+
+  min-width: max(10ch, 30vw);
+}

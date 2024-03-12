@@ -5,30 +5,30 @@ interface HistoryProp {
 }
 
 function History({ history, removeFromHistory, clearHistory }: HistoryProp) {
-  const onHistoryClicked = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number): void => {
+  const onHistoryClicked = (index: number): void => {
     navigator.clipboard.writeText(history[index]);
     removeFromHistory(index);
   }
 
   return (
-    <ul
-      className="history-div"
-      style={{ fontWeight: "bolder" }}
-    >
-      {history.map((elem, i) => (
-        <li key={i}>
-          <button onClick={(e) => onHistoryClicked(e, i)}>
-            {elem}
-          </button>
-        </li>
-      ))}
-      <button
-        type="button"
-        onClick={clearHistory}
-      >
-        clear history
-      </button>
-    </ul>
+    <section className="history-div">
+      <ul>
+        <button
+          type="button"
+          onClick={clearHistory}
+        >
+          clear history
+        </button>
+        {history.map((elem, i) => (
+          <li key={i}>
+            <div onClick={() => onHistoryClicked(i)}>
+              {elem}
+            </div>
+            <p>({i + 1})</p>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

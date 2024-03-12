@@ -1,0 +1,43 @@
+.history-div {
+  max-height: 30vh;
+  border: 1px solid grey;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  ul {
+    list-style-type: none;
+    display: grid;
+
+    gap: 0.5ch;
+
+    li, button {
+      font-size: 1rem;
+      padding: 1ch;
+    }
+
+    li {
+      display: grid;
+      grid-template-columns: 1fr 3ch;
+      gap: 1ch;
+
+      border: 1px solid grey;
+
+      &:hover {
+        background: grey;
+        color: white;
+      }
+    }
+
+    button {
+      position:sticky;
+      inset-inline-end: 0;
+      inset-block-start: 0;
+      justify-self: end;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

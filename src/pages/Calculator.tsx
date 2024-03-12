@@ -24,11 +24,14 @@ function Calculator() {
   const onCalculationSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
+    if (historyResult as string === "") return;
     addToHistory(historyResult as string);
   }
 
   const modifyOutput = (output: string[]) => {
-    return output.map(elem => elem === "*" ? "·" : elem).join(" ");
+    return output.map(elem => elem === "*" ? "·" : elem)
+      .filter(elem => elem !== "=")
+      .join(" ");
   }
 
   const calculate = (): string => {
@@ -47,12 +50,12 @@ function Calculator() {
     const modified = modifyOutput(tokenized);
 
     historyResult = `${modified}${isNaN(result) ? "" : " = " + result}`;
-    return `${isNaN(result) ? "" : "Current result: " + result}`;
+    return `${isNaN(result) ? modified : "Current result: " + result}`;
   }
 
 
   return (
-    <>
+    <div className="calculator">
       <History
         history={history}
         removeFromHistory={removeFromHistory}
@@ -64,7 +67,7 @@ function Calculator() {
         onSubmit={onCalculationSubmit}
         calculation={calculate()}
       />
-    </>
+    </div>
   );
 }
 
