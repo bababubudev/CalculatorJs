@@ -122,6 +122,9 @@ function seperateInput(tokens: string[]): SeperatedInput {
 
 function infixtoPostfix(infix: string[]): string[] {
   const precedence: Record<string, number> = {
+    '<': 0,
+    '>': 0,
+    '=': 0,
     '^': 3,
     '*': 2,
     '/': 2,

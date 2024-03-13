@@ -36,22 +36,27 @@ function Calculator() {
   }
 
   const calculate = (): string => {
-    const output: [string[], number] | ComparisonObject = evaluateExpression(inputValue);
+    let output: [string[], number] | ComparisonObject;
 
-    if ("comparison" in output) {
-      const { comparison, comparator, leftInput, rightInput }: ComparisonObject = output;
-      const modifiedL = modifyOutput(leftInput);
-      const modifiedR = modifyOutput(rightInput);
+    try {
+      output = evaluateExpression(inputValue);
+      if ("comparison" in output) {
+        const { comparison, comparator, leftInput, leftResult, rightInput }: ComparisonObject = output;
+        const modifiedL = modifyOutput(leftInput);
+        const modifiedR = modifyOutput(rightInput);
 
-      historyResult = `${modifiedL} ${comparison ? comparator : "!" + comparator} ${modifiedR} (${comparison.toString().toUpperCase()})`;
-      return `${comparison}`;
+        historyResult = `${modifiedL} ${comparison ? comparator : "!" + comparator} ${modifiedR} (${comparison.toString().toUpperCase()})`;
+        return `${leftResult} ${comparison ? comparator : "!" + comparator} ${modifiedR} (${comparison.toString().toUpperCase()})`;
+      }
+
+      const [tokenized, result] = output;
+      const modified = modifyOutput(tokenized);
+
+      historyResult = `${modified}${isNaN(result) ? "" : " = " + result}`;
+      return `${modified}${isNaN(result) || tokenized.length <= 1 ? "" : " = " + result}`;
+    } catch (error) {
+      return "Invalid input";
     }
-
-    const [tokenized, result] = output;
-    const modified = modifyOutput(tokenized);
-
-    historyResult = `${modified}${isNaN(result) ? "" : " = " + result}`;
-    return `${modified}${isNaN(result) || tokenized.length <= 1 ? "" : " = " + result}`;
   }
 
 
