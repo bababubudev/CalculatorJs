@@ -11,15 +11,30 @@ export type ComparisonObject = {
 function evaluateExpression(input: string): [string[], number] | ComparisonObject {
   const tokens: string[] | null = tokenize(input);
   const trigSyntax: Set<string> = new Set(["sin", "cos", "tan", "asin", "acos", "atan"]);
-  const trigTokens: RegExpMatchArray | null = input.match(/(\w+|\d+|[+\-*/()^]|\s+)/g);
+  const trigTokens: RegExpMatchArray | null = input.match(/\b(\d*\.*\d+\s*)?(sin|cos|tan|asin|acos|atan)(?=\(\))?/gi);
 
   if (trigTokens) {
+    let foundToken: string = "";
+
     for (const token of trigTokens) {
-      if (trigSyntax.has(token.toLowerCase())) {
-        evaluateTrig(trigTokens, token, tokens);
-        return [trigTokens, NaN];
+      let currentToken: string = "";
+
+      if (/^\d+\w+$/.test(token)) {
+        const splitToken = token.match(/^(\d+)(\D+)$/);
+        if (!splitToken || splitToken.length === 0) continue;
+
+        const foundToken = splitToken[splitToken.length - 1].toString();
+        if (trigSyntax.has(foundToken)) {
+          currentToken = foundToken;
+        }
+      }
+
+      if (currentToken !== "" || trigSyntax.has(token)) {
+        foundToken = currentToken === "" ? token : currentToken;
       }
     }
+
+    return evaluateTrig(foundToken, tokens);
   }
 
   return evaluateAndCompareToken(tokens);
@@ -117,15 +132,15 @@ function evaluateAndCompareToken(tokens: string[]): [string[], number] | Compari
 }
 
 
-function evaluateTrig(trigToken: string[], token: string, tokens: string[]): number {
-  const innerTokens = tokens.slice(tokens.findIndex((elem) => elem === "("), tokens.findIndex((elem) => elem === ")") + 1);
-  const outerTokens = tokens.slice(0, tokens.findIndex(elem => elem === "(")).concat(tokens.slice(tokens.findIndex(elem => elem === ")") + 1));
+function evaluateTrig(trigToken: string, tokens: string[]): [string[], number] {
+  const innerTokens = tokens.slice(tokens.findIndex((elem) => elem === "(") + 1, tokens.findIndex((elem) => elem === ")"));
+  const leftToken = tokens.slice(0, tokens.findIndex(elem => elem === "("))
+  const rightToken = tokens.slice(tokens.findIndex(elem => elem === ")") + 1, tokens.length);
 
   const inside: number = evaluateToken(innerTokens);
   let trig: number;
-  const outside: number = evaluateToken(outerTokens);
 
-  switch (token) {
+  switch (trigToken) {
     case "sin":
       trig = Math.sin(inside);
       break;
@@ -149,10 +164,23 @@ function evaluateTrig(trigToken: string[], token: string, tokens: string[]): num
       break;
   }
 
-  const trigPosition = outerTokens.findIndex(elem => trigToken === elem);
-  console.log(trigToken);
+  if (!isNaN(trig)) trig = Number(trig.toFixed(2));
 
-  return NaN;
+  if (leftToken.length > 0 || rightToken.length > 0) {
+    if (!isNaN(Number(leftToken[leftToken.length - 1]))) leftToken.push("*");
+
+    const displayToken: string[] = [...leftToken];
+    displayToken.push(trigToken, "(", innerTokens.join(" "), ")");
+    displayToken.push(rightToken.join(" "))
+
+    leftToken.push("(", trig.toString(), ")");
+    console.log(leftToken);
+
+    const finalToken: string[] = leftToken.concat(rightToken);
+    return [displayToken, evaluateToken(finalToken)];
+  }
+
+  return [[trigToken, "(", inside.toString(), ")"], trig];
 }
 
 function seperateInput(tokens: string[]): SeperatedInput {
@@ -169,9 +197,6 @@ function seperateInput(tokens: string[]): SeperatedInput {
 
 function infixtoPostfix(infix: string[]): string[] {
   const precedence: Record<string, number> = {
-    '<': 0,
-    '>': 0,
-    '=': 0,
     '^': 3,
     '*': 2,
     '/': 2,
