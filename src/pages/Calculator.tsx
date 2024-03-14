@@ -40,6 +40,7 @@ function Calculator() {
 
     try {
       output = evaluateExpression(inputValue);
+
       if ("comparison" in output) {
         const { comparison, comparator, leftInput, leftResult, rightInput }: ComparisonObject = output;
         const modifiedL = modifyOutput(leftInput);

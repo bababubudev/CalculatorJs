@@ -9,53 +9,20 @@ export type ComparisonObject = {
 }
 
 function evaluateExpression(input: string): [string[], number] | ComparisonObject {
-  let comparison: boolean = false;
-  let result: number = NaN;
-
   const tokens: string[] | null = tokenize(input);
-  const [leftInput, comparator, rightInput] = seperateInput(tokens);
+  const trigSyntax: Set<string> = new Set(["sin", "cos", "tan", "asin", "acos", "atan"]);
+  const trigTokens: RegExpMatchArray | null = input.match(/(\w+|\d+|[+\-*/()^]|\s+)/g);
 
-  if (tokens.length === 0) {
-    return [tokens, NaN];
+  if (trigTokens) {
+    for (const token of trigTokens) {
+      if (trigSyntax.has(token.toLowerCase())) {
+        evaluateTrig(trigTokens, token, tokens);
+        return [trigTokens, NaN];
+      }
+    }
   }
 
-  if (!comparator) {
-    const postfix = leftInput ? infixtoPostfix(leftInput) : [];
-    result = evaluatePostfix(postfix);
-    return [tokens, result];
-  }
-
-  const leftResult = evaluatePostfix(infixtoPostfix(leftInput)).toFixed(2);
-
-  if (comparator && rightInput.length === 0) {
-    return [tokens, Number(leftResult)];
-  }
-
-  const rightResult = evaluatePostfix(infixtoPostfix(rightInput)).toFixed(2);
-
-  switch (comparator) {
-    case '=':
-      comparison = (leftResult === rightResult);
-      break;
-    case '>':
-      comparison = (leftResult > rightResult);
-      break;
-    case '<':
-      comparison = (leftResult < rightResult);
-      break
-    default:
-      comparison = false;
-      break;
-  }
-
-  return {
-    comparison,
-    leftInput,
-    rightInput,
-    leftResult,
-    rightResult,
-    comparator
-  };
+  return evaluateAndCompareToken(tokens);
 }
 
 function tokenize(input: string): string[] {
@@ -67,7 +34,6 @@ function tokenize(input: string): string[] {
   const size = input.length;
   const operators = new Set(['+', '-', '*', '/', '^', '(', ')']);
   const comparators = new Set(['=', '<', '>']);
-
   let currentToken = "";
 
   for (let i = 0; i < size; i++) {
@@ -108,8 +74,89 @@ function tokenize(input: string): string[] {
   return tokens;
 }
 
+function evaluateToken(tokens: string[]): number {
+  const postfix = tokens ? infixtoPostfix(tokens) : [];
+  return evaluatePostfix(postfix);
+}
+
+function evaluateAndCompareToken(tokens: string[]): [string[], number] | ComparisonObject {
+  let comparison: boolean = false;
+  const [leftInput, comparator, rightInput] = seperateInput(tokens);
+
+  if (!comparator) {
+    return [tokens, evaluateToken(tokens)];
+  }
+
+  const leftResult = evaluateToken(leftInput).toFixed(2);
+  if (comparator && rightInput.length === 0) return [tokens, Number(leftResult)];
+  const rightResult = evaluateToken(rightInput).toFixed(2);
+
+  switch (comparator) {
+    case '=':
+      comparison = (leftResult === rightResult);
+      break;
+    case '>':
+      comparison = (leftResult > rightResult);
+      break;
+    case '<':
+      comparison = (leftResult < rightResult);
+      break
+    default:
+      comparison = false;
+      break;
+  }
+
+  return {
+    comparison,
+    leftInput,
+    rightInput,
+    leftResult,
+    rightResult,
+    comparator
+  };
+}
+
+
+function evaluateTrig(trigToken: string[], token: string, tokens: string[]): number {
+  const innerTokens = tokens.slice(tokens.findIndex((elem) => elem === "("), tokens.findIndex((elem) => elem === ")") + 1);
+  const outerTokens = tokens.slice(0, tokens.findIndex(elem => elem === "(")).concat(tokens.slice(tokens.findIndex(elem => elem === ")") + 1));
+
+  const inside: number = evaluateToken(innerTokens);
+  let trig: number;
+  const outside: number = evaluateToken(outerTokens);
+
+  switch (token) {
+    case "sin":
+      trig = Math.sin(inside);
+      break;
+    case "cos":
+      trig = Math.cos(inside);
+      break;
+    case "tan":
+      trig = Math.tan(inside);
+      break;
+    case "asin":
+      trig = Math.asin(inside);
+      break;
+    case "acos":
+      trig = Math.acos(inside);
+      break;
+    case "atan":
+      trig = Math.atan(inside);
+      break;
+    default:
+      trig = NaN;
+      break;
+  }
+
+  const trigPosition = outerTokens.findIndex(elem => trigToken === elem);
+  console.log(trigToken);
+
+  return NaN;
+}
+
 function seperateInput(tokens: string[]): SeperatedInput {
-  const tokensToFind = ['=', '>', '<', '>=', '<=']
+  const tokensToFind = ['=', '>', '<'];
   const comparatorIndex = tokens.findIndex(token => tokensToFind.includes(token));
 
   if (comparatorIndex === -1) return [tokens, null, []];

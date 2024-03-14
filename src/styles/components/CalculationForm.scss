@@ -10,6 +10,10 @@ form {
   p {
     grid-column: span 2;
     font-weight: bold;
+
+    padding: 0 1ch;
+    height: 1em;
+    margin-bottom: 0.25em;
   }
 
   input {
