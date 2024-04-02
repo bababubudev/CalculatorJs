@@ -54,7 +54,7 @@ function Calculator() {
       const modified = modifyOutput(tokenized);
 
       historyResult = `${modified}${isNaN(result) ? "" : " = " + result}`;
-      return `${modified}${isNaN(result) || tokenized.length <= 1 ? "" : " = " + result}`;
+      return `${isNaN(result) || tokenized.length <= 1 ? "" : " = " + result}`;
     } catch (error) {
       return "Invalid input";
     }
@@ -63,16 +63,16 @@ function Calculator() {
 
   return (
     <div className="calculator">
-      <History
-        history={history}
-        removeFromHistory={removeFromHistory}
-        clearHistory={clearHistory}
-      />
       <CalculationForm
         inputValue={inputValue}
         setInput={setInputValue}
         onSubmit={onCalculationSubmit}
         calculation={calculate()}
+      />
+      <History
+        history={history}
+        removeFromHistory={removeFromHistory}
+        clearHistory={clearHistory}
       />
     </div>
   );

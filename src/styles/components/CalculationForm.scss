@@ -1,22 +1,37 @@
 form {
   display: grid;
-  grid-template-columns: 1fr 5rem;
   column-gap: 1ch;
+  row-gap: 1ch;
 
-  input, button, p {
-    font-size: 1rem;
-  }
+  background-color: var(--col-white, #ffff);
+  border: 2px solid var(--col-primary);
+  border-radius: 0.5em;
+  padding-inline: 1em;
+  padding-block: 0.5em;
 
   p {
-    grid-column: span 2;
+    text-align: end;
     font-weight: bold;
-
-    padding: 0 1ch;
-    height: 1em;
+    padding-inline: 1em;
     margin-bottom: 0.25em;
+    height: 1em;
   }
 
   input {
     padding: 0.5ch;
+    background: none;
+
+    border-top: 0em;
+    border-inline: 0em;
+    border-style: solid;
+    border-color: var(--col-primary);
+
+    font-family: inherit;
+    font-weight: bold;
+    letter-spacing: 0.5em;
+  }
+
+  p, input {
+    font-size: 1rem;
   }
 }

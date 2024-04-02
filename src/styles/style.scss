@@ -1,5 +1,14 @@
 @use "./Calculator.scss";
 
+:root {
+  --col-window-bg: #001f23;
+
+  --col-primary: #5B9489;
+  --col-secondary: #007A75;
+  --col-tertiary: #FCBE8F;
+  --col-accent: #FF0021;
+}
+
 * {
   padding: 0;
   margin: 0;
