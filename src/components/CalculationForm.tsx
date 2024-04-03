@@ -19,6 +19,7 @@ function CalculationForm({ inputValue, setInput, calculation, onSubmit }: Calcul
         value={inputValue}
         onChange={e => setInput(e.target.value)}
       />
+      <hr />
       <p className="show-input">
         {calculation}
       </p>

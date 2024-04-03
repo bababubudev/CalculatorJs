@@ -3,12 +3,68 @@
 
 .calculator {
   display: grid;
-  gap: 1rem;
+  gap: 0.5rem;
+  z-index: 1000;
+  position: relative;
 
   min-width: max(10ch, 30vw);
 
   background: var(--col-tertiary);
   padding: 0.5rem;
-
   border-radius: 0.5rem;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  .history-div {
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-out, height 0.3s ease-in-out;
+    cursor: pointer;
+
+    li {
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+  }
+
+  &.history-shown .history-div {
+    li {
+      opacity: 1;
+    }
+
+    cursor: default;
+    opacity: 1;
+    height: var(--history-height);
+  }
+
+  button {
+    border: none;
+    background: none;
+    cursor: pointer;
+
+    svg {
+      color: var(--col-primary);
+      width: 2ch;
+      height: 2ch;
+      stroke-width: 60;
+      transform: rotate(0deg);
+      transition: transform 0.3s ease-out;
+      filter: drop-shadow(0px 1px 1px hsla(0, 0%, 0%, 0.25));
+    }
+  }
+
+  &.history-shown svg {
+    transform: rotate(-180deg);
+    transition: transform 0.3s ease-out;
+    filter: drop-shadow(0px -1px 1px hsla(0, 0%, 0%, 0.25));
+  }
+}
+
+@keyframes squish-out {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--history-height);
+    display: grid;
+  }
 }

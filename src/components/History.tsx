@@ -1,30 +1,32 @@
 interface HistoryProp {
   history: string[];
+  toggleHistoryShown: () => void;
   removeFromHistory: (index: number) => void;
   clearHistory: () => void;
 }
 
-function History({ history, removeFromHistory, clearHistory }: HistoryProp) {
+function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp) {
+
   const onHistoryClicked = (index: number): void => {
     navigator.clipboard.writeText(history[index]);
     removeFromHistory(index);
   }
 
   return (
-    <section className="history-div">
+    <section
+      className="history-div"
+      onClick={toggleHistoryShown}
+    >
+      <img className="blob history-blob" src="/CalculatorJs/svg/blob3.svg" alt="Blob" />
       <ul>
-        <button
-          type="button"
-          onClick={clearHistory}
-        >
-          clear history
-        </button>
         {history.map((elem, i) => (
-          <li key={i}>
-            <div onClick={() => onHistoryClicked(i)}>
+          <li key={i} onClick={() => onHistoryClicked(i)}>
+            <p className="result">
               {elem}
-            </div>
-            <p>({i + 1})</p>
+            </p>
+            <p className="index">
+              ({i + 1})
+            </p>
           </li>
         ))}
       </ul>

@@ -44,6 +44,7 @@ function tokenize(input: string): string[] {
   input = input.replace(/ /g, '');
   input = input.replace(/÷/g, '/');
   input = input.replace(/x/g, '*');
+  input = input.replace(/^/g, '');
 
   const tokens = [];
   const size = input.length;
@@ -137,7 +138,8 @@ function evaluateTrig(trigToken: string, tokens: string[]): [string[], number] {
   const leftToken = tokens.slice(0, tokens.findIndex(elem => elem === "("))
   const rightToken = tokens.slice(tokens.findIndex(elem => elem === ")") + 1, tokens.length);
 
-  const inside: number = evaluateToken(innerTokens);
+  const inside = evaluateToken(innerTokens);
+
   let trig: number;
 
   switch (trigToken) {
@@ -174,7 +176,6 @@ function evaluateTrig(trigToken: string, tokens: string[]): [string[], number] {
     displayToken.push(rightToken.join(" "))
 
     leftToken.push("(", trig.toString(), ")");
-    console.log(leftToken);
 
     const finalToken: string[] = leftToken.concat(rightToken);
     return [displayToken, evaluateToken(finalToken)];

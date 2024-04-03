@@ -1,0 +1,39 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block: 3rem;
+  padding-inline: 1rem;
+  position: relative;
+
+  h1 {
+    color: var(--col-tertiary);
+    font-family: "ExtraBold";
+    font-size: 2rem;
+    margin: 0;
+    text-shadow: -2px 2px 1px hsla(0, 0%, 0%, 0.25);
+  }
+
+  svg {
+    fill: var(--col-tertiary);
+    width: 3ch;
+    height: 3ch;
+    margin: 0;
+    filter: drop-shadow(2px 2px 1px hsla(0, 0%, 0%, 0.25));
+    transition: all 0.2s ease-in;
+
+    &:hover {
+      animation: rotate-around 0.2s linear forwards;
+      filter: drop-shadow(0px 0px 5px hsla(0, 0%, 0%, 0.25));;
+    }
+  }
+}
+
+@keyframes rotate-around {
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}

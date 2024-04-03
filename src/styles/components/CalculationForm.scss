@@ -1,34 +1,41 @@
 form {
   display: grid;
-  column-gap: 1ch;
-  row-gap: 1ch;
+  gap: 1ch;
 
   background-color: var(--col-white, #ffff);
-  border: 2px solid var(--col-primary);
+  border: 3px solid var(--col-secondary);
   border-radius: 0.5em;
   padding-inline: 1em;
   padding-block: 0.5em;
+
+  box-shadow: 0 3px 3px hsla(0, 0%, 0%, 0.3);
 
   p {
     text-align: end;
     font-weight: bold;
     padding-inline: 1em;
-    margin-bottom: 0.25em;
-    height: 1em;
+    height: 1.5rem;
+  }
+
+  hr {
+    border: 1px solid var(--col-secondary);
+    border-radius: 1ch;
+    box-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.3);
   }
 
   input {
     padding: 0.5ch;
     background: none;
-
-    border-top: 0em;
-    border-inline: 0em;
-    border-style: solid;
-    border-color: var(--col-primary);
+    border: none;
 
     font-family: inherit;
     font-weight: bold;
     letter-spacing: 0.5em;
+    height: 1.5rem;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   p, input {

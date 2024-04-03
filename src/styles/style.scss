@@ -1,4 +1,6 @@
+@use "./fonts.scss";
 @use "./Calculator.scss";
+@use "./components/Header.scss";
 
 :root {
   --col-window-bg: #001f23;
@@ -7,6 +9,8 @@
   --col-secondary: #007A75;
   --col-tertiary: #FCBE8F;
   --col-accent: #FF0021;
+
+  --history-height: 160px;
 }
 
 * {
@@ -20,5 +24,33 @@ main {
   justify-content: center;
   align-items: center;
 
-  font-family: monospace;
+  font-family: "FiraSans", monospace;
+  background-color: var(--col-window-bg);
+}
+
+.content {
+  position: relative;
+  width: 900px;
+  min-height: 100vh;
+  background: var(--col-primary);
+  padding: 4rem;
+}
+
+.blobs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  .blob1 {
+    position: absolute;
+    left: 0;
+    width: 400px;
+  }
+
+  .blob2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+  }
 }

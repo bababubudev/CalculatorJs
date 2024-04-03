@@ -1,43 +1,56 @@
 .history-div {
-  max-height: 30vh;
-  border: 1px solid grey;
+  display: grid;
+  grid-template-rows: repeat(1fr, 4);
+  align-items: start;
+  position: relative;
+  height: var(--history-height, 160px);
+
+  background-color: var(--col-primary);
+  border-radius: 0.25rem;
+
   overflow-y: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
 
+  padding: 0.5rem;
+
   ul {
     list-style-type: none;
     display: grid;
-
     gap: 0.5ch;
-
-    li, button {
-      font-size: 1rem;
-      padding: 1ch;
-    }
+    z-index: 1;
 
     li {
       display: grid;
       grid-template-columns: 1fr 3ch;
+      align-items: center;
       gap: 1ch;
 
-      border: 1px solid grey;
+      font-size: 1rem;
+      padding: 1ch;
+      background: var(--col-white, #fff);
+      border-radius: 0.2em;
+      box-shadow: 0 3px 3px hsla(0, 0%, 0%, 0.3);
 
       &:hover {
-        background: grey;
-        color: white;
+        background: var(--col-tertiary);
+        color: var(--col-secondary);
       }
     }
 
-    button {
-      position:sticky;
-      inset-inline-end: 0;
-      inset-block-start: 0;
-      justify-self: end;
+    .index {
+      font-family: "ExtraLight";
     }
   }
 
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+.history-blob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
