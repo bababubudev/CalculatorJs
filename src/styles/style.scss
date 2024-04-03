@@ -30,7 +30,7 @@ main {
 
 .content {
   position: relative;
-  width: 900px;
+  min-width: 50rem;
   min-height: 100vh;
   background: var(--col-primary);
   padding: 4rem;
@@ -52,5 +52,41 @@ main {
     top: 0;
     right: 0;
     width: 250px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .content {
+    min-width: auto;
+    padding: 2rem;
+
+    .blobs {
+      &>* {
+        width: 150px;
+      }
+    }
+
+    header {
+      margin: 3rem 0 6rem 0;
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      svg {
+        width: 2.5ch;
+      }
+    }
+
+    .calculator {
+      padding: 0.5rem;
+    }
+  }
+}
+
+@media screen and (min-width: 750px) and (max-width: 1200px) {
+  .content {
+    min-width: 40rem;
+    padding: 2rem;
   }
 }

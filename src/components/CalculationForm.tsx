@@ -18,6 +18,7 @@ function CalculationForm({ inputValue, setInput, calculation, onSubmit }: Calcul
         className="input"
         value={inputValue}
         onChange={e => setInput(e.target.value)}
+        autoFocus
       />
       <hr />
       <p className="show-input">
