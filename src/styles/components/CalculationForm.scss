@@ -1,44 +1,47 @@
 form {
-  display: grid;
-  gap: 1ch;
+  .input-output {
+    display: grid;
+    gap: 1ch;
 
-  background-color: var(--col-white, #ffff);
-  border: 3px solid var(--col-secondary);
-  border-radius: 0.5em;
-  padding-inline: 1em;
-  padding-block: 0.5em;
-
-  box-shadow: 0 3px 3px hsla(0, 0%, 0%, 0.3);
-
-  p {
-    text-align: end;
-    font-weight: bold;
+    background-color: var(--col-white, #ffff);
+    border: 3px solid var(--col-secondary);
+    border-radius: 0.5em;
     padding-inline: 1em;
-    height: 1.5rem;
-  }
+    padding-block: 0.5em;
 
-  hr {
-    border: 1px solid var(--col-secondary);
-    border-radius: 1ch;
-    box-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.3);
-  }
+    box-shadow: 0 3px 3px hsla(0, 0%, 0%, 0.3);
 
-  input {
-    padding: 0.5ch;
-    background: none;
-    border: none;
-
-    font-family: inherit;
-    font-weight: bold;
-    letter-spacing: 0.5em;
-    height: 1.5rem;
-
-    &:focus {
-      outline: none;
+    p {
+      text-align: end;
+      font-weight: bold;
+      padding-inline: 1em;
+      height: 1.5rem;
     }
-  }
 
-  p, input {
-    font-size: 1rem;
+    hr {
+      border: 1px solid var(--col-secondary);
+      border-radius: 1ch;
+      box-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.3);
+    }
+
+    input {
+      padding: 0.5ch;
+      background: none;
+      border: none;
+
+      font-family: inherit;
+      font-weight: bold;
+      letter-spacing: 0.5em;
+      height: 1.5rem;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    p,
+    input {
+      font-size: 1rem;
+    }
   }
 }

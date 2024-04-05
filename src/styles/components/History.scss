@@ -3,7 +3,6 @@
   grid-template-rows: repeat(1fr, 4);
   align-items: start;
   position: relative;
-  height: var(--history-height, 160px);
 
   background-color: var(--col-primary);
   border-radius: 0.25rem;
@@ -53,4 +52,5 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 400px;
 }

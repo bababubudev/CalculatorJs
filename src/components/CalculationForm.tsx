@@ -13,18 +13,20 @@ function CalculationForm({ inputValue, setInput, calculation, onSubmit }: Calcul
       className="userinput"
       onSubmit={onSubmit}
     >
-      <input
-        type="text"
-        className="input"
-        value={inputValue}
-        onChange={e => setInput(e.target.value)}
-        autoFocus
-      />
-      <hr />
-      <p className="show-input">
-        {calculation}
-      </p>
-    </form>
+      <div className="input-output">
+        <input
+          type="text"
+          className="input"
+          value={inputValue}
+          onChange={e => setInput(e.target.value)}
+          autoFocus
+        />
+        <hr />
+        <p className="show-input">
+          {calculation}
+        </p>
+      </div>
+    </form >
   );
 }
 
