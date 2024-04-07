@@ -4,12 +4,7 @@ import type { ComparisonObject } from "../evaluator";
 import evaluateExpression from "../evaluator";
 import CalculationForm from "../components/CalculationForm";
 import { IoIosArrowDown } from "react-icons/io";
-import {
-  CgMathDivide, CgMathEqual,
-  CgClose, CgMathPlus,
-  CgMathMinus, CgBackspace,
-  CgCornerDownLeft
-} from "react-icons/cg";
+import CalculatorKeypad from "../components/CalculatorKeypad";
 
 function Calculator() {
   const [history, setHistory] = useState<string[]>([]);
@@ -41,6 +36,11 @@ function Calculator() {
   const onCalculationSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
+    if (historyResult as string === "") return;
+    addToHistory(historyResult as string);
+  }
+
+  const submitFromKeypad = (): void => {
     if (historyResult as string === "") return;
     addToHistory(historyResult as string);
   }
@@ -81,6 +81,13 @@ function Calculator() {
     if (!historyShown) setHistoryShown(prev => !prev);
   }
 
+  const addToInput = (key: string): void => {
+    setInputValue(prev => prev + key);
+  }
+
+  const removeFromInput = (): void => {
+    setInputValue(prev => prev.slice(0, -1));
+  }
 
   return (
     <div className="calculator">
@@ -91,36 +98,11 @@ function Calculator() {
         calculation={calculate()}
       />
       <div className={`hidables ${historyShown ? "history-shown" : ""}`}>
-        <div className="keypad">
-          <div className="row row1">
-            <button type="button">7</button>
-            <button type="button">8</button>
-            <button type="button">9</button>
-            <button type="button"><CgClose /></button>
-            <button type="button"><CgMathDivide /></button>
-          </div>
-          <div className="row row2">
-            <button type="button">4</button>
-            <button type="button">5</button>
-            <button type="button">6</button>
-            <button type="button"><CgMathPlus /></button>
-            <button type="button"><CgMathMinus /></button>
-          </div>
-          <div className="row row3">
-            <button type="button">1</button>
-            <button type="button">2</button>
-            <button type="button">3</button>
-            <button type="button"><CgMathEqual /></button>
-            <button type="button"><CgBackspace /></button>
-          </div>
-          <div className="row row4">
-            <button type="button">0</button>
-            <button type="button">.</button>
-            <button type="button">&lt;</button>
-            <button type="button">&gt;</button>
-            <button type="button"><CgCornerDownLeft /></button>
-          </div>
-        </div>
+        <CalculatorKeypad
+          OnKeyDown={addToInput}
+          OnBackspace={removeFromInput}
+          OnSubmit={submitFromKeypad}
+        />
         <div className="history-control">
           <History
             history={history}
