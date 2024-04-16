@@ -5,10 +5,10 @@
 :root {
   --col-window-bg: #001f23;
 
-  --col-primary: #5B9489;
-  --col-secondary: #007A75;
-  --col-tertiary: #FCBE8F;
-  --col-accent: #FF0021;
+  --col-primary: #5b9489;
+  --col-secondary: #007a75;
+  --col-tertiary: #fcbe8f;
+  --col-accent: #ff2845;
 }
 
 * {
@@ -59,7 +59,7 @@ main {
     padding: 1rem;
 
     .blobs {
-      &>* {
+      & > * {
         width: 150px;
       }
     }

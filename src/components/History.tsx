@@ -1,14 +1,19 @@
+import { IoCopyOutline } from "react-icons/io5";
+
+type history = {
+  operation: string;
+  result: string;
+}
+
 interface HistoryProp {
-  history: string[];
+  history: history[];
   toggleHistoryShown: () => void;
   removeFromHistory: (index: number) => void;
   clearHistory: () => void;
 }
 
 function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp) {
-
   const onHistoryClicked = (index: number): void => {
-    navigator.clipboard.writeText(history[index]);
     removeFromHistory(index);
   }
 
@@ -17,20 +22,25 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
       className="history-div"
       onClick={toggleHistoryShown}
     >
-      <img className="blob history-blob" src="/CalculatorJs/svg/blob3.svg" alt="Blob" />
       <ul>
         {history.map((elem, i) => (
-          <li key={i} onClick={() => onHistoryClicked(i)}>
-            <p className="result">
-              {elem}
-            </p>
-            <p className="index">
-              ({i + 1})
-            </p>
+          <li key={i}>
+            <div className="history-part" onClick={() => onHistoryClicked(i)}>
+              <p className="operation" style={{ letterSpacing: "0.5rem" }}>
+                {elem.operation}
+              </p>
+              <p className="result">{elem.result}</p>
+            </div>
+            <div className="detail">
+              <span className="index">({i + 1})</span>
+              <button className="copy-btn">
+                <IoCopyOutline className="copy-icon" />
+              </button>
+            </div>
           </li>
         ))}
       </ul>
-    </section>
+    </section >
   );
 }
 

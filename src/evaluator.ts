@@ -8,7 +8,7 @@ export type ComparisonObject = {
   comparator: string
 }
 
-function evaluateExpression(input: string): [string[], number] | ComparisonObject {
+function evaluateExpression(input: string): number {
   const tokens: string[] | null = tokenize(input);
   const trigSyntax: Set<string> = new Set(["sin", "cos", "tan", "asin", "acos", "atan"]);
   const trigTokens: RegExpMatchArray | null = input.match(/\b(\d*\.*\d+\s*)?(sin|cos|tan|asin|acos|atan)(?=\(\))?/gi);
@@ -44,6 +44,7 @@ function tokenize(input: string): string[] {
   input = input.replace(/ /g, '');
   input = input.replace(/÷/g, '/');
   input = input.replace(/x/g, '*');
+  input = input.replace(/⋅/g, '*');
   input = input.replace(/^/g, '');
 
   const tokens = [];
@@ -95,16 +96,16 @@ function evaluateToken(tokens: string[]): number {
   return evaluatePostfix(postfix);
 }
 
-function evaluateAndCompareToken(tokens: string[]): [string[], number] | ComparisonObject {
+function evaluateAndCompareToken(tokens: string[]): number {
   let comparison: boolean = false;
   const [leftInput, comparator, rightInput] = seperateInput(tokens);
 
   if (!comparator) {
-    return [tokens, evaluateToken(tokens)];
+    return evaluateToken(tokens);
   }
 
   const leftResult = evaluateToken(leftInput).toFixed(2);
-  if (comparator && rightInput.length === 0) return [tokens, Number(leftResult)];
+  if (comparator && rightInput.length === 0) Number(leftResult);
   const rightResult = evaluateToken(rightInput).toFixed(2);
 
   switch (comparator) {
@@ -122,18 +123,11 @@ function evaluateAndCompareToken(tokens: string[]): [string[], number] | Compari
       break;
   }
 
-  return {
-    comparison,
-    leftInput,
-    rightInput,
-    leftResult,
-    rightResult,
-    comparator
-  };
+  return comparison ? 1 : 0;
 }
 
 
-function evaluateTrig(trigToken: string, tokens: string[]): [string[], number] {
+function evaluateTrig(trigToken: string, tokens: string[]): number {
   const innerTokens = tokens.slice(tokens.findIndex((elem) => elem === "(") + 1, tokens.findIndex((elem) => elem === ")"));
   const leftToken = tokens.slice(0, tokens.findIndex(elem => elem === "("))
   const rightToken = tokens.slice(tokens.findIndex(elem => elem === ")") + 1, tokens.length);
@@ -178,10 +172,10 @@ function evaluateTrig(trigToken: string, tokens: string[]): [string[], number] {
     leftToken.push("(", trig.toString(), ")");
 
     const finalToken: string[] = leftToken.concat(rightToken);
-    return [displayToken, evaluateToken(finalToken)];
+    return evaluateToken(finalToken);
   }
 
-  return [[trigToken, "(", inside.toString(), ")"], trig];
+  return trig;
 }
 
 function seperateInput(tokens: string[]): SeperatedInput {
