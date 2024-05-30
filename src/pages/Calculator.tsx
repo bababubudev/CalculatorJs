@@ -1,16 +1,20 @@
 import { FormEvent, useEffect, useState } from "react";
 import History from "../components/History";
-import type { ComparisonObject } from "../evaluator";
 import evaluateExpression from "../evaluator";
 import CalculationForm from "../components/CalculationForm";
 import { IoIosArrowDown } from "react-icons/io";
-import CalculatorKeypad from "../components/CalculatorKeypad";
+import Keypad from "../components/Keypad";
+
+type history = {
+  operation: string;
+  result: string;
+}
 
 function Calculator() {
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<history[]>([{ operation: "", result: "" }]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [historyShown, setHistoryShown] = useState<boolean>(false);
-  let historyResult: string;
+  const [historyShown, setHistoryShown] = useState<boolean>(true);
+  let historyResult: history = { operation: "", result: "" };
 
   useEffect(() => {
     if (history.length > 0) {
@@ -21,8 +25,8 @@ function Calculator() {
     setHistoryShown(false);
   }, [history]);
 
-  const addToHistory = (element: string | HTMLElement) => {
-    setHistory(prev => [...prev, element as string]);
+  const addToHistory = (element: history) => {
+    setHistory(prev => [...prev, element]);
   }
 
   const removeFromHistory = (index: number) => {
@@ -36,42 +40,28 @@ function Calculator() {
   const onCalculationSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    if (historyResult as string === "") return;
-    addToHistory(historyResult as string);
-  }
-
-  const submitFromKeypad = (): void => {
-    if (historyResult as string === "") return;
-    addToHistory(historyResult as string);
-  }
-
-  const modifyOutput = (output: string[]) => {
-    const comparators = new Set(["=", ">", "<"]);
-    return output.map(elem => elem === "*" ? "·" : elem)
-      .filter(elem => !comparators.has(elem))
-      .join(" ");
+    if (!historyResult || historyResult.result !== "") {
+      addToHistory(historyResult);
+    }
   }
 
   const calculate = (): string => {
-    let output: [string[], number] | ComparisonObject;
+    let output: number;
+    const operatorRegex = /[=<>]/;
 
     try {
       output = evaluateExpression(inputValue);
+      const hasOper = operatorRegex.test(inputValue);
 
-      if ("comparison" in output) {
-        const { comparison, comparator, leftInput, leftResult, rightInput }: ComparisonObject = output;
-        const modifiedL = modifyOutput(leftInput);
-        const modifiedR = modifyOutput(rightInput);
-
-        historyResult = `${modifiedL} ${comparison ? comparator : "!" + comparator} ${modifiedR} (${comparison.toString().toUpperCase()})`;
-        return `${leftResult} ${comparison ? comparator : "!" + comparator} ${modifiedR} (${comparison.toString().toUpperCase()})`;
+      if (hasOper) {
+        const result = output === 1 ? "true" : "false"
+        historyResult = { operation: inputValue, result: result };
+        return result;
       }
 
-      const [tokenized, result] = output;
-      const modified = modifyOutput(tokenized);
-
-      historyResult = `${modified}${isNaN(result) ? "" : " = " + result}`;
-      return `${isNaN(result) || tokenized.length <= 1 ? "" : " = " + result}`;
+      historyResult.operation = inputValue;
+      historyResult.result = `${output}`;
+      return historyResult.result;
     } catch (error) {
       return "Invalid input";
     }
@@ -81,12 +71,23 @@ function Calculator() {
     if (!historyShown) setHistoryShown(prev => !prev);
   }
 
-  const addToInput = (key: string): void => {
-    setInputValue(prev => prev + key);
+  const prevAnswer = () => {
+    if (history.length === 0) return;
+    const currentResult: string = history[history.length - 1].result;
+    setInputValue(prev => prev + currentResult);
   }
 
-  const removeFromInput = (): void => {
+  const keypadKeyClear = () => {
     setInputValue(prev => prev.slice(0, -1));
+  }
+
+  const keypadKeydown = (value: string): void => {
+    setInputValue(prev => prev + value);
+  }
+
+  const keypadSubmit = (): void => {
+    if (!historyResult || historyResult.result === "") return;
+    addToHistory(historyResult);
   }
 
   return (
@@ -97,12 +98,13 @@ function Calculator() {
         onSubmit={onCalculationSubmit}
         calculation={calculate()}
       />
-      <div className={`hidables ${historyShown ? "history-shown" : ""}`}>
-        <CalculatorKeypad
-          OnKeyDown={addToInput}
-          OnBackspace={removeFromInput}
-          OnSubmit={submitFromKeypad}
-        />
+      <Keypad
+        onKeyPressed={keypadKeydown}
+        onKeySubmit={keypadSubmit}
+        onKeyClear={keypadKeyClear}
+        onRequestPrevAns={prevAnswer}
+      />
+      <div className={`hidables ${historyShown ? "history-shown" : ""} `}>
         <div className="history-control">
           <History
             history={history}
