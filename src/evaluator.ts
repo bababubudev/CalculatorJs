@@ -1,4 +1,4 @@
-type SeperatedInput = [string[], string | null, string[]];
+// type SeperatedInput = [string[], string | null, string[]];
 export type ComparisonObject = {
   comparison: boolean,
   leftInput: string[],
@@ -8,36 +8,35 @@ export type ComparisonObject = {
   comparator: string
 }
 
+type FunctionKeys = "sin" | "cos" | "tan" |
+  "asin" | "acos" | "atan" |
+  "sqrt" | "log" | "ln" | "abs" | "!";
+
+
+function factorialize(num: number): number {
+  if (num < 0) return -1;
+  else if (num === 0) return 1;
+  else return (num * factorialize(num - 1));
+}
+
+const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
+  sin: Math.sin,
+  cos: Math.cos,
+  tan: Math.tan,
+  asin: Math.asin,
+  acos: Math.acos,
+  atan: Math.atan,
+  sqrt: Math.sqrt,
+  log: Math.log10,
+  ln: Math.log,
+  abs: Math.abs,
+  "!": factorialize
+};
+
 function evaluateExpression(input: string): number {
   const tokens: string[] | null = tokenize(input);
-  const trigSyntax: Set<string> = new Set(["sin", "cos", "tan", "asin", "acos", "atan"]);
-  const trigTokens: RegExpMatchArray | null = input.match(/\b(\d*\.*\d+\s*)?(sin|cos|tan|asin|acos|atan)(?=\(\))?/gi);
-
-  if (trigTokens) {
-    let foundToken: string = "";
-
-    for (const token of trigTokens) {
-      let currentToken: string = "";
-
-      if (/^\d+\w+$/.test(token)) {
-        const splitToken = token.match(/^(\d+)(\D+)$/);
-        if (!splitToken || splitToken.length === 0) continue;
-
-        const foundToken = splitToken[splitToken.length - 1].toString();
-        if (trigSyntax.has(foundToken)) {
-          currentToken = foundToken;
-        }
-      }
-
-      if (currentToken !== "" || trigSyntax.has(token)) {
-        foundToken = currentToken === "" ? token : currentToken;
-      }
-    }
-
-    return evaluateTrig(foundToken, tokens);
-  }
-
-  return evaluateAndCompareToken(tokens);
+  const rpn = shuntingYard(tokens);
+  return evaluateRPN(rpn);
 }
 
 function tokenize(input: string): string[] {
@@ -51,6 +50,7 @@ function tokenize(input: string): string[] {
   const size = input.length;
   const operators = new Set(['+', '-', '*', '/', '^', '(', ')']);
   const comparators = new Set(['=', '<', '>']);
+  const functions = new Set(Object.keys(mathFunctions))
   let currentToken = "";
 
   for (let i = 0; i < size; i++) {
@@ -85,182 +85,169 @@ function tokenize(input: string): string[] {
         tokens.push('*');
       }
     }
+    else {
+      currentToken += char;
+      if (functions.has(currentToken)) {
+        tokens.push(currentToken);
+        currentToken = "";
+      }
+    }
   }
 
   if (currentToken) tokens.push(currentToken);
   return tokens;
 }
 
-function evaluateToken(tokens: string[]): number {
-  const postfix = tokens ? infixtoPostfix(tokens) : [];
-  return evaluatePostfix(postfix);
-}
+//#region FIXME: Comparison operation after new algorithm
+// function evaluateAndCompareToken(tokens: string[]): number {
+//   let comparison: boolean = false;
+//   const [leftInput, comparator, rightInput] = seperateInput(tokens);
 
-function evaluateAndCompareToken(tokens: string[]): number {
-  let comparison: boolean = false;
-  const [leftInput, comparator, rightInput] = seperateInput(tokens);
+//   if (!comparator) {
+//     return evaluateTokens(tokens);
+//   }
 
-  if (!comparator) {
-    return evaluateToken(tokens);
-  }
+//   const leftResult = evaluateTokens(leftInput).toFixed(2);
+//   if (comparator && rightInput.length === 0) Number(leftResult);
+//   const rightResult = evaluateTokens(rightInput).toFixed(2);
 
-  const leftResult = evaluateToken(leftInput).toFixed(2);
-  if (comparator && rightInput.length === 0) Number(leftResult);
-  const rightResult = evaluateToken(rightInput).toFixed(2);
+//   switch (comparator) {
+//     case '=':
+//       comparison = (leftResult === rightResult);
+//       break;
+//     case '>':
+//       comparison = (leftResult > rightResult);
+//       break;
+//     case '<':
+//       comparison = (leftResult < rightResult);
+//       break
+//     default:
+//       comparison = false;
+//       break;
+//   }
 
-  switch (comparator) {
-    case '=':
-      comparison = (leftResult === rightResult);
-      break;
-    case '>':
-      comparison = (leftResult > rightResult);
-      break;
-    case '<':
-      comparison = (leftResult < rightResult);
-      break
-    default:
-      comparison = false;
-      break;
-  }
+//   return comparison ? 1 : 0;
+// }
 
-  return comparison ? 1 : 0;
-}
+// function seperateInput(tokens: string[]): SeperatedInput {
+//   const tokensToFind = ['=', '>', '<'];
+//   const comparatorIndex = tokens.findIndex(token => tokensToFind.includes(token));
 
+//   if (comparatorIndex === -1) return [tokens, null, []];
+//   const leftInput = tokens.slice(0, comparatorIndex);
+//   const comparator = tokens[comparatorIndex];
+//   const rightInput = tokens.slice(comparatorIndex + 1);
 
-function evaluateTrig(trigToken: string, tokens: string[]): number {
-  const innerTokens = tokens.slice(tokens.findIndex((elem) => elem === "(") + 1, tokens.findIndex((elem) => elem === ")"));
-  const leftToken = tokens.slice(0, tokens.findIndex(elem => elem === "("))
-  const rightToken = tokens.slice(tokens.findIndex(elem => elem === ")") + 1, tokens.length);
+//   return [leftInput, comparator, rightInput];
+// }
+//#endregion
 
-  const inside = evaluateToken(innerTokens);
+function shuntingYard(tokens: string[]): string[] {
+  const precedence: { [key: string]: number } = {
+    '^': 4,
+    '*': 3,
+    '/': 3,
+    '+': 2,
+    '-': 2,
+    '(': 1
+  };
 
-  let trig: number;
+  const rightAssociative = new Set(['^']);
+  const operators = new Set(['+', '-', '*', '/', '^']);
+  const functions = new Set(Object.keys(mathFunctions));
 
-  switch (trigToken) {
-    case "sin":
-      trig = Math.sin(inside);
-      break;
-    case "cos":
-      trig = Math.cos(inside);
-      break;
-    case "tan":
-      trig = Math.tan(inside);
-      break;
-    case "asin":
-      trig = Math.asin(inside);
-      break;
-    case "acos":
-      trig = Math.acos(inside);
-      break;
-    case "atan":
-      trig = Math.atan(inside);
-      break;
-    default:
-      trig = NaN;
-      break;
-  }
+  const outputQueue: string[] = [];
+  const operatorStack: string[] = [];
 
-  if (!isNaN(trig)) trig = Number(trig.toFixed(2));
-
-  if (leftToken.length > 0 || rightToken.length > 0) {
-    if (!isNaN(Number(leftToken[leftToken.length - 1]))) leftToken.push("*");
-
-    const displayToken: string[] = [...leftToken];
-    displayToken.push(trigToken, "(", innerTokens.join(" "), ")");
-    displayToken.push(rightToken.join(" "))
-
-    leftToken.push("(", trig.toString(), ")");
-
-    const finalToken: string[] = leftToken.concat(rightToken);
-    return evaluateToken(finalToken);
-  }
-
-  return trig;
-}
-
-function seperateInput(tokens: string[]): SeperatedInput {
-  const tokensToFind = ['=', '>', '<'];
-  const comparatorIndex = tokens.findIndex(token => tokensToFind.includes(token));
-
-  if (comparatorIndex === -1) return [tokens, null, []];
-  const leftInput = tokens.slice(0, comparatorIndex);
-  const comparator = tokens[comparatorIndex];
-  const rightInput = tokens.slice(comparatorIndex + 1);
-
-  return [leftInput, comparator, rightInput];
-}
-
-function infixtoPostfix(infix: string[]): string[] {
-  const precedence: Record<string, number> = {
-    '^': 3,
-    '*': 2,
-    '/': 2,
-    '+': 1,
-    '-': 1,
-  }
-
-  const output: string[] = [];
-  const symbolStack: string[] = [];
-
-  for (const token of infix) {
-    if (!isNaN(parseFloat(token))) { output.push(token); }
-    else if (token === '(') { symbolStack.push(token); }
-    else if (token === ')') {
-      while (symbolStack.length > 0 && symbolStack[symbolStack.length - 1] !== '(') {
-        output.push(symbolStack.pop() as string);
-      }
-
-      symbolStack.pop();
-    } else {
-      while (symbolStack.length > 0 && precedence[symbolStack[symbolStack.length - 1]] >= precedence[token]) {
-        output.push(symbolStack.pop() as string);
-      }
-
-      symbolStack.push(token);
+  tokens.forEach(token => {
+    if (!isNaN(parseFloat(token))) {
+      outputQueue.push(token);
     }
+    else if (functions.has(token)) {
+      operatorStack.push(token);
+    }
+    else if (operators.has(token)) {
+      /* NOTE: Checks whether an operator is right associative */
+      while (operatorStack.length > 0 && operators.has(operatorStack[operatorStack.length - 1])) {
+        const topOperator = operatorStack[operatorStack.length - 1];
+        const isRightAssociative = rightAssociative.has(token);
+        const topOperatorPrecedence = precedence[topOperator];
+        const tokenPrecedence = precedence[token];
+
+        const shouldPopOperator = isRightAssociative
+          ? topOperatorPrecedence > tokenPrecedence
+          : topOperatorPrecedence >= tokenPrecedence
+
+        if (!shouldPopOperator) break;
+
+        outputQueue.push(operatorStack.pop() as string);
+      }
+
+      operatorStack.push(token);
+    }
+    else if (token === '(') {
+      operatorStack.push(token);
+    }
+    else if (token === ')') {
+      while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== '(') {
+        outputQueue.push(operatorStack.pop() as string);
+      }
+
+      operatorStack.pop();
+
+      if (functions.has(operatorStack[operatorStack.length - 1])) {
+        outputQueue.push(operatorStack.pop() as string);
+      }
+    }
+  });
+
+  while (operatorStack.length > 0) {
+    outputQueue.push(operatorStack.pop() as string);
   }
 
-  while (symbolStack.length > 0) {
-    output.push(symbolStack.pop() as string);
-  }
-
-  return output;
+  return outputQueue;
 }
 
-function evaluatePostfix(postfix: string[]): number {
+function evaluateRPN(rpn: string[]): number {
   const stack: number[] = [];
 
-  for (const token of postfix) {
+  rpn.forEach(token => {
     if (!isNaN(parseFloat(token))) {
       stack.push(parseFloat(token));
     }
     else {
-      const num2 = stack.pop();
-      const num1 = stack.pop();
+      if (mathFunctions[token as FunctionKeys]) {
+        const a = stack.pop() as number;
+        stack.push(mathFunctions[token as FunctionKeys](a));
+      }
+      else {
+        const b = stack.pop() as number;
+        const a = stack.pop() as number;
 
-      if (num2 === undefined || num1 === undefined) return NaN;
-
-      switch (token) {
-        case '+':
-          stack.push(num1 + num2);
-          break;
-        case '-':
-          stack.push(num1 - num2);
-          break;
-        case '*':
-          stack.push(num1 * num2);
-          break;
-        case '/':
-          stack.push(num1 / num2);
-          break;
-        case '^':
-          stack.push(Math.pow(num1, num2));
-          break;
+        switch (token) {
+          case '+':
+            stack.push(a + b);
+            break;
+          case '-':
+            stack.push(a - b);
+            break;
+          case '*':
+            stack.push(a * b);
+            break;
+          case '/':
+            stack.push(a / b);
+            break;
+          case '^':
+            stack.push(Math.pow(a, b));
+            break;
+          default:
+            stack.push(NaN);
+        }
       }
     }
-  }
+  });
 
-  return stack.pop() as number;
+  return stack[0];
 }
 
 export default evaluateExpression;

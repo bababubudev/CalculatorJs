@@ -26,10 +26,12 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
         {history.map((elem, i) => (
           <li key={i}>
             <div className="history-part" onClick={() => onHistoryClicked(i)}>
-              <p className="operation" style={{ letterSpacing: "0.5rem" }}>
+              <p className="operation" style={{ letterSpacing: "0.2rem" }}>
                 {elem.operation}
               </p>
-              <p className="result">{elem.result}</p>
+              <p className="result">
+                {elem.result}
+              </p>
             </div>
             <div className="detail">
               <span className="index">({i + 1})</span>
@@ -38,7 +40,8 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
               </button>
             </div>
           </li>
-        ))}
+        ))
+        }
       </ul>
     </section >
   );

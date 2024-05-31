@@ -11,10 +11,10 @@ type history = {
 }
 
 function Calculator() {
-  const [history, setHistory] = useState<history[]>([{ operation: "", result: "" }]);
+  const [history, setHistory] = useState<history[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [historyShown, setHistoryShown] = useState<boolean>(true);
-  let historyResult: history = { operation: "", result: "" };
+  let historyResult: history;
 
   useEffect(() => {
     if (history.length > 0) {
@@ -39,30 +39,27 @@ function Calculator() {
 
   const onCalculationSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    if (!historyResult) return;
 
-    if (!historyResult || historyResult.result !== "") {
+    if (historyResult.result !== "") {
       addToHistory(historyResult);
     }
   }
 
   const calculate = (): string => {
-    let output: number;
-    const operatorRegex = /[=<>]/;
+    let output: number = 0;
 
     try {
       output = evaluateExpression(inputValue);
-      const hasOper = operatorRegex.test(inputValue);
 
-      if (hasOper) {
-        const result = output === 1 ? "true" : "false"
-        historyResult = { operation: inputValue, result: result };
-        return result;
+      historyResult = {
+        operation: inputValue,
+        result: output ? output.toString() : ""
       }
 
-      historyResult.operation = inputValue;
-      historyResult.result = `${output}`;
-      return historyResult.result;
+      return historyResult ? historyResult.result : "";
     } catch (error) {
+      console.log(error);
       return "Invalid input";
     }
   }
