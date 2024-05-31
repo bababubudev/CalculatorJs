@@ -27,7 +27,7 @@ function Keypad({ onKeyPressed, onKeyClear, onKeySubmit, onRequestPrevAns }: Key
           <button type="button" onClick={() => onKeyPressed("acos()")}>acos</button>
           <button type="button" onClick={() => onKeyPressed("atan()")}>atan</button>
           <button type="button" onClick={() => onKeyPressed("deg")}>°</button>
-          <button type="button" onClick={() => onKeyPressed("2.71828")}><i>e</i></button>
+          <button type="button" onClick={() => onKeyPressed("e")}><i>e</i></button>
         </div>
         <div className="row">
           <button type="button" onClick={() => onKeyPressed("ln()")}>ln</button>
@@ -44,7 +44,7 @@ function Keypad({ onKeyPressed, onKeyClear, onKeySubmit, onRequestPrevAns }: Key
           <button type="button" onClick={() => onKeyPressed("pi")}>π</button>
           <button type="button" onClick={() => onKeyPressed("(")}>&#40;</button>
           <button type="button" onClick={() => onKeyPressed(")")}>&#41;</button>
-          <button type="button" onClick={() => onKeyPressed("|_|")}>|&#11034;|</button>
+          <button type="button" onClick={() => onKeyPressed("abs()")}>|&#11034;|</button>
           <button type="button" onClick={() => onRequestPrevAns()}>ans</button>
         </div>
       </div>

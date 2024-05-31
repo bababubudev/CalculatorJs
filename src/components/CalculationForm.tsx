@@ -7,7 +7,9 @@ interface CalculationFormProp {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
-function CalculationForm({ inputValue, setInput, calculation, onSubmit }: CalculationFormProp) {
+function CalculationForm(prop: CalculationFormProp) {
+  const { onSubmit, inputValue, setInput, calculation } = prop;
+
   return (
     <form
       className="userinput"
