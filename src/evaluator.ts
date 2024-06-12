@@ -10,11 +10,14 @@ export type ComparisonObject = {
 
 type FunctionKeys = "sin" | "cos" | "tan" |
   "asin" | "acos" | "atan" |
-  "sqrt" | "log" | "ln" | "abs" | "!";
+  "sqrt" | "log" | "lg" | "ln" | "abs" | "!";
 
 
 function factorialize(num: number): number {
+  if (num === undefined) return 0;
   if (num < 0) return -1;
+  if (num > 180) return Infinity;
+
   else if (num === 0) return 1;
   else return (num * factorialize(num - 1));
 }
@@ -27,10 +30,11 @@ const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   acos: Math.acos,
   atan: Math.atan,
   sqrt: Math.sqrt,
-  log: Math.log10,
+  log: Math.log,
+  lg: Math.log10,
   ln: Math.log,
   abs: Math.abs,
-  "!": factorialize
+  "!": factorialize,
 };
 
 function evaluateExpression(input: string): number {
@@ -247,6 +251,7 @@ function evaluateRPN(rpn: string[]): number {
     }
   });
 
+  console.log(stack[0])
   return stack[0];
 }
 

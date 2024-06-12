@@ -3,18 +3,17 @@ import History from "../components/History";
 import evaluateExpression from "../evaluator";
 import CalculationForm from "../components/CalculationForm";
 import { IoIosArrowDown } from "react-icons/io";
-import Keypad from "../components/Keypad";
 
-type history = {
+type calculation = {
   operation: string;
   result: string;
 }
 
 function Calculator() {
-  const [history, setHistory] = useState<history[]>([]);
+  const [history, setHistory] = useState<calculation[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [historyShown, setHistoryShown] = useState<boolean>(true);
-  let historyResult: history;
+  let currentResult: calculation;
 
   useEffect(() => {
     if (history.length > 0) {
@@ -25,7 +24,7 @@ function Calculator() {
     setHistoryShown(false);
   }, [history]);
 
-  const addToHistory = (element: history) => {
+  const addToHistory = (element: calculation) => {
     setHistory(prev => [...prev, element]);
   }
 
@@ -37,54 +36,34 @@ function Calculator() {
     setHistory([]);
   }
 
-  const onCalculationSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    if (!historyResult) return;
+  const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
+    event?.preventDefault();
+    if (!currentResult) return;
 
-    if (historyResult.result !== "") {
-      addToHistory(historyResult);
+    if (currentResult.result !== "") {
+      addToHistory(currentResult);
     }
   }
 
-  const calculate = (): string => {
+  const calculate = (): calculation => {
     let output: number = 0;
 
     try {
       output = evaluateExpression(inputValue);
 
-      historyResult = {
+      currentResult = {
         operation: inputValue,
-        result: output ? output.toString() : ""
+        result: output === undefined ? "" : output.toString()
       }
 
-      return historyResult ? historyResult.result : "";
+      return currentResult;
     } catch (error) {
-      console.log(error);
-      return "Invalid input";
+      return { operation: inputValue, result: (error as Error).message };
     }
   }
 
   const toggleHistoryShown = (): void => {
     if (!historyShown) setHistoryShown(prev => !prev);
-  }
-
-  const prevAnswer = () => {
-    if (history.length === 0) return;
-    const currentResult: string = history[history.length - 1].result;
-    setInputValue(prev => prev + currentResult);
-  }
-
-  const keypadKeyClear = () => {
-    setInputValue(prev => prev.slice(0, -1));
-  }
-
-  const keypadKeydown = (value: string): void => {
-    setInputValue(prev => prev + value);
-  }
-
-  const keypadSubmit = (): void => {
-    if (!historyResult || historyResult.result === "") return;
-    addToHistory(historyResult);
   }
 
   return (
@@ -93,13 +72,8 @@ function Calculator() {
         inputValue={inputValue}
         setInput={setInputValue}
         onSubmit={onCalculationSubmit}
+        history={history}
         calculation={calculate()}
-      />
-      <Keypad
-        onKeyPressed={keypadKeydown}
-        onKeySubmit={keypadSubmit}
-        onKeyClear={keypadKeyClear}
-        onRequestPrevAns={prevAnswer}
       />
       <div className={`hidables ${historyShown ? "history-shown" : ""} `}>
         <div className="history-control">
