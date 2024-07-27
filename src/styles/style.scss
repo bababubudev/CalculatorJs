@@ -38,6 +38,7 @@ main {
   position: absolute;
   inset: 0;
   z-index: 0;
+  user-select: none;
 
   .blob1 {
     position: absolute;
@@ -50,58 +51,5 @@ main {
     top: 0;
     right: 0;
     width: 250px;
-  }
-}
-
-@media screen and (max-width: 650px) {
-  .content {
-    min-width: max(100vw, 22rem);
-    padding: 1rem;
-
-    .blobs {
-      & > * {
-        width: 150px;
-      }
-    }
-
-    header {
-      margin: 3rem 0 6rem 0;
-
-      h1 {
-        font-size: 1.75rem;
-      }
-
-      svg {
-        width: 2.5ch;
-      }
-    }
-
-    .calculator {
-      padding: 0.25rem;
-
-      .hidables {
-        display: grid;
-        grid-template-columns: none;
-        grid-template-rows: 1fr 200px;
-
-        .show-hide-btn {
-          grid-column: auto;
-        }
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 650px) and (max-width: 1200px) {
-  .content {
-    min-width: 40rem;
-    padding: 2rem;
-  }
-}
-
-@media screen and (min-width: 1200px) {
-  form .keypad {
-    display: grid;
-    justify-content: end;
   }
 }
