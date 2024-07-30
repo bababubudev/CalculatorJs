@@ -1,6 +1,5 @@
 .calculation-display {
-  position: relative;
-
+  z-index: -1;
   background-color: var(--col-white, #fff);
   color: var(--col-window-bg);
 
@@ -22,6 +21,7 @@
     }
 
     .interaction {
+      position: relative;
       display: flex;
       gap: 0.5rem;
       overflow: hidden;
@@ -33,6 +33,8 @@
       }
 
       input {
+        z-index: 1;
+        font-family: "FiraSans";
         color: var(--col-window-bg);
         background: none;
         border: none;
@@ -44,6 +46,19 @@
           outline: none;
         }
       }
+    }
+
+    .bracket-preview {
+      position: absolute;
+      color: var(--col-window-bg);
+      border: none;
+      background: none;
+      font-size: 1.5em;
+      font-family: "FiraSans";
+      opacity: 0.5;
+
+      user-select: none;
+      z-index: 0;
     }
   }
 

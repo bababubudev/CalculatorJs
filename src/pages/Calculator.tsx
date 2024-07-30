@@ -17,10 +17,13 @@ function Calculator() {
   const [topDisplay, setTopDisplay] = useState<string>("");
   const [currentCalculation, setCurrentCalculation] = useState<calculation | null>(null);
 
+  const [bracketPreview, setBracketPreview] = useState<string>("");
   const [funcitonPreview, setFunctionPreview] = useState<string[]>([]);
   const [history, setHistory] = useState<calculation[]>([]);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+  console.log(bracketPreview);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -51,21 +54,21 @@ function Calculator() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = e.target.value;
+    const output = calculate(currentValue);
+    const possibleFunctions = suggestMathFunctions(currentValue);
+    const updatedValue = autoCompleteBrackets(currentValue);
 
     setInputValue(currentValue);
     setIsSubmitted(false);
-    const possibleFunctions = suggestMathFunctions(currentValue);
+    setBracketPreview(updatedValue);
 
-    if (possibleFunctions.length > 0) {
-      setFunctionPreview(possibleFunctions.map(func => `${func}(x)`));
-    } else {
-      setFunctionPreview([]);
-    }
+    possibleFunctions.length > 0
+      ? setFunctionPreview(possibleFunctions.map(func => `${func}(x)`))
+      : setFunctionPreview([]);
 
     // const openParens = (currentValue.match(/\(/g) || []).length;
     // const closeParens = (currentValue.match(/\)/g) || []).length;
 
-    const output = calculate(currentValue);
     if (output.result !== "") {
       setTopDisplay(output.result);
     } else {
@@ -76,7 +79,6 @@ function Calculator() {
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    const updatedInput = autoCompleteBrackets(inputValue);
     const output = calculate(inputValue);
     const roundedResult = roundNumbers(Number(output.result))
 
@@ -87,7 +89,7 @@ function Calculator() {
     if (output.result !== "") {
       addToHistory(output);
       setCurrentCalculation(output);
-      setTopDisplay(updatedInput);
+      setTopDisplay(bracketPreview);
       setInputValue(displayResult);
       setIsSubmitted(true);
     }
@@ -140,12 +142,9 @@ function Calculator() {
             {topDisplay}
           </p>
           <div className="interaction">
-            {isSubmitted &&
-              <p
-                className="submit-text"
-              >
-                {roundNumbers(Number(currentCalculation?.result)).requires ? "≈" : "="}
-              </p>
+            {isSubmitted && <p className="submit-text">
+              {roundNumbers(Number(currentCalculation?.result)).requires ? "≈" : "="}
+            </p>
             }
             <input
               type="text"
@@ -155,6 +154,11 @@ function Calculator() {
               onChange={onInputChange}
               autoFocus
             />
+            {!isSubmitted && <div
+              className="bracket-preview"
+            >
+              {bracketPreview}
+            </div>}
           </div>
         </div>
         <button className="submit-btn">=</button>

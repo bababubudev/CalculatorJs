@@ -1,4 +1,4 @@
-import evaluateExpression, { mathFunctions } from "../evaluator";
+import evaluateExpression, { mathFunctions } from "./evaluator";
 
 export type calculation = {
   operation: string;
@@ -36,7 +36,6 @@ export function autoCompleteBrackets(input: string): string {
 
   return result;
 }
-
 
 export function suggestMathFunctions(input: string): string[] {
   const functionMatch = input.match(/([a-z]+)\(?$/i);
