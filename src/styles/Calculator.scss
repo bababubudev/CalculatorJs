@@ -1,17 +1,17 @@
-@use "./components/CalculationForm.scss";
-@use "./components/History.scss";
-@use "./components/Keypad.scss";
+@use "./components/CalculatorIO.scss";
 
 .calculator {
   display: grid;
+  align-self: self-end;
   gap: 0.5rem;
   z-index: 1000;
-  position: relative;
 
-  max-width: max(20vw, 40rem);
-
-  background: var(--col-tertiary);
+  background: var(--col-primary);
   padding: 0.5rem;
+
+  margin-bottom: 3rem;
+  margin-inline: 2rem;
+
   border-radius: 0.5rem;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }

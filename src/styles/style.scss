@@ -3,12 +3,14 @@
 @use "./components/Header.scss";
 
 :root {
-  --col-window-bg: #001f23;
+  --col-window-bg: #1F3333;
 
-  --col-primary: #5b9489;
-  --col-secondary: #007a75;
-  --col-tertiary: #fcbe8f;
-  --col-accent: #ff2845;
+  --col-primary: #B2B59B;
+  --col-secondary: #487B80;
+  --col-tertiary: #bf8935;
+  --col-accent: #c05746;
+
+  --top-view-height: 2rem;
 }
 
 * {
@@ -19,19 +21,15 @@
 
 main {
   display: grid;
-  justify-content: center;
-  align-items: center;
+  justify-content: stretch;
+  align-items: start;
+  grid-template-rows: 10rem 1fr;
+
+  position: relative;
 
   font-family: "FiraSans", monospace;
-  background-color: var(--col-window-bg);
-}
-
-.content {
-  position: relative;
-  min-width: 50rem;
+  background: var(--col-window-bg);
   min-height: 100vh;
-  background: var(--col-primary);
-  padding: 4rem;
 }
 
 .blobs {

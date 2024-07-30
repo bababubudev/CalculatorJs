@@ -1,8 +1,7 @@
-import { FormEvent, useEffect, useState } from "react";
-import History from "../components/History";
+import { FormEvent, useEffect, useRef, useState } from "react";
+// import History from "../components/History";
 import evaluateExpression from "../evaluator";
-import CalculationForm from "../components/CalculationForm";
-import { IoIosArrowDown } from "react-icons/io";
+// import { IoIosArrowDown } from "react-icons/io";
 
 type calculation = {
   operation: string;
@@ -10,10 +9,42 @@ type calculation = {
 }
 
 function Calculator() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const [history, setHistory] = useState<calculation[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [topDisplay, setTopDisplay] = useState<string>("");
   const [historyShown, setHistoryShown] = useState<boolean>(true);
-  let currentResult: calculation;
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+  const calculate = (input: string): calculation => {
+    let output: number = 0;
+
+    try {
+      output = evaluateExpression(input);
+
+      return {
+        operation: input,
+        result: output === undefined ? "" : output.toString()
+      }
+    } catch (error) {
+      return { operation: input, result: (error as Error).message };
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const validKeys = /^[a-zA-Z0-9+\-*/.=]$/;
+      if (validKeys.test(event.key) && inputRef.current) {
+        inputRef.current.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     if (history.length > 0) {
@@ -28,70 +59,91 @@ function Calculator() {
     setHistory(prev => [...prev, element]);
   }
 
-  const removeFromHistory = (index: number) => {
-    setHistory(prev => prev.filter((_, ind) => ind !== index))
-  }
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const currentValue = e.target.value;
+    setInputValue(currentValue);
+    setIsSubmitted(false);
 
-  const clearHistory = () => {
-    setHistory([]);
+    const output = calculate(currentValue);
+    if (output.result !== "") {
+      setTopDisplay(output.result);
+    } else {
+      setTopDisplay("");
+    }
   }
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
-    if (!currentResult) return;
 
-    if (currentResult.result !== "") {
-      addToHistory(currentResult);
+    const output = calculate(inputValue);
+    if (output.result !== "") {
+      addToHistory(output);
+      setTopDisplay(output.operation);
+      setInputValue(output.result);
+      setIsSubmitted(true);
     }
   }
 
-  const calculate = (): calculation => {
-    let output: number = 0;
+  // const toggleHistoryShown = (): void => {
+  //   if (!historyShown) setHistoryShown(prev => !prev);
+  // }
 
-    try {
-      output = evaluateExpression(inputValue);
+  // const removeFromHistory = (index: number) => {
+  //   setHistory(prev => prev.filter((_, ind) => ind !== index))
+  // }
 
-      currentResult = {
-        operation: inputValue,
-        result: output === undefined ? "" : output.toString()
-      }
-
-      return currentResult;
-    } catch (error) {
-      return { operation: inputValue, result: (error as Error).message };
-    }
-  }
-
-  const toggleHistoryShown = (): void => {
-    if (!historyShown) setHistoryShown(prev => !prev);
-  }
+  // const clearHistory = () => {
+  //   setHistory([]);
+  // }
+  //! Fix after styling changes
 
   return (
     <div className="calculator">
-      <CalculationForm
-        inputValue={inputValue}
-        setInput={setInputValue}
-        onSubmit={onCalculationSubmit}
-        history={history}
-        calculation={calculate()}
-      />
-      <div className={`hidables ${historyShown ? "history-shown" : ""} `}>
+      <div
+        className={`hidables ${historyShown ? "history-shown" : ""} `}
+      >
         <div className="history-control">
-          <History
-            history={history}
-            removeFromHistory={removeFromHistory}
-            clearHistory={clearHistory}
-            toggleHistoryShown={toggleHistoryShown}
-          />
-          <button
-            type="button"
-            onClick={() => setHistoryShown(prev => !prev)}
-            className="show-hide-btn"
-          >
-            <IoIosArrowDown />
-          </button>
+          {
+            /* <History
+              history={history}
+              removeFromHistory={removeFromHistory}
+              clearHistory={clearHistory}
+              toggleHistoryShown={toggleHistoryShown}
+            />
+            <button
+              type="button"
+              onClick={() => setHistoryShown(prev => !prev)}
+              className="show-hide-btn"
+            >
+              <IoIosArrowDown />
+            </button> */
+            //! Fix after styling changes
+          }
         </div>
       </div>
+
+      <form
+        className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
+        onSubmit={onCalculationSubmit}
+      >
+        <div className="display">
+          <p className="top-display">
+            {topDisplay}
+          </p>
+          <div className="interaction">
+            {isSubmitted && <p className="submit-text">=</p>}
+            <input
+              type="text"
+              className="bottom-display"
+              ref={inputRef}
+              value={inputValue}
+              onChange={onInputChange}
+              autoFocus
+            />
+          </div>
+        </div>
+        <button className="submit-btn">=</button>
+      </form>
     </div>
   );
 }

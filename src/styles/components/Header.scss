@@ -3,11 +3,12 @@ header {
   justify-content: space-between;
   align-items: center;
   margin-block: 3rem;
-  padding-inline: 1rem;
+  margin-inline: 3rem;
+
   position: relative;
 
   h1 {
-    color: var(--col-tertiary);
+    color: var(--col-primary);
     font-family: "ExtraBold";
     font-size: 2rem;
     margin: 0;
@@ -15,25 +16,24 @@ header {
   }
 
   svg {
-    fill: var(--col-tertiary);
+    fill: var(--col-primary);
     width: 3ch;
     height: 3ch;
     margin: 0;
-    filter: drop-shadow(2px 2px 1px hsla(0, 0%, 0%, 0.25));
     transition: all 0.2s ease-in;
 
     &:hover {
-      animation: rotate-around 0.2s linear forwards;
-      filter: drop-shadow(0px 0px 5px hsla(0, 0%, 0%, 0.25));;
+      animation: rotate-around 0.8s linear infinite forwards;
     }
   }
 }
 
 @keyframes rotate-around {
-  50% {
-    transform: rotate(90deg);
+  0% {
+    transform: rotate(0deg);
   }
+
   100% {
-    transform: rotate(180deg);
+    transform: rotate(360deg);
   }
 }
