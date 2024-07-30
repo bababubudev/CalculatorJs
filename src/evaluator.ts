@@ -8,7 +8,7 @@ export type ComparisonObject = {
   comparator: string
 }
 
-type FunctionKeys = "sin" | "cos" | "tan" |
+export type FunctionKeys = "sin" | "cos" | "tan" |
   "asin" | "acos" | "atan" |
   "sqrt" | "log" | "lg" | "ln" | "abs" | "!";
 
@@ -22,7 +22,7 @@ function factorialize(num: number): number {
   else return (num * factorialize(num - 1));
 }
 
-const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
+export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   sin: Math.sin,
   cos: Math.cos,
   tan: Math.tan,
@@ -38,9 +38,27 @@ const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
 };
 
 function evaluateExpression(input: string): number {
+  input = autoCompleteParentheses(input);
   const tokens: string[] | null = tokenize(input);
   const rpn = shuntingYard(tokens);
   return evaluateRPN(rpn);
+}
+
+function autoCompleteParentheses(input: string): string {
+  let openParenthesesCount = 0;
+  let closeParenthesesCount = 0;
+
+  for (const char of input) {
+    if (char === '(') openParenthesesCount++;
+    if (char === ')') closeParenthesesCount++;
+  }
+
+  while (closeParenthesesCount < openParenthesesCount) {
+    input += ')';
+    closeParenthesesCount++;
+  }
+
+  return input;
 }
 
 function tokenize(input: string): string[] {
@@ -251,7 +269,6 @@ function evaluateRPN(rpn: string[]): number {
     }
   });
 
-  console.log(stack[0])
   return stack[0];
 }
 

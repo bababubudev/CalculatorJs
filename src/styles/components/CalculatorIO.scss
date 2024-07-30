@@ -2,6 +2,8 @@
   position: relative;
 
   background-color: var(--col-white, #fff);
+  color: var(--col-window-bg);
+
   border: 2px solid var(--col-tertiary);
   border-radius: 0.5rem;
   padding-inline: 1em;
@@ -29,6 +31,7 @@
       }
 
       input {
+        color: var(--col-window-bg);
         background: none;
         border: none;
 
