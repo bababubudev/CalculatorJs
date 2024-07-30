@@ -1,51 +1,26 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  type calculation,
+  calculate,
+  roundNumbers,
+  suggestMathFunctions,
+  autoCompleteBrackets,
+} from "../utils/UtilityFuncitons";
 // import History from "../components/History";
-import evaluateExpression, { mathFunctions } from "../evaluator";
 // import { IoIosArrowDown } from "react-icons/io";
 
-type calculation = {
-  operation: string;
-  result: string;
-}
 
 function Calculator() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
-  const [funcitonPreview, setFunctionPreview] = useState<string[]>([]);
   const [currentCalculation, setCurrentCalculation] = useState<calculation | null>(null);
 
+  const [funcitonPreview, setFunctionPreview] = useState<string[]>([]);
   const [history, setHistory] = useState<calculation[]>([]);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-
-  const roundNumbers = (num: number, precision: number = 5) => {
-    const multiplier = Math.pow(10, precision);
-    const roundedNum = Math.round(num * multiplier) / multiplier;
-
-    return {
-      requires: num !== roundedNum,
-      rounded: num.toFixed(precision),
-    };
-  }
-
-  const calculate = (input: string): calculation => {
-    let output: number = 0;
-
-    try {
-      output = evaluateExpression(input);
-
-      const modifiedResult = output === undefined ? "" : output.toString();
-
-      return {
-        operation: input,
-        result: modifiedResult,
-      }
-    } catch (error) {
-      return { operation: input, result: (error as Error).message };
-    }
-  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -76,23 +51,19 @@ function Calculator() {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = e.target.value;
+
     setInputValue(currentValue);
     setIsSubmitted(false);
+    const possibleFunctions = suggestMathFunctions(currentValue);
 
-    const functionMatch = currentValue.match(/([a-z]+)\(?$/i);
-
-    if (functionMatch) {
-      const partialFunciton = functionMatch[1];
-      const possibleFunction = Object.keys(mathFunctions).filter(func => func.startsWith(partialFunciton));
-
-      if (possibleFunction.length > 0) {
-        setFunctionPreview(possibleFunction.map(func => `${func}(x)`));
-      } else {
-        setFunctionPreview([]);
-      }
+    if (possibleFunctions.length > 0) {
+      setFunctionPreview(possibleFunctions.map(func => `${func}(x)`));
     } else {
       setFunctionPreview([]);
     }
+
+    // const openParens = (currentValue.match(/\(/g) || []).length;
+    // const closeParens = (currentValue.match(/\)/g) || []).length;
 
     const output = calculate(currentValue);
     if (output.result !== "") {
@@ -105,6 +76,7 @@ function Calculator() {
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
+    const updatedInput = autoCompleteBrackets(inputValue);
     const output = calculate(inputValue);
     const roundedResult = roundNumbers(Number(output.result))
 
@@ -115,7 +87,7 @@ function Calculator() {
     if (output.result !== "") {
       addToHistory(output);
       setCurrentCalculation(output);
-      setTopDisplay(output.operation);
+      setTopDisplay(updatedInput);
       setInputValue(displayResult);
       setIsSubmitted(true);
     }
@@ -133,8 +105,6 @@ function Calculator() {
   //   setHistory([]);
   // }
   //! Fix after styling changes
-
-  console.log(funcitonPreview);
 
   return (
     <div className="calculator">

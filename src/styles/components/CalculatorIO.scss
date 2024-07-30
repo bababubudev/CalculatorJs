@@ -18,11 +18,13 @@
       padding: 0;
       margin: 0;
       height: var(--top-view-height);
+      font-weight: bold;
     }
 
     .interaction {
       display: flex;
       gap: 0.5rem;
+      overflow: hidden;
 
       p {
         font-family: "Bold";
@@ -34,6 +36,7 @@
         color: var(--col-window-bg);
         background: none;
         border: none;
+        width: 100%;
 
         font-size: 1.5em;
 
