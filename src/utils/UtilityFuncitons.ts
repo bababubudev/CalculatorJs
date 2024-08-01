@@ -37,6 +37,20 @@ export function autoCompleteBrackets(input: string): string {
   return result;
 }
 
+export function concatNoDuplicate(str1: string, str2: string): string {
+  const charsInStr2 = new Set(str2);
+  const filteredStr1 = str1.split("").filter(char => !charsInStr2.has(char)).join("");
+
+  return filteredStr1 + str2;
+}
+
+export function excludeRight(str: string, character: string) {
+  // eslint-disable-next-line no-useless-escape
+  const escapedCharacter = character.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const regex = new RegExp(`^(.*${escapedCharacter})(?=.*[^${escapedCharacter}].*)`);
+  return str.replace(regex, '');
+}
+
 export function suggestMathFunctions(input: string): string[] {
   const functionMatch = input.match(/([a-z]+)\(?$/i);
 

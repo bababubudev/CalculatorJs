@@ -10,17 +10,7 @@ export type ComparisonObject = {
 
 export type FunctionKeys = "sin" | "cos" | "tan" |
   "asin" | "acos" | "atan" |
-  "sqrt" | "log" | "lg" | "ln" | "abs" | "!";
-
-
-function factorialize(num: number): number {
-  if (num === undefined) return 0;
-  if (num < 0) return -1;
-  if (num > 180) return Infinity;
-
-  else if (num === 0) return 1;
-  else return (num * factorialize(num - 1));
-}
+  "sqrt" | "log" | "lg" | "ln" | "abs" | "!" | "factorial";
 
 export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   sin: Math.sin,
@@ -35,7 +25,17 @@ export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   ln: Math.log,
   abs: Math.abs,
   "!": factorialize,
+  factorial: factorialize,
 };
+
+function factorialize(x: number): number {
+  if (x === undefined) return 0;
+  if (x < 0) return -1;
+  if (x > 180) return Infinity;
+
+  else if (x === 0) return 1;
+  else return (x * factorialize(x - 1));
+}
 
 function evaluateExpression(input: string): number {
   input = autoCompleteParentheses(input);

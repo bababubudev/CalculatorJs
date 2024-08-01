@@ -3,7 +3,6 @@
   background-color: var(--col-white, #fff);
   color: var(--col-window-bg);
 
-  border: 2px solid var(--col-tertiary);
   border-radius: 0.5rem;
   padding-inline: 1em;
   padding-block: 0.5em;
@@ -11,6 +10,10 @@
 
   display: grid;
   grid-template-columns: 1fr 5rem;
+
+  &:focus-within {
+    box-shadow: inset 2px 1px 2px hsla(0, 0%, 0%, 0.5);
+  }
 
   .display {
     .top-display {
@@ -53,6 +56,7 @@
       color: var(--col-window-bg);
       border: none;
       background: none;
+
       font-size: 1.5em;
       font-family: "FiraSans";
       opacity: 0.5;
