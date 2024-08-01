@@ -1,3 +1,8 @@
+@use "./PreviewDisplay.scss";
+
+
+$box-shadow-color: hsla(0, 0%, 0%, 0.5);
+
 .calculation-display {
   z-index: -1;
   background-color: var(--col-white, #fff);
@@ -6,7 +11,7 @@
   border-radius: 0.5rem;
   padding-inline: 1em;
   padding-block: 0.5em;
-  box-shadow: 0 5px 3px hsla(0, 0%, 0%, 0.2);
+  box-shadow: 0 5px 3px $box-shadow-color;
 
   display: grid;
   grid-template-columns: 1fr 5rem;

@@ -61,7 +61,6 @@ function Calculator() {
           }
         </div>
       </div>
-
       <CalculatorIO
         addToHistory={addToHistory}
         previousOutput={currentCalculation}
