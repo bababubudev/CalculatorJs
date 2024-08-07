@@ -1,19 +1,19 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
+  type calculationInfo,
   autoCompleteBrackets,
   calculate,
-  calculation,
-  excludeRight,
   roundNumbers,
+  suggestionInfo,
   suggestMathFunctions
 } from "../utils/UtilityFuncitons";
 
 interface CalculatorIOProps {
-  previousOutput: calculation | null;
-  addToHistory: (calculation: calculation) => void;
+  needsRounding: boolean;
+  addToHistory: (info: calculationInfo) => void;
 }
 
-function CalculatorIO({ addToHistory, previousOutput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -21,24 +21,28 @@ function CalculatorIO({ addToHistory, previousOutput }: CalculatorIOProps) {
   const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
 
   const [bracketPreview, setBracketPreview] = useState<string>("");
-  const [functionPreview, setFunctionPreview] = useState<string[]>([]);
+  const [functionPreview, setFunctionPreview] = useState<suggestionInfo>({ attemptString: "", suggestions: [] });
+  const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
+  const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!inputRef.current) return;
 
-      const validKeys = /^[a-zA-Z0-9+\-*/.=]$/;
+      const validOptions = /^[a-zA-Z0-9+\-*/.=]$/;
+      const validKeys = event.key === "Backspace" || validOptions.test(event.key);
       const isControlKey = event.ctrlKey || event.metaKey;
       const isSupportedKeyCombo = isControlKey && (event.key === "c" || event.key === "v" || event.key === "x");
 
-      if ((event.key === "Backspace" || validKeys.test(event.key)) && !isSupportedKeyCombo) {
+      if (validKeys && !isSupportedKeyCombo) {
         inputRef.current.focus();
       }
       else if (event.key === "Escape") {
         inputRef.current.blur();
       }
+
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -47,16 +51,28 @@ function CalculatorIO({ addToHistory, previousOutput }: CalculatorIOProps) {
     };
   }, []);
 
+
+  // !FIX: Only works for cases where function comes right after a bracket
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Tab" && functionPreview.length > 0) {
+    const suggestions = functionPreview.suggestions;
+    const attempt = functionPreview.attemptString;
+
+    if (e.key === "Tab" && suggestions.length > 0) {
       e.preventDefault();
       setInputValue(prev => {
-        const updatedInput = excludeRight(prev, "(");
-        return prev + functionPreview[0].substring(updatedInput.length);
+        const regex = new RegExp(attempt, 'g');
+        return prev.replace(regex, suggestions[selectedPreview])
       });
+
+      setSelectedPreview(0);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedPreview(prev => (prev + 1) % suggestions.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedPreview(prev => (prev - 1 + suggestions.length) % suggestions.length)
     }
   }
-
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = e.target.value;
@@ -64,14 +80,18 @@ function CalculatorIO({ addToHistory, previousOutput }: CalculatorIOProps) {
     const output = calculate(currentValue);
     const possibleFunctions = suggestMathFunctions(currentValue);
 
-    setBracketPreview(updatedValue);
     setInputValue(currentValue);
     setIsInputBlur(false);
     setIsSubmitted(false);
+    setBracketPreview(updatedValue);
+    setSelectedPreview(0);
 
-    possibleFunctions.length > 0
-      ? setFunctionPreview(possibleFunctions.map(func => `${func}(`))
-      : setFunctionPreview([]);
+    const currentAttempt = possibleFunctions.attemptString;
+    const currentSuggestions = possibleFunctions.suggestions.map(func => `${func}(`);
+
+    possibleFunctions.suggestions.length > 0
+      ? setFunctionPreview({ attemptString: currentAttempt, suggestions: currentSuggestions })
+      : setFunctionPreview({ attemptString: "", suggestions: [] });
 
     if (output.result !== "") {
       setTopDisplay(output.result);
@@ -95,24 +115,34 @@ function CalculatorIO({ addToHistory, previousOutput }: CalculatorIOProps) {
       setInputValue(displayResult);
       setIsSubmitted(true);
 
-      addToHistory({ operation: bracketPreview, result: displayResult });
+      addToHistory({
+        operation: bracketPreview,
+        result: displayResult,
+        needsRounding: roundedResult.requires,
+        currentCalculation: output
+      });
     }
   }
 
   return (
     <>
-      {functionPreview.length > 0 &&
-        <ul
-          className={`preview-display ${isInputBlur ? "blurred" : ""}`}
-        >
-          {functionPreview.map((preview, i) =>
-          (
-            <li key={i}>
-              {preview}
-              <span style={{ fontFamily: "Bold" }}>x</span>{")"}
-            </li>
-          ))}
-        </ul>
+      {!hidePreview &&
+        <div className={`preview-display ${isInputBlur ? "blurred" : ""}`}>
+          <p>suggestion</p>
+          <ul className="preview-list">
+            {functionPreview.suggestions.map((preview, index) =>
+            (
+              <li
+                key={index}
+                className={selectedPreview === index ? "selected" : ""}
+                onClick={() => setSelectedPreview(index)}
+              >
+                {preview}
+                <span style={{ fontFamily: "Bold" }}>x</span>{")"}
+              </li>
+            ))}
+          </ul>
+        </div>
       }
       <form
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
@@ -125,7 +155,7 @@ function CalculatorIO({ addToHistory, previousOutput }: CalculatorIOProps) {
           <div className="interaction">
             {isSubmitted
               ? <p className="submit-text">
-                {roundNumbers(Number(previousOutput?.result)).requires ? "≈" : "="}
+                {needsRounding ? "≈" : "="}
               </p>
               : <div className="bracket-preview">
                 {bracketPreview}

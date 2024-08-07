@@ -2,19 +2,47 @@
   background: var(--col-white, #fff);
   box-shadow: inset 2px 1px 2px hsla(0, 0%, 0%, 0.5);
   border-radius: 0.5rem;
+
+  max-width: fit-content;
+  display: grid;
+
+  p {
+    color: var(--col-secondary);
+    font-size: 0.7rem;
+    padding-inline: 0.5rem;
+    padding-block: 0.1rem;
+  }
+
+  &.blurred {
+    box-shadow: 0 5px 3px hsla(0, 0%, 0%, 0.5);
+  }
+}
+
+.preview-list {
+  list-style-type: none;
   padding-inline: 1.2em;
   padding-block: 0.7em;
-  max-width: fit-content;
-  list-style-type: none;
+
+  display: grid;
+  gap: 1ch;
 
   li {
     color: var(--col-window-bg);
     font-size: 1.25rem;
 
     font-family: "Light";
-  }
+    cursor: pointer;
 
-  &.blurred {
-    box-shadow: 0 5px 3px hsla(0, 0%, 0%, 0.5);
+    &.selected {
+      color: var(--col-secondary);
+      position: relative;
+
+      &::after {
+        content: "_";
+        position: absolute;
+        top: 0.2rem;
+        left: 33%;
+      }
+    }
   }
 }

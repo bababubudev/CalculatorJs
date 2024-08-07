@@ -5,6 +5,17 @@ export type calculation = {
   result: string;
 }
 
+export type calculationInfo = calculation & {
+  needsRounding?: boolean,
+  currentCalculation?: calculation,
+  previousCalculation?: calculation
+}
+
+export type suggestionInfo = {
+  attemptString: string,
+  suggestions: string[],
+}
+
 export function autoCompleteBrackets(input: string): string {
   const stack: { index: number, char: string }[] = [];
   let result = '';
@@ -45,21 +56,27 @@ export function concatNoDuplicate(str1: string, str2: string): string {
 }
 
 export function excludeRight(str: string, character: string) {
-  // eslint-disable-next-line no-useless-escape
-  const escapedCharacter = character.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  const regex = new RegExp(`^(.*${escapedCharacter})(?=.*[^${escapedCharacter}].*)`);
-  return str.replace(regex, '');
+  const lastIndex = str.lastIndexOf(character);
+  return lastIndex === -1 ? str : str.substring(0, lastIndex + 1);
 }
 
-export function suggestMathFunctions(input: string): string[] {
+export function suggestMathFunctions(input: string): suggestionInfo {
   const functionMatch = input.match(/([a-z]+)\(?$/i);
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
-    return Object.keys(mathFunctions).filter(func => func.startsWith(partialFunciton));
+
+    console.log(partialFunciton);
+    return {
+      attemptString: partialFunciton,
+      suggestions: Object.keys(mathFunctions).filter(func => func.startsWith(partialFunciton)),
+    }
   }
   else {
-    return [];
+    return {
+      attemptString: "",
+      suggestions: [],
+    };
   }
 }
 

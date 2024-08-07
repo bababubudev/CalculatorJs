@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import type { calculation } from "../utils/UtilityFuncitons";
+import type { calculationInfo } from "../utils/UtilityFuncitons";
 import CalculatorIO from "../components/CalculatorIO";
 // import History from "../components/History";
 // import { IoIosArrowDown } from "react-icons/io";
 
 
 function Calculator() {
-  const [history, setHistory] = useState<calculation[]>([]);
+  const [history, setHistory] = useState<calculationInfo[]>([]);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
-  const [currentCalculation, setCurrentCalculation] = useState<calculation | null>(null);
 
   useEffect(() => {
     if (history.length > 0) {
@@ -19,9 +18,8 @@ function Calculator() {
     setHistoryShown(false);
   }, [history]);
 
-  const addToHistory = (element: calculation) => {
-    setCurrentCalculation(element);
-    setHistory(prev => [...prev, element]);
+  const addToHistory = (info: calculationInfo) => {
+    setHistory(prev => [...prev, info]);
   }
 
   // const toggleHistoryShown = (): void => {
@@ -62,8 +60,8 @@ function Calculator() {
         </div>
       </div>
       <CalculatorIO
+        needsRounding={history[history.length - 1]?.needsRounding ?? false}
         addToHistory={addToHistory}
-        previousOutput={currentCalculation}
       />
     </div>
   );
