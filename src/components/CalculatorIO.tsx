@@ -25,7 +25,9 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-  const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0;
+  const hidePreview = isSubmitted
+    || functionPreview?.suggestions.length <= 0
+    || functionPreview?.suggestionUsed;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -34,7 +36,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       const validOptions = /^[a-zA-Z0-9+\-*/.=]$/;
       const validKeys = event.key === "Backspace" || validOptions.test(event.key);
       const isControlKey = event.ctrlKey || event.metaKey;
-      const isSupportedKeyCombo = isControlKey && (event.key === "c" || event.key === "v" || event.key === "x");
+      const isSupportedKeyCombo = isControlKey && ["c", "v", "x"].includes(event.key);
 
       if (validKeys && !isSupportedKeyCombo) {
         inputRef.current.focus();
@@ -42,28 +44,31 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       else if (event.key === "Escape") {
         inputRef.current.blur();
       }
-
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-
-  // !FIX: Only works for cases where function comes right after a bracket
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
 
+    setInputValue(prev => {
+      const regex = new RegExp(attempt, 'g');
+      return prev.replace(regex, suggestions[index]);
+    });
+
+    functionPreview.suggestionUsed = true;
+    setSelectedPreview(index);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const suggestions = functionPreview.suggestions;
+
     if (e.key === "Tab" && suggestions.length > 0) {
       e.preventDefault();
-      setInputValue(prev => {
-        const regex = new RegExp(attempt, 'g');
-        return prev.replace(regex, suggestions[selectedPreview])
-      });
-
+      autoFillPreview(selectedPreview);
       setSelectedPreview(0);
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -72,7 +77,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       e.preventDefault();
       setSelectedPreview(prev => (prev - 1 + suggestions.length) % suggestions.length)
     }
-  }
+  };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = e.target.value;
@@ -93,11 +98,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       ? setFunctionPreview({ attemptString: currentAttempt, suggestions: currentSuggestions })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
-    if (output.result !== "") {
-      setTopDisplay(output.result);
-    } else {
-      setTopDisplay("");
-    }
+    setTopDisplay(output.result || "")
   }
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
@@ -135,7 +136,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
               <li
                 key={index}
                 className={selectedPreview === index ? "selected" : ""}
-                onClick={() => setSelectedPreview(index)}
+                onClick={() => autoFillPreview(index)}
               >
                 {preview}
                 <span style={{ fontFamily: "Bold" }}>x</span>{")"}

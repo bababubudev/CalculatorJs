@@ -14,6 +14,7 @@ export type calculationInfo = calculation & {
 export type suggestionInfo = {
   attemptString: string,
   suggestions: string[],
+  suggestionUsed?: boolean,
 }
 
 export function autoCompleteBrackets(input: string): string {
@@ -65,12 +66,11 @@ export function suggestMathFunctions(input: string): suggestionInfo {
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
-
-    console.log(partialFunciton);
     return {
       attemptString: partialFunciton,
       suggestions: Object.keys(mathFunctions).filter(func => func.startsWith(partialFunciton)),
-    }
+      suggestionUsed: false,
+    };
   }
   else {
     return {

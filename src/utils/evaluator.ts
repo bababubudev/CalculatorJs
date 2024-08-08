@@ -10,7 +10,8 @@ export type ComparisonObject = {
 
 export type FunctionKeys = "sin" | "cos" | "tan" |
   "asin" | "acos" | "atan" |
-  "sqrt" | "log" | "lg" | "ln" | "abs" | "!" | "factorial";
+  "sqrt" | "log" | "lg" | "ln" |
+  "abs" | "!" | "factorial";
 
 export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   sin: Math.sin,
