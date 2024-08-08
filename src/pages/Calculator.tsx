@@ -40,24 +40,21 @@ function Calculator() {
       <div
         className={`hidables ${historyShown ? "history-shown" : ""} `}
       >
-        <div className="history-control">
-          {
-            /* <History
-              history={history}
-              removeFromHistory={removeFromHistory}
-              clearHistory={clearHistory}
-              toggleHistoryShown={toggleHistoryShown}
-            />
-            <button
-              type="button"
-              onClick={() => setHistoryShown(prev => !prev)}
-              className="show-hide-btn"
-            >
-              <IoIosArrowDown />
-            </button> */
-            //! Fix after styling changes
-          }
-        </div>
+        {/* <div className="history-control">
+          <History
+            history={history}
+            removeFromHistory={removeFromHistory}
+            clearHistory={clearHistory}
+            toggleHistoryShown={toggleHistoryShown}
+          />
+          <button
+            type="button"
+            onClick={() => setHistoryShown(prev => !prev)}
+            className="show-hide-btn"
+          >
+            <IoIosArrowDown />
+          </button>
+        </div> */}
       </div>
       <CalculatorIO
         needsRounding={history[history.length - 1]?.needsRounding ?? false}

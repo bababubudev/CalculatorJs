@@ -64,7 +64,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
 
         // ? There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
-        onInputChange(currentEvent);
+        onInputChange(currentEvent, true);
 
         return currentChanges;
       }
@@ -72,7 +72,6 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       return prev;
     });
 
-    functionPreview.suggestionUsed = true;
     setSelectedPreview(index);
   };
 
@@ -92,7 +91,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
     }
   };
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
     const updatedValue = autoCompleteBrackets(currentValue);
     const output = calculate(currentValue);
@@ -108,7 +107,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
     const currentSuggestions = possibleFunctions.suggestions.map(func => `${func}(`);
 
     possibleFunctions.suggestions.length > 0
-      ? setFunctionPreview({ attemptString: currentAttempt, suggestions: currentSuggestions })
+      ? setFunctionPreview({ attemptString: currentAttempt, suggestions: currentSuggestions, suggestionUsed: usedCall })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
     setTopDisplay(output.result || "")

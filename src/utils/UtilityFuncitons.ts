@@ -76,6 +76,7 @@ export function suggestMathFunctions(input: string): suggestionInfo {
     return {
       attemptString: "",
       suggestions: [],
+      suggestionUsed: false,
     };
   }
 }
