@@ -55,8 +55,16 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
     const attempt = functionPreview.attemptString;
 
     setInputValue(prev => {
-      const regex = new RegExp(attempt, 'g');
-      return prev.replace(regex, suggestions[index]);
+      const lastIndex = prev.lastIndexOf(attempt);
+
+      if (lastIndex !== -1) {
+        const before = prev.slice(0, lastIndex);
+        const after = prev.slice(lastIndex + attempt.length);
+
+        return before + suggestions[index] + after;
+      }
+
+      return prev;
     });
 
     functionPreview.suggestionUsed = true;
