@@ -60,8 +60,13 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       if (lastIndex !== -1) {
         const before = prev.slice(0, lastIndex);
         const after = prev.slice(lastIndex + attempt.length);
+        const currentChanges = before + suggestions[index] + after;
 
-        return before + suggestions[index] + after;
+        // ? There must be a better way of updating this
+        const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
+        onInputChange(currentEvent);
+
+        return currentChanges;
       }
 
       return prev;
