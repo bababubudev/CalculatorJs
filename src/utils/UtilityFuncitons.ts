@@ -8,7 +8,6 @@ export type calculation = {
 export type calculationInfo = calculation & {
   needsRounding?: boolean,
   currentCalculation?: calculation,
-  previousCalculation?: calculation
 }
 
 export type suggestionInfo = {
@@ -18,42 +17,29 @@ export type suggestionInfo = {
 }
 
 export function autoCompleteBrackets(input: string): string {
-  const stack: { index: number, char: string }[] = [];
-  let result = '';
+  let openBrackets = 0;
+  let result = "";
 
-  let i = 0;
-
-  while (i < input.length) {
-    const char = input[i];
-
-    if (char === '(') {
-      stack.push({ index: i, char: '(' });
-      result += '(';
-    } else if (char === ')') {
-      if (stack.length > 0) {
-        stack.pop();
-      }
-      result += ')';
-    } else {
+  for (const char of input) {
+    if (char === "(") {
+      openBrackets++;
       result += char;
     }
+    else if (char === ")") {
+      if (openBrackets > 0) {
+        openBrackets--;
+      }
 
-    i++;
+      result += char;
+    }
+    else {
+      result += char;
+    }
   }
 
-  while (stack.length > 0) {
-    result += ')';
-    stack.pop();
-  }
+  result += ")".repeat(openBrackets);
 
   return result;
-}
-
-export function concatNoDuplicate(str1: string, str2: string): string {
-  const charsInStr2 = new Set(str2);
-  const filteredStr1 = str1.split("").filter(char => !charsInStr2.has(char)).join("");
-
-  return filteredStr1 + str2;
 }
 
 export function excludeRight(str: string, character: string) {
@@ -81,7 +67,7 @@ export function suggestMathFunctions(input: string): suggestionInfo {
   }
 }
 
-export const roundNumbers = (num: number, precision: number = 5) => {
+export function roundNumbers(num: number, precision: number = 5) {
   const multiplier = Math.pow(10, precision);
   const roundedNum = Math.round(num * multiplier) / multiplier;
 
@@ -89,9 +75,9 @@ export const roundNumbers = (num: number, precision: number = 5) => {
     requires: num !== roundedNum,
     rounded: num.toFixed(precision),
   };
-};
+}
 
-export const calculate = (input: string): calculation => {
+export function calculate(input: string): calculation {
   let output: number = 0;
 
   try {
@@ -106,4 +92,4 @@ export const calculate = (input: string): calculation => {
   } catch (error) {
     return { operation: input, result: (error as Error).message };
   }
-};
+}

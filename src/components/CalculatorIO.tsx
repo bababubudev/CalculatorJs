@@ -93,6 +93,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
+
     const updatedValue = autoCompleteBrackets(currentValue);
     const output = calculate(currentValue);
     const possibleFunctions = suggestMathFunctions(currentValue);
