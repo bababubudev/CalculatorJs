@@ -73,6 +73,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
     });
 
     setSelectedPreview(index);
+    setIsInputBlur(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -149,6 +150,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
               <li
                 key={index}
                 className={selectedPreview === index ? "selected" : ""}
+                onMouseDown={e => { e.preventDefault(); setSelectedPreview(index); }}
                 onClick={() => autoFillPreview(index)}
               >
                 {preview}
@@ -163,9 +165,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
         onSubmit={onCalculationSubmit}
       >
         <div className="display">
-          <p className="top-display">
-            {topDisplay}
-          </p>
+          <p className="top-display" onMouseDown={e => e.preventDefault()}>{topDisplay}</p>
           <div className="interaction">
             {isSubmitted
               ? <p className="submit-text">
