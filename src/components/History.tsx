@@ -20,7 +20,7 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
     >
       <ul>
         {history.map((elem, i) => (
-          <li key={elem?.key ?? i}>
+          <li key={elem?.key ?? i} onClick={() => onHistoryClicked(i)}>
             <div className="history-part">
               <p className="operation">{elem.operation}</p>
               <span>{elem.needsRounding ? "≈" : "="}</span>
