@@ -54,6 +54,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
 
+    setSelectedPreview(index);
     setInputValue(prev => {
       const lastIndex = prev.lastIndexOf(attempt);
 
@@ -72,7 +73,6 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       return prev;
     });
 
-    setSelectedPreview(index);
     setIsInputBlur(false);
   };
 
@@ -144,28 +144,34 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       {!hidePreview &&
         <div className={`preview-display ${isInputBlur ? "blurred" : ""}`}>
           <p>suggestion</p>
-          <ul className="preview-list">
+          <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
             {functionPreview.suggestions.map((preview, index) =>
             (
               <li
                 key={index}
                 className={selectedPreview === index ? "selected" : ""}
-                onMouseDown={e => { e.preventDefault(); setSelectedPreview(index); }}
-                onClick={() => autoFillPreview(index)}
+                onPointerDown={() => { setSelectedPreview(index) }}
+                onClick={() => { autoFillPreview(index); }}
               >
                 {preview}
                 <span style={{ fontFamily: "Bold" }}>x</span>{")"}
               </li>
             ))}
           </ul>
-        </div>
+        </div >
       }
       <form
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
+        onPointerDown={() => inputRef.current?.focus()}
       >
         <div className="display">
-          <p className="top-display" onMouseDown={e => e.preventDefault()}>{topDisplay}</p>
+          <p
+            className="top-display"
+            onMouseDown={e => e.preventDefault()}
+          >
+            {topDisplay}
+          </p>
           <div className="interaction">
             {isSubmitted
               ? <p className="submit-text">

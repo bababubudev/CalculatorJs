@@ -1,0 +1,81 @@
+@use "./History.scss";
+
+.hidables {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+
+  .history-control {
+    overflow-y: scroll;
+    max-height: 50vw;
+
+    background: var(--col-primary);
+    border-radius: 0.5rem 0.5rem 0 0;
+    -webkit-transition: height 0.5s ease;
+    transition: height 0.5s ease;
+  }
+
+  .show-hide-btn {
+    display: flex;
+    background: var(--col-primary);
+    border-radius: 0 0 0.3rem 0.3rem;
+    justify-content: center;
+
+    padding-inline: 0.5rem;
+
+    button {
+      border: none;
+      border-radius: 0.5rem;
+
+      background: var(--col-secondary-faded);
+      padding: 0rem 3rem;
+      margin-bottom: 0.4rem;
+
+      svg {
+        fill: var(--col-window-bg);
+        width: 3ch;
+        height: 3ch;
+
+        transform: rotateZ(180deg);
+        transition: transform 0.1s ease;
+      }
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 0.3rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--col-tertiary);
+    border-radius: 0.5ch;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--col-window-bg);
+  }
+}
+
+.hidables.hidden {
+  .history-control {
+    height: 0.4rem;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
+.hidables.shown {
+  .show-hide-btn svg {
+    transform: rotateZ(0deg);
+  }
+
+  .history-control {
+    height: 100%;
+  }
+}

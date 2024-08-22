@@ -1,0 +1,64 @@
+.history-div {
+  display: grid;
+  min-height: 5rem;
+
+  ul {
+    display: grid;
+    list-style-type: none;
+    gap: 0.5rem;
+    margin: 1rem;
+
+    li {
+      display: grid;
+      justify-content: center;
+      grid-template-columns: 1fr 5rem;
+      gap: 1rem;
+
+      background: var(--col-white-faded);
+      border-radius: 0.5rem;
+      box-shadow: 0 0 1px var(--std-col-box-shadow);
+
+      padding: 0.5rem;
+
+      .history-part {
+        display: grid;
+        grid-template-columns: 1fr 1rem 1fr;
+        align-items: center;
+
+        .operation {
+          font-weight: bold;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        span {
+          text-align: center;
+        }
+
+        .result {
+          font-family: "Light";
+          text-align: center;
+          font-size: 1.5rem;
+        }
+      }
+
+      .detail {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5em;
+
+        font-family: "ExtraLight";
+
+        .copy-btn {
+          background: none;
+          border: none;
+
+          svg {
+            color: var(--col-secondary);
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,23 +1,20 @@
 @use "./PreviewDisplay.scss";
 
 
-$box-shadow-color: hsla(0, 0%, 0%, 0.5);
-
 .calculation-display {
   z-index: -1;
   color: var(--col-window-bg);
-  background: rgba(255, 255, 255, 0.5);
-
+  background: var(--col-white-faded);
   border-radius: 0.5rem;
   padding-inline: 1em;
   padding-block: 0.5em;
-  box-shadow: 0 5px 3px $box-shadow-color;
+  box-shadow: 0 5px 3px var(--std-col-box-shadow);
 
   display: grid;
   grid-template-columns: 1fr 5rem;
 
   &:focus-within {
-    box-shadow: inset 2px 1px 2px hsla(0, 0%, 0%, 0.5);
+    box-shadow: inset 2px 1px 2px var(--std-col-box-shadow);
     background-color: var(--col-white, white);
   }
 

@@ -1,12 +1,8 @@
 import { IoCopyOutline } from "react-icons/io5";
-
-type history = {
-  operation: string;
-  result: string;
-}
+import type { calculationInfo } from "../utils/UtilityFuncitons";
 
 interface HistoryProp {
-  history: history[];
+  history: calculationInfo[];
   toggleHistoryShown: () => void;
   removeFromHistory: (index: number) => void;
   clearHistory: () => void;
@@ -24,17 +20,14 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
     >
       <ul>
         {history.map((elem, i) => (
-          <li key={i}>
-            <div className="history-part" onClick={() => onHistoryClicked(i)}>
-              <p className="operation" style={{ letterSpacing: "0.2rem" }}>
-                {elem.operation}
-              </p>
-              <p className="result">
-                {elem.result}
-              </p>
+          <li key={elem?.key ?? i}>
+            <div className="history-part">
+              <p className="operation">{elem.operation}</p>
+              <span>{elem.needsRounding ? "≈" : "="}</span>
+              <p className="result">{elem.result}</p>
             </div>
             <div className="detail">
-              <span className="index">({i + 1})</span>
+              <span className="index">({history.length - i})</span>
               <button className="copy-btn">
                 <IoCopyOutline className="copy-icon" />
               </button>

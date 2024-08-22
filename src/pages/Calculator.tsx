@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { calculationInfo } from "../utils/UtilityFuncitons";
 import CalculatorIO from "../components/CalculatorIO";
-// import History from "../components/History";
-// import { IoIosArrowDown } from "react-icons/io";
+import History from "../components/History";
+import { IoIosArrowDown } from "react-icons/io";
 
 
 function Calculator() {
@@ -19,42 +19,44 @@ function Calculator() {
   }, [history]);
 
   const addToHistory = (info: calculationInfo) => {
+    info.key = history.length;
     setHistory(prev => [...prev, info]);
   }
 
-  // const toggleHistoryShown = (): void => {
-  //   if (!historyShown) setHistoryShown(prev => !prev);
-  // }
+  const toggleHistoryShown = (): void => {
+    if (!historyShown) setHistoryShown(prev => !prev);
+  }
 
-  // const removeFromHistory = (index: number) => {
-  //   setHistory(prev => prev.filter((_, ind) => ind !== index))
-  // }
+  const removeFromHistory = (index: number) => {
+    setHistory(prev => prev.filter((_, ind) => ind !== index))
+  }
 
-  // const clearHistory = () => {
-  //   setHistory([]);
-  // }
+  const clearHistory = () => {
+    setHistory([]);
+  }
   //! Fix after styling changes
 
   return (
     <div className="calculator">
       <div
-        className={`hidables ${historyShown ? "history-shown" : ""} `}
+        className={`hidables ${historyShown ? "shown" : "hidden"}`}
       >
-        {/* <div className="history-control">
+        <div className="history-control">
           <History
             history={history}
             removeFromHistory={removeFromHistory}
             clearHistory={clearHistory}
             toggleHistoryShown={toggleHistoryShown}
           />
+        </div>
+        <div className="show-hide-btn">
           <button
             type="button"
             onClick={() => setHistoryShown(prev => !prev)}
-            className="show-hide-btn"
           >
             <IoIosArrowDown />
           </button>
-        </div> */}
+        </div>
       </div>
       <CalculatorIO
         needsRounding={history[history.length - 1]?.needsRounding ?? false}
