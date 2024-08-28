@@ -1,49 +1,81 @@
 @use "./History.scss";
 
+$gutter-padding: 0.3rem;
+
 .hidables {
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
+  position: absolute;
+  bottom: 5.5rem;
+  right: 0;
+  width: 60vw;
+  z-index: -1;
+
+  display: grid;
+  grid-template-columns: 1fr 3rem;
+  gap: 1rem;
 
   .history-control {
     overflow-y: scroll;
-    max-height: 50vw;
+    padding-left: $gutter-padding;
 
-    background: var(--col-primary);
-    border-radius: 0.5rem 0.5rem 0 0;
-    -webkit-transition: height 0.5s ease;
-    transition: height 0.5s ease;
+    background: var(--col-white-faded);
+    border-radius: 1.5rem;
+    -webkit-transition: max-height 0.5s ease, opacity 0.5s ease;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    height: auto;
+    width: auto;
+
+    .no-history {
+      min-height: 2.5rem;
+      text-align: center;
+
+      display: grid;
+      align-items: center;
+
+      text-transform: uppercase;
+      font-family: "ExtraLight";
+      font-size: 1.2rem;
+      color: var(--col-window-bg);
+    }
   }
 
   .show-hide-btn {
-    display: flex;
-    background: var(--col-primary);
-    border-radius: 0 0 0.3rem 0.3rem;
-    justify-content: center;
-
+    display: grid;
+    justify-content: end;
     padding-inline: 0.5rem;
+    position: relative;
 
     button {
-      border: none;
-      border-radius: 0.5rem;
+      position: absolute;
+      bottom: 0;
+      right: 0.5rem;
 
-      background: var(--col-secondary-faded);
-      padding: 0rem 3rem;
-      margin-bottom: 0.4rem;
+      display: grid;
+      border: none;
+      aspect-ratio: 1/1;
+      border-radius: 100%;
+
+      background: var(--col-tertiary);
+      padding: 0.5rem;
+      transition: transform 0.1s ease-in-out;
 
       svg {
         fill: var(--col-window-bg);
         width: 3ch;
         height: 3ch;
+        color: var(--col-window-bg);
+        stroke-width: 0.5;
+      }
 
-        transform: rotateZ(180deg);
-        transition: transform 0.1s ease;
+      .outer-circle {
+        transform-origin: center;
+        transform: rotateZ(360deg);
+        transition: transform 0.5s ease-in-out;
       }
     }
   }
 
   ::-webkit-scrollbar {
-    width: 0.3rem;
+    width: $gutter-padding;
   }
 
   ::-webkit-scrollbar-track {
@@ -60,22 +92,51 @@
   }
 }
 
-.hidables.hidden {
+.hidables.shown {
+  .show-hide-btn {
+    button {
+      box-shadow: 3px 3px 3px hsla(0, 0%, 0%, 0.2);
+
+      svg {
+        color: var(--col-white);
+        fill: var(--col-white);
+
+        .outer-circle {
+          transform: rotateZ(0deg);
+        }
+      }
+    }
+
+  }
+
   .history-control {
-    height: 0.4rem;
+    max-height: 50vh;
+    opacity: 1;
+
+    ul {
+      transition: opacity 0.3s ease-in;
+      opacity: 1;
+    }
   }
 
   ::-webkit-scrollbar {
-    width: 0;
+    display: block;
   }
 }
 
-.hidables.shown {
-  .show-hide-btn svg {
-    transform: rotateZ(0deg);
+.hidables.hidden {
+  .history-control {
+    max-height: 1rem;
+    align-self: end;
+    opacity: 0;
+
+    ul {
+      transition: opacity 0.5s ease-out;
+      opacity: 0;
+    }
   }
 
-  .history-control {
-    height: 100%;
+  ::-webkit-scrollbar-thumb {
+    display: none;
   }
 }

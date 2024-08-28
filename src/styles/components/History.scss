@@ -1,6 +1,7 @@
 .history-div {
   display: grid;
   min-height: 5rem;
+  overflow: hidden;
 
   ul {
     display: grid;
@@ -8,17 +9,40 @@
     gap: 0.5rem;
     margin: 1rem;
 
+    .fade-enter {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    .fade-enter-active {
+      opacity: 1;
+      transform: translateX(0);
+      transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
+    }
+
+    .fade-exit {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .fade-exit-active {
+      transform: translateX(-100%);
+      opacity: 0;
+      transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
+    }
+
     li {
+      position: relative;
       display: grid;
       justify-content: center;
-      grid-template-columns: 1fr 5rem;
+      grid-template-columns: 1fr 2rem;
       gap: 1rem;
 
       background: var(--col-white-faded);
       border-radius: 0.5rem;
       box-shadow: 0 0 1px var(--std-col-box-shadow);
 
-      padding: 0.5rem;
+      padding: 0.5rem 1.5rem;
 
       .history-part {
         display: grid;
@@ -27,16 +51,17 @@
 
         .operation {
           font-weight: bold;
-          overflow: hidden;
           text-overflow: ellipsis;
         }
 
         span {
+          font-size: 1.2rem;
           text-align: center;
+          font-family: "ExtraBold";
         }
 
         .result {
-          font-family: "Light";
+          font-family: "ExtraBold";
           text-align: center;
           font-size: 1.5rem;
         }
@@ -46,17 +71,34 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5em;
 
         font-family: "ExtraLight";
 
-        .copy-btn {
+        .del-btn {
+          align-self: center;
+
           background: none;
           border: none;
 
           svg {
-            color: var(--col-secondary);
+            color: var(--col-accent);
+            width: 1.2rem;
+            height: 1.2rem;
           }
+        }
+
+        .index {
+          position: absolute;
+          right: 0.3rem;
+          top: 0;
+
+          font-size: 0.8rem;
+          font-family: "Bold";
+
+          background: var(--col-tertiary);
+          padding: 0.1rem;
+
+          border-radius: 0 0 .2rem .2rem;
         }
       }
     }

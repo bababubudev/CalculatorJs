@@ -56,10 +56,13 @@
       position: relative;
 
       &::after {
-        content: "_";
+        content: "\203A";
         position: absolute;
-        top: 0.2rem;
-        left: 33%;
+        top: 0;
+        bottom: 0;
+        left: -1rem;
+
+        font-family: "Bold";
       }
     }
 
