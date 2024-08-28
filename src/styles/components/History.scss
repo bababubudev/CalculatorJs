@@ -9,23 +9,23 @@
     gap: 0.5rem;
     margin: 1rem;
 
-    .fade-enter {
+    .item-enter {
       opacity: 0;
       transform: translateX(100%);
     }
 
-    .fade-enter-active {
+    .item-enter-active {
       opacity: 1;
       transform: translateX(0);
       transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
     }
 
-    .fade-exit {
+    .item-exit {
       transform: translateX(0);
       opacity: 1;
     }
 
-    .fade-exit-active {
+    .item-exit-active {
       transform: translateX(-100%);
       opacity: 0;
       transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;

@@ -6,6 +6,7 @@ export type calculation = {
 }
 
 export type calculationInfo = calculation & {
+  key: string,
   needsRounding?: boolean,
   currentCalculation?: calculation,
 }

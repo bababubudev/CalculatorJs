@@ -25,8 +25,9 @@ function Calculator() {
     if (!historyShown) setHistoryShown(prev => !prev);
   }
 
-  const removeFromHistory = (index: number) => {
-    setHistory(prev => prev.filter((_, ind) => ind !== index))
+  const removeFromHistory = (key: string) => {
+    console.log("Called!" + history.find(elem => elem.key === key)?.result);
+    setHistory(prev => prev.filter(elem => elem.key !== key));
   }
 
   const clearHistory = () => {

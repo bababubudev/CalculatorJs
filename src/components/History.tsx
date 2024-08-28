@@ -1,54 +1,99 @@
 import { IoTrashBinOutline } from "react-icons/io5";
 import type { calculationInfo } from "../utils/UtilityFuncitons";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import React, { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface HistoryProp {
   history: calculationInfo[];
   toggleHistoryShown: () => void;
-  removeFromHistory: (index: number) => void;
+  removeFromHistory: (key: string) => void;
   clearHistory: () => void;
 }
 
 function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp) {
-  const nodeRefs = useRef<(React.RefObject<HTMLLIElement> | null)[]>([]);
+  const [transitionItems, setTransitionItems] = useState<calculationInfo[]>(history);
+  const historyItemRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
 
-  const onHistoryClicked = (index: number): void => {
-    removeFromHistory(index);
-  }
+  const onHistoryClicked = useCallback((key: string) => {
+    const element = historyItemRefs.current.get(key);
+    if (element) {
+      element.classList.add("item-exit");
+      requestAnimationFrame(() => {
+        element.classList.add("item-exit-active");
+        setTimeout(() => {
+          setTransitionItems(prevItems => prevItems.filter(item => item.key !== key));
+          removeFromHistory(key);
+        }, 300);
+      });
+    }
+  }, [removeFromHistory]);
+
+  const handleEnterAnim = useCallback((key: string) => {
+    const element = historyItemRefs.current.get(key);
+    if (element) {
+      element.classList.add("item-enter");
+      requestAnimationFrame(() => {
+        element.classList.add("item-enter-active");
+      });
+    }
+  }, []);
+
+  //! FIXME: What the fuck is this code?
+  useEffect(() => {
+    //* INFO: IF MORE ITEMS THAN IN TRANSITION, ADD IT
+    const newItems = history.filter(
+      (item) => !transitionItems.some((transItem) => transItem.key === item.key)
+    );
+
+    if (newItems.length > 0) {
+      setTransitionItems(prevItems => [...prevItems, ...newItems]);
+    }
+
+    transitionItems.forEach(item => {
+      //* INFO: IF HISTORY IS OUT OF SYNC, SYNC
+      if (!history.some(hItem => hItem.key === item.key)) {
+        const element = historyItemRefs.current.get(item.key);
+        if (element) {
+          element.classList.add("item-exit");
+          requestAnimationFrame(() => {
+            element.classList.add("item-exit-active");
+            setTimeout(() => {
+              setTransitionItems(prevItems => prevItems.filter(tranItem => tranItem.key !== item.key));
+              removeFromHistory(item.key);
+            }, 300);
+          });
+        }
+      }
+      else {
+        handleEnterAnim(item.key);
+      }
+    });
+
+  }, [history, transitionItems, handleEnterAnim, removeFromHistory]);
 
   return (
     <section className="history-div" onClick={toggleHistoryShown}>
-      <TransitionGroup component="ul">
-        {history.map((elem, i) => {
-          if (!nodeRefs.current[i]) {
-            nodeRefs.current[i] = React.createRef<HTMLLIElement>();
-          }
-
-          return (
-            <CSSTransition
-              key={i}
-              timeout={500}
-              classNames="fade"
-              nodeRef={nodeRefs.current[i]}
-            >
-              <li ref={nodeRefs.current[i]}>
-                <div className="history-part">
-                  <p className="operation">{elem.operation}</p>
-                  <span>{elem.needsRounding ? "≈" : "="}</span>
-                  <p className="result">{elem.result}</p>
-                </div>
-                <div className="detail">
-                  <button className="del-btn" onClick={() => onHistoryClicked(i)}>
-                    <IoTrashBinOutline className="del-icon" />
-                  </button>
-                  <span className="index">{i}</span>
-                </div>
-              </li>
-            </CSSTransition>
-          );
-        })}
-      </TransitionGroup>
+      <ul>
+        {transitionItems.map(elem => (
+          <li
+            key={elem.key}
+            ref={el => historyItemRefs.current.set(elem.key, el)}
+          >
+            <div className="history-part">
+              <p className="operation">{elem.operation}</p>
+              <span>{elem.needsRounding ? "≈" : "="}</span>
+              <p className="result">{elem.result}</p>
+            </div>
+            <div className="detail">
+              <button className="del-btn" onClick={() => onHistoryClicked(elem.key)}>
+                <IoTrashBinOutline className="del-icon" />
+              </button>
+              <span className="index">
+                {(history.length - transitionItems.findIndex(item => item.key === elem.key))}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

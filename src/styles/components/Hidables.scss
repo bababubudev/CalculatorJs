@@ -96,6 +96,9 @@ $gutter-padding: 0.3rem;
   .show-hide-btn {
     button {
       box-shadow: 3px 3px 3px hsla(0, 0%, 0%, 0.2);
+      animation-name: bounce;
+      animation-duration: 0.3s;
+      animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
 
       svg {
         color: var(--col-white);
@@ -107,6 +110,16 @@ $gutter-padding: 0.3rem;
       }
     }
 
+
+    @keyframes bounce {
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
   }
 
   .history-control {

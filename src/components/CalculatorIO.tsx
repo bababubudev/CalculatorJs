@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   type calculationInfo,
   autoCompleteBrackets,
@@ -131,6 +132,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
       setIsSubmitted(true);
 
       addToHistory({
+        key: uuidv4(),
         operation: bracketPreview,
         result: displayResult,
         needsRounding: roundedResult.requires,
