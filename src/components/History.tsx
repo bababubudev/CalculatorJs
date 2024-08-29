@@ -12,6 +12,7 @@ interface HistoryProp {
 function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp) {
   const [transitionItems, setTransitionItems] = useState<calculationInfo[]>(history);
   const historyItemRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
+  const UListRef = useRef<HTMLUListElement | null>(null);
 
   const onHistoryClicked = useCallback((key: string) => {
     const element = historyItemRefs.current.get(key);
@@ -39,6 +40,12 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
 
   //! FIXME: What the fuck is this code?
   useEffect(() => {
+    if (UListRef.current) {
+      UListRef.current.scrollTop = UListRef.current.scrollHeight;
+    }
+
+    const timeoutIds: number[] = [];
+
     //* INFO: IF MORE ITEMS THAN IN TRANSITION, ADD IT
     const newItems = history.filter(
       (item) => !transitionItems.some((transItem) => transItem.key === item.key)
@@ -56,10 +63,12 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
           element.classList.add("item-exit");
           requestAnimationFrame(() => {
             element.classList.add("item-exit-active");
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
               setTransitionItems(prevItems => prevItems.filter(tranItem => tranItem.key !== item.key));
               removeFromHistory(item.key);
             }, 300);
+
+            timeoutIds.push(timeoutId);
           });
         }
       }
@@ -68,11 +77,15 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
       }
     });
 
+
+    return () => {
+      timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+    }
   }, [history, transitionItems, handleEnterAnim, removeFromHistory]);
 
   return (
     <section className="history-div" onClick={toggleHistoryShown}>
-      <ul>
+      <ul ref={UListRef}>
         {transitionItems.map(elem => (
           <li
             key={elem.key}

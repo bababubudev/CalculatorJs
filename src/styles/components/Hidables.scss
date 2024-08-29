@@ -1,28 +1,16 @@
 @use "./History.scss";
 
-$gutter-padding: 0.3rem;
-
 .hidables {
-  position: absolute;
-  bottom: 5.5rem;
-  right: 0;
   width: 60vw;
-  z-index: -1;
+  justify-self: end;
 
   display: grid;
   grid-template-columns: 1fr 3rem;
   gap: 1rem;
 
   .history-control {
-    overflow-y: scroll;
-    padding-left: $gutter-padding;
-
-    background: var(--col-white-faded);
-    border-radius: 1.5rem;
-    -webkit-transition: max-height 0.5s ease, opacity 0.5s ease;
-    transition: max-height 0.5s ease, opacity 0.5s ease;
-    height: auto;
-    width: auto;
+    overflow: hidden;
+    border-radius: 0.5rem;
 
     .no-history {
       min-height: 2.5rem;
@@ -35,6 +23,12 @@ $gutter-padding: 0.3rem;
       font-family: "ExtraLight";
       font-size: 1.2rem;
       color: var(--col-window-bg);
+      background-color: var(--col-white-faded);
+    }
+
+    .history-div {
+      -webkit-transition: max-height 0.5s ease, opacity 0.5s ease;
+      transition: max-height 0.5s ease, opacity 0.5s ease;
     }
   }
 
@@ -73,23 +67,6 @@ $gutter-padding: 0.3rem;
       }
     }
   }
-
-  ::-webkit-scrollbar {
-    width: $gutter-padding;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: none;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--col-tertiary);
-    border-radius: 0.5ch;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--col-window-bg);
-  }
 }
 
 .hidables.shown {
@@ -122,23 +99,19 @@ $gutter-padding: 0.3rem;
     }
   }
 
-  .history-control {
-    max-height: 50vh;
+  .history-control .history-div {
     opacity: 1;
+    max-height: 50vh;
 
     ul {
       transition: opacity 0.3s ease-in;
       opacity: 1;
     }
   }
-
-  ::-webkit-scrollbar {
-    display: block;
-  }
 }
 
 .hidables.hidden {
-  .history-control {
+  .history-control .history-div {
     max-height: 1rem;
     align-self: end;
     opacity: 0;
@@ -147,9 +120,5 @@ $gutter-padding: 0.3rem;
       transition: opacity 0.5s ease-out;
       opacity: 0;
     }
-  }
-
-  ::-webkit-scrollbar-thumb {
-    display: none;
   }
 }

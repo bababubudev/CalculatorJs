@@ -1,13 +1,37 @@
 .history-div {
   display: grid;
-  min-height: 5rem;
-  overflow: hidden;
+  background: var(--col-white-faded);
+
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--col-tertiary);
+    border-radius: 0.5rem;
+
+    box-shadow: 0 1px 1px rgba($color: #000000, $alpha: 0.3);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--col-window-bg);
+  }
 
   ul {
+    padding: 1rem;
+    padding-right: 0.5rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+
+    max-height: 50vh;
     display: grid;
     list-style-type: none;
     gap: 0.5rem;
-    margin: 1rem;
 
     .item-enter {
       opacity: 0;

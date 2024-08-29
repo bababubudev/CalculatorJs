@@ -2,12 +2,13 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   type calculationInfo,
+  type suggestionInfo,
   autoCompleteBrackets,
   calculate,
   roundNumbers,
-  suggestionInfo,
   suggestMathFunctions
 } from "../utils/UtilityFuncitons";
+import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
   needsRounding: boolean;
@@ -21,10 +22,11 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const [topDisplay, setTopDisplay] = useState<string>("");
   const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
 
+  const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [bracketPreview, setBracketPreview] = useState<string>("");
   const [functionPreview, setFunctionPreview] = useState<suggestionInfo>({ attemptString: "", suggestions: [] });
-  const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
 
   const hidePreview = isSubmitted
     || functionPreview?.suggestions.length <= 0
@@ -143,25 +145,14 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
 
   return (
     <>
-      {!hidePreview &&
-        <div className={`preview-display ${isInputBlur ? "blurred" : ""}`}>
-          <p>suggestion</p>
-          <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
-            {functionPreview.suggestions.map((preview, index) =>
-            (
-              <li
-                key={index}
-                className={selectedPreview === index ? "selected" : ""}
-                onPointerDown={() => { setSelectedPreview(index) }}
-                onClick={() => { autoFillPreview(index); }}
-              >
-                {preview}
-                <span style={{ fontFamily: "Bold" }}>x</span>{")"}
-              </li>
-            ))}
-          </ul>
-        </div >
-      }
+      <PreviewDisplay
+        isInputBlur={isInputBlur}
+        hidePreview={hidePreview || false}
+        previews={functionPreview}
+        previewSelection={selectedPreview}
+        autoFillPreview={autoFillPreview}
+        setPreviewSelection={setSelectedPreview}
+      />
       <form
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
