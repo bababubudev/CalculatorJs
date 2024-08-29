@@ -1,9 +1,13 @@
+$gradiant-color: white;
+
 .history-div {
+  position: relative;
   display: grid;
   background: var(--col-white-faded);
 
   ::-webkit-scrollbar {
     width: 0.5rem;
+    z-index: 200;
   }
 
   ::-webkit-scrollbar-track {
@@ -50,8 +54,8 @@
     }
 
     .item-exit-active {
-      transform: translateX(-100%);
       opacity: 0;
+      transform: translateX(-100%);
       transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
     }
 

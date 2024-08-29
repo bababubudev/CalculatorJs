@@ -1,6 +1,8 @@
 @use "./History.scss";
 
 .hidables {
+  position: absolute;
+  bottom: 5.2rem;
   width: 60vw;
   justify-self: end;
 
@@ -12,23 +14,23 @@
     overflow: hidden;
     border-radius: 0.5rem;
 
-    .no-history {
-      min-height: 2.5rem;
-      text-align: center;
-
-      display: grid;
-      align-items: center;
-
-      text-transform: uppercase;
-      font-family: "ExtraLight";
-      font-size: 1.2rem;
-      color: var(--col-window-bg);
-      background-color: var(--col-white-faded);
-    }
-
     .history-div {
-      -webkit-transition: max-height 0.5s ease, opacity 0.5s ease;
-      transition: max-height 0.5s ease, opacity 0.5s ease;
+      -webkit-transition: max-height 0.5s ease, opacity 0.5s ease-in;
+      transition: max-height 0.5s ease, opacity 0.5s ease-in;
+
+      .no-history {
+        min-height: 2.5rem;
+        text-align: center;
+
+        display: grid;
+        align-items: center;
+
+        text-transform: uppercase;
+        font-family: "ExtraLight";
+        font-size: 1.2rem;
+        color: var(--col-window-bg);
+        background-color: var(--col-white-faded);
+      }
     }
   }
 
@@ -50,7 +52,7 @@
 
       background: var(--col-tertiary);
       padding: 0.5rem;
-      transition: transform 0.1s ease-in-out;
+      transition: transform 0.1s ease-in-out, background-color 0.5s ease;
 
       svg {
         fill: var(--col-window-bg);
@@ -73,7 +75,8 @@
   .show-hide-btn {
     button {
       box-shadow: 3px 3px 3px hsla(0, 0%, 0%, 0.2);
-      animation-name: bounce;
+      background-color: var(--col-tertiary);
+      animation-name: bounce-in;
       animation-duration: 0.3s;
       animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
 
@@ -87,8 +90,7 @@
       }
     }
 
-
-    @keyframes bounce {
+    @keyframes bounce-in {
       50% {
         transform: scale(1.1);
       }
@@ -100,10 +102,13 @@
   }
 
   .history-control .history-div {
-    opacity: 1;
     max-height: 50vh;
 
     ul {
+      transition: opacity 0.3s ease-in;
+    }
+
+    .no-history {
       transition: opacity 0.3s ease-in;
       opacity: 1;
     }
@@ -111,13 +116,37 @@
 }
 
 .hidables.hidden {
+  .show-hide-btn {
+    button {
+      background-color: var(--col-primary);
+      box-shadow: inset 1px 1px hsla(0, 0%, 0%, 0.2);
+      animation-name: bounce-out;
+      animation-duration: 0.3s;
+      animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
+
+      @keyframes bounce-out {
+        50% {
+          transform: scale(0.9);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+    }
+  }
+
   .history-control .history-div {
     max-height: 1rem;
     align-self: end;
-    opacity: 0;
 
     ul {
+      opacity: 0;
       transition: opacity 0.5s ease-out;
+    }
+
+    .no-history {
+      transition: opacity 0.3s ease-in;
       opacity: 0;
     }
   }

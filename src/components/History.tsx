@@ -85,28 +85,31 @@ function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp
 
   return (
     <section className="history-div" onClick={toggleHistoryShown}>
-      <ul ref={UListRef}>
-        {transitionItems.map(elem => (
-          <li
-            key={elem.key}
-            ref={el => historyItemRefs.current.set(elem.key, el)}
-          >
-            <div className="history-part">
-              <p className="operation">{elem.operation}</p>
-              <span>{elem.needsRounding ? "≈" : "="}</span>
-              <p className="result">{elem.result}</p>
-            </div>
-            <div className="detail">
-              <button className="del-btn" onClick={() => onHistoryClicked(elem.key)}>
-                <IoTrashBinOutline className="del-icon" />
-              </button>
-              <span className="index">
-                {(history.length - transitionItems.findIndex(item => item.key === elem.key))}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {history.length > 0 ?
+        <ul ref={UListRef}>
+          {transitionItems.map(elem => (
+            <li
+              key={elem.key}
+              ref={el => historyItemRefs.current.set(elem.key, el)}
+            >
+              <div className="history-part">
+                <p className="operation">{elem.operation}</p>
+                <span>{elem.needsRounding ? "≈" : "="}</span>
+                <p className="result">{elem.result}</p>
+              </div>
+              <div className="detail">
+                <button className="del-btn" onClick={() => onHistoryClicked(elem.key)}>
+                  <IoTrashBinOutline className="del-icon" />
+                </button>
+                <span className="index">
+                  {(history.length - transitionItems.findIndex(item => item.key === elem.key))}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul> :
+        <p className="no-history">Nothing in history</p>
+      }
     </section>
   );
 }

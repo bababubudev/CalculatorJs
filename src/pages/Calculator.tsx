@@ -26,7 +26,6 @@ function Calculator() {
   }
 
   const removeFromHistory = (key: string) => {
-    console.log("Called!" + history.find(elem => elem.key === key)?.result);
     setHistory(prev => prev.filter(elem => elem.key !== key));
   }
 
@@ -40,15 +39,12 @@ function Calculator() {
         className={`hidables ${historyShown ? "shown" : "hidden"}`}
       >
         <div className="history-control">
-          {history.length > 0
-            ? <History
-              history={history}
-              removeFromHistory={removeFromHistory}
-              clearHistory={clearHistory}
-              toggleHistoryShown={toggleHistoryShown}
-            /> :
-            <p className="no-history">Nothing in history</p>
-          }
+          <History
+            history={history}
+            removeFromHistory={removeFromHistory}
+            clearHistory={clearHistory}
+            toggleHistoryShown={toggleHistoryShown}
+          />
         </div>
         <div className="show-hide-btn">
           <button
