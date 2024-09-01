@@ -11,6 +11,11 @@ export type calculationInfo = calculation & {
   currentCalculation?: calculation,
 }
 
+// export type calculationOptions = {
+//   angle: "degree" | "radians" | "gradian",
+//   percentage: "%" | "%%",
+// }
+
 export type suggestionInfo = {
   attemptString: string,
   suggestions: string[],
@@ -53,9 +58,11 @@ export function suggestMathFunctions(input: string): suggestionInfo {
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
+    const regex = new RegExp(partialFunciton, "i");
+
     return {
       attemptString: partialFunciton,
-      suggestions: Object.keys(mathFunctions).filter(func => func.startsWith(partialFunciton)),
+      suggestions: Object.keys(mathFunctions).filter(func => regex.test(func)),
       suggestionUsed: false,
     };
   }

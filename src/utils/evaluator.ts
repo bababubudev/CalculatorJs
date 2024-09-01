@@ -25,8 +25,8 @@ export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   lg: Math.log10,
   ln: Math.log,
   abs: Math.abs,
-  "!": factorialize,
   factorial: factorialize,
+  "!": factorialize,
 };
 
 function factorialize(x: number): number {
@@ -79,6 +79,7 @@ function tokenize(input: string): string[] {
   for (let i = 0; i < size; i++) {
     const char = input[i];
 
+    //* INFO: Accumulates numbers (3.14 as one)
     if (!isNaN(parseFloat(char)) || char === '.' || char === ',') {
       currentToken += (char === ',') ? '.' : char;
 
@@ -86,12 +87,14 @@ function tokenize(input: string): string[] {
         continue;
       }
     }
+    //* INFO: Handles unary operators (-3 or +3)
     else if ((char === '-' || char === '+') && (i === 0 || input[i - 1] === '(' || comparators.has(input[i - 1]))) {
       currentToken += char;
       if (i + 1 < size && !isNaN(parseFloat(input[i + 1]))) {
         continue;
       }
     }
+    //* INFO: Accumulates operators and comparators (3=3/3*3 as seperate)
     else if (operators.has(char) || comparators.has(char) || char === " ") {
       if (currentToken) {
         tokens.push(currentToken);
@@ -108,6 +111,7 @@ function tokenize(input: string): string[] {
         tokens.push('*');
       }
     }
+    //* INFO: Handles mathematical functions (sin, cos)
     else {
       currentToken += char;
       if (functions.has(currentToken)) {

@@ -1,6 +1,7 @@
 import { type suggestionInfo } from "../utils/UtilityFuncitons";
 
 interface PreviewDisplayProp {
+  attempt: string;
   hidePreview: boolean;
   isInputBlur: boolean;
   previews: suggestionInfo;
@@ -9,7 +10,22 @@ interface PreviewDisplayProp {
   setPreviewSelection: (index: number) => void;
 }
 
-function PreviewDisplay({ isInputBlur, hidePreview, previews, previewSelection, autoFillPreview, setPreviewSelection }: PreviewDisplayProp) {
+function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSelection, autoFillPreview, setPreviewSelection }: PreviewDisplayProp) {
+  const highlightCharacters = (preview: string, attempt: string) => {
+    let attemptIndex = 0;
+    const attemptLength = attempt.length;
+
+    return preview.split("").map((char, index) => {
+      const isBold = attemptIndex < attemptLength && char.toLowerCase() === attempt[attemptIndex].toLowerCase();
+      if (isBold) attemptIndex++;
+      return (
+        <span key={index} style={{ fontFamily: isBold ? "FiraSans" : "" }}>
+          {char}
+        </span>
+      );
+    });
+  };
+
   return (
     <>
       {!hidePreview &&
@@ -24,7 +40,7 @@ function PreviewDisplay({ isInputBlur, hidePreview, previews, previewSelection, 
                 onPointerDown={() => { setPreviewSelection(index) }}
                 onClick={() => { autoFillPreview(index); }}
               >
-                {preview}
+                {highlightCharacters(preview, attempt)}
                 <span style={{ fontFamily: "Bold" }}>x</span>{")"}
               </li>
             ))}

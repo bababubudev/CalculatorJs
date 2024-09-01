@@ -146,6 +146,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   return (
     <>
       <PreviewDisplay
+        attempt={functionPreview.attemptString}
         isInputBlur={isInputBlur}
         hidePreview={hidePreview || false}
         previews={functionPreview}
