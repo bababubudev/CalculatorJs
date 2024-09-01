@@ -27,7 +27,6 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const [functionPreview, setFunctionPreview] = useState<suggestionInfo>({ attemptString: "", suggestions: [] });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
-
   const hidePreview = isSubmitted
     || functionPreview?.suggestions.length <= 0
     || functionPreview?.suggestionUsed;

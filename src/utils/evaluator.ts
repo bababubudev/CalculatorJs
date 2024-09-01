@@ -14,12 +14,12 @@ export type FunctionKeys = "sin" | "cos" | "tan" |
   "abs" | "!" | "factorial";
 
 export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
-  sin: Math.sin,
-  cos: Math.cos,
-  tan: Math.tan,
-  asin: Math.asin,
-  acos: Math.acos,
-  atan: Math.atan,
+  sin: (x: number) => Math.sin(toCurrentAngle(x)),
+  cos: (x: number) => Math.cos(toCurrentAngle(x)),
+  tan: (x: number) => Math.tan(toCurrentAngle(x)),
+  asin: (x: number) => Math.asin(x) * (180 / Math.PI),
+  acos: (x: number) => Math.acos(x) * (180 / Math.PI),
+  atan: (x: number) => Math.atan(x) * (180 / Math.PI),
   sqrt: Math.sqrt,
   log: Math.log,
   lg: Math.log10,
@@ -28,6 +28,26 @@ export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   factorial: factorialize,
   "!": factorialize,
 };
+
+type AngleUnit = "degree" | "radian" | "gradian";
+
+let currentAngleUnit: AngleUnit = "radian";
+
+export function setAngleUnit(_angleUnit: AngleUnit): void {
+  currentAngleUnit = _angleUnit;
+}
+
+function toCurrentAngle(angle: number): number {
+  switch (currentAngleUnit) {
+    case "degree":
+      return angle * (Math.PI / 180);
+    case "gradian":
+      return angle * (Math.PI / 200);
+    case "radian":
+    default:
+      return angle;
+  }
+}
 
 function factorialize(x: number): number {
   if (x === undefined) return 0;
