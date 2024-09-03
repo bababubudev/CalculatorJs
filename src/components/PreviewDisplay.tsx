@@ -1,4 +1,4 @@
-import { type suggestionInfo } from "../utils/UtilityFuncitons";
+import type { suggestionInfo } from "../utils/types";
 
 interface PreviewDisplayProp {
   attempt: string;

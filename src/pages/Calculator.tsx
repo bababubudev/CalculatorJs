@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { calculationInfo } from "../utils/UtilityFuncitons";
+import type { calculationInfo } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
 

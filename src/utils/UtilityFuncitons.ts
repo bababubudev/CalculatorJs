@@ -1,26 +1,6 @@
 import evaluateExpression, { mathFunctions } from "./evaluator";
+import type { calculation, suggestionInfo } from "./types";
 
-export type calculation = {
-  operation: string;
-  result: string;
-}
-
-export type calculationInfo = calculation & {
-  key: string,
-  needsRounding?: boolean,
-  currentCalculation?: calculation,
-}
-
-// export type calculationOptions = {
-//   angle: "degree" | "radians" | "gradian",
-//   percentage: "%" | "%%",
-// }
-
-export type suggestionInfo = {
-  attemptString: string,
-  suggestions: string[],
-  suggestionUsed?: boolean,
-}
 
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;

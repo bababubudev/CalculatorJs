@@ -1,5 +1,5 @@
 import { IoTrashBinOutline } from "react-icons/io5";
-import type { calculationInfo } from "../utils/UtilityFuncitons";
+import type { calculationInfo } from "../utils/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface HistoryProp {

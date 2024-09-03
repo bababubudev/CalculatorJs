@@ -1,17 +1,6 @@
-// type SeperatedInput = [string[], string | null, string[]];
-export type ComparisonObject = {
-  comparison: boolean,
-  leftInput: string[],
-  rightInput: string[],
-  leftResult: string,
-  rightResult: string,
-  comparator: string
-}
+import type { AngleUnit, FunctionKeys } from "./types";
 
-export type FunctionKeys = "sin" | "cos" | "tan" |
-  "asin" | "acos" | "atan" |
-  "sqrt" | "log" | "lg" | "ln" |
-  "abs" | "!" | "factorial";
+// type SeperatedInput = [string[], string | null, string[]];
 
 export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   sin: (x: number) => Math.sin(toCurrentAngle(x)),
@@ -28,8 +17,6 @@ export const mathFunctions: { [key in FunctionKeys]: (x: number) => number } = {
   factorial: factorialize,
   "!": factorialize,
 };
-
-type AngleUnit = "degree" | "radian" | "gradian";
 
 let currentAngleUnit: AngleUnit = "radian";
 
