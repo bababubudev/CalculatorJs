@@ -1,6 +1,9 @@
-import evaluateExpression, { mathFunctions } from "./evaluator";
-import type { calculation, suggestionInfo } from "./types";
-
+import evaluateExpression, {
+  mathFunctions,
+  setAngleUnit,
+  getAngleUnit
+} from "./evaluator";
+import type { calculationInfo, inputInfo, suggestionObject } from "./types";
 
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
@@ -33,7 +36,7 @@ export function excludeRight(str: string, character: string) {
   return lastIndex === -1 ? str : str.substring(0, lastIndex + 1);
 }
 
-export function suggestMathFunctions(input: string): suggestionInfo {
+export function suggestMathFunctions(input: string): suggestionObject {
   const functionMatch = input.match(/([a-z]+)\(?$/i);
 
   if (functionMatch) {
@@ -65,19 +68,21 @@ export function roundNumbers(num: number, precision: number = 5) {
   };
 }
 
-export function calculate(input: string): calculation {
+export function calculate(inputInfo: inputInfo): calculationInfo {
   let output: number = 0;
 
   try {
-    output = evaluateExpression(input);
+    setAngleUnit(inputInfo.angleUnit);
+    output = evaluateExpression(inputInfo.input);
 
     const modifiedResult = output === undefined ? "" : output.toString();
 
     return {
-      operation: input,
+      operation: inputInfo.input,
       result: modifiedResult,
+      angleUnit: getAngleUnit()
     }
   } catch (error) {
-    return { operation: input, result: (error as Error).message };
+    return { operation: inputInfo.input, result: (error as Error).message };
   }
 }

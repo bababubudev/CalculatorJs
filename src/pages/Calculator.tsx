@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import type { calculationInfo } from "../utils/types";
+import type { historyObject } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
 
 
 function Calculator() {
-  const [history, setHistory] = useState<calculationInfo[]>([]);
+  const [history, setHistory] = useState<historyObject[]>([]);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ function Calculator() {
     setHistoryShown(false);
   }, [history]);
 
-  const addToHistory = (info: calculationInfo) => {
+  const addToHistory = (info: historyObject) => {
     setHistory(prev => [...prev, info]);
   }
 

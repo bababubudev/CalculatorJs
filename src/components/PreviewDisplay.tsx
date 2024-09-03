@@ -1,10 +1,10 @@
-import type { suggestionInfo } from "../utils/types";
+import type { suggestionObject } from "../utils/types";
 
 interface PreviewDisplayProp {
   attempt: string;
   hidePreview: boolean;
   isInputBlur: boolean;
-  previews: suggestionInfo;
+  previews: suggestionObject;
   previewSelection: number;
   autoFillPreview: (index: number) => void;
   setPreviewSelection: (index: number) => void;

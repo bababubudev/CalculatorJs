@@ -38,23 +38,3 @@ main {
   background: var(--col-window-bg);
   min-height: 100vh;
 }
-
-.blobs {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  user-select: none;
-
-  .blob1 {
-    position: absolute;
-    left: 0;
-    width: 400px;
-  }
-
-  .blob2 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 250px;
-  }
-}

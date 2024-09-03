@@ -1,4 +1,4 @@
-import type { calculationInfo, suggestionInfo } from "../utils/types";
+import type { historyObject, inputInfo, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -11,7 +11,7 @@ import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
   needsRounding: boolean;
-  addToHistory: (info: calculationInfo) => void;
+  addToHistory: (info: historyObject) => void;
 }
 
 function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
@@ -23,8 +23,9 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
 
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [bracketPreview, setBracketPreview] = useState<string>("");
-  const [functionPreview, setFunctionPreview] = useState<suggestionInfo>({ attemptString: "", suggestions: [] });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+  const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
 
   const hidePreview = isSubmitted
     || functionPreview?.suggestions.length <= 0
@@ -96,8 +97,9 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
 
+    const info: inputInfo = { input: currentValue, angleUnit: "radian" };
     const updatedValue = autoCompleteBrackets(currentValue);
-    const output = calculate(currentValue);
+    const output = calculate(info);
     const possibleFunctions = suggestMathFunctions(currentValue);
 
     setInputValue(currentValue);
@@ -119,7 +121,8 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    const output = calculate(inputValue);
+    const info: inputInfo = { input: inputValue, angleUnit: "radian" };
+    const output = calculate(info);
     const roundedResult = roundNumbers(Number(output.result))
 
     const displayResult = roundedResult.requires
@@ -136,7 +139,8 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
         operation: bracketPreview,
         result: displayResult,
         needsRounding: roundedResult.requires,
-        currentCalculation: output
+        currentCalculation: output,
+        angleUnit: output?.angleUnit
       });
     }
   }
@@ -186,7 +190,10 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
             />
           </div>
         </div>
-        <button className="submit-btn">=</button>
+        <button className="submission-area" type="submit">
+          <p className="angle-unit">rad</p>
+          <p className="submit-icon">=</p>
+        </button>
       </form>
     </>
   );

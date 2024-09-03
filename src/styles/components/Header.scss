@@ -15,15 +15,20 @@ header {
     text-shadow: -2px 2px 1px hsla(0, 0%, 0%, 0.25);
   }
 
-  svg {
-    fill: var(--col-primary);
-    width: 3ch;
-    height: 3ch;
-    margin: 0;
-    transition: all 0.2s ease-in;
+  .option-area {
+    background: none;
+    border: none;
 
-    &:hover {
-      animation: rotate-around 0.8s linear infinite forwards;
+    svg {
+      fill: var(--col-primary);
+      width: 3ch;
+      height: 3ch;
+      margin: 0;
+      transition: all 0.2s ease-in;
+
+      &:hover {
+        animation: rotate-around 0.8s linear infinite forwards;
+      }
     }
   }
 }

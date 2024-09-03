@@ -1,23 +1,12 @@
-export type calculation = {
-  operation: string;
-  result: string;
-}
+export type angleUnit = "degree" | "radian" | "gradian";
 
-export type calculationInfo = calculation & {
-  key: string,
-  needsRounding?: boolean,
-  currentCalculation?: calculation,
-}
-
-export type AngleUnit = "degree" | "radian" | "gradian";
-
-export type suggestionInfo = {
+export type suggestionObject = {
   attemptString: string,
   suggestions: string[],
   suggestionUsed?: boolean,
 }
 
-export type ComparisonObject = {
+export type comparisonObject = {
   comparison: boolean,
   leftInput: string[],
   rightInput: string[],
@@ -26,7 +15,35 @@ export type ComparisonObject = {
   comparator: string
 }
 
-export type FunctionKeys = "sin" | "cos" | "tan" |
-  "asin" | "acos" | "atan" |
-  "sqrt" | "log" | "lg" | "ln" |
-  "abs" | "!" | "factorial";
+export enum functionKeys {
+  sin = "sin",
+  cos = "cos",
+  tan = "tan",
+  asin = "asin",
+  acos = "acos",
+  atan = "atan",
+  sqrt = "sqrt",
+  log = "log",
+  lg = "lg",
+  ln = "ln",
+  abs = "abs",
+  factorial = "!",
+  factorialLong = "factorial",
+}
+
+export type inputInfo = {
+  input: string,
+  angleUnit: angleUnit
+}
+
+export type calculationInfo = {
+  operation: string,
+  result: string,
+  angleUnit?: angleUnit,
+}
+
+export type historyObject = calculationInfo & {
+  key: string,
+  needsRounding?: boolean,
+  currentCalculation?: calculationInfo,
+}

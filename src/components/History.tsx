@@ -1,16 +1,16 @@
 import { IoTrashBinOutline } from "react-icons/io5";
-import type { calculationInfo } from "../utils/types";
+import type { historyObject } from "../utils/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface HistoryProp {
-  history: calculationInfo[];
+  history: historyObject[];
   toggleHistoryShown: () => void;
   removeFromHistory: (key: string) => void;
   clearHistory: () => void;
 }
 
 function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp) {
-  const [transitionItems, setTransitionItems] = useState<calculationInfo[]>(history);
+  const [transitionItems, setTransitionItems] = useState<historyObject[]>(history);
   const historyItemRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
   const UListRef = useRef<HTMLUListElement | null>(null);
 
