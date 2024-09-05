@@ -1,4 +1,4 @@
-import type { historyObject, inputInfo, optionObject, suggestionObject } from "../utils/types";
+import type { angleUnit, historyObject, inputInfo, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -28,9 +28,15 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
 
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
 
-  const hidePreview = isSubmitted
+  const hidePreview = (isSubmitted
     || functionPreview?.suggestions.length <= 0
-    || functionPreview?.suggestionUsed;
+    || functionPreview?.suggestionUsed);
+
+  const angleUnitLabels: Record<angleUnit, string> = {
+    degree: "deg",
+    radian: "rad",
+    gradian: "grad",
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -192,7 +198,7 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
           </div>
         </div>
         <button className="submission-area" type="submit">
-          <p className="angle-unit">{option.angleUnit === "degree" ? "deg" : "rad"}</p>
+          <p className="angle-unit">{angleUnitLabels[option.angleUnit ?? "radian"]}</p>
           <p className="submit-icon">=</p>
         </button>
       </form>

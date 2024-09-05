@@ -1,116 +1,64 @@
-import { IoTrashBinOutline } from "react-icons/io5";
 import type { historyObject } from "../utils/types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import HistoryList from "./HistoryList";
 
 interface HistoryProp {
   history: historyObject[];
-  toggleHistoryShown: () => void;
   removeFromHistory: (key: string) => void;
   clearHistory: () => void;
 }
 
-function History({ history, removeFromHistory, toggleHistoryShown }: HistoryProp) {
-  const [transitionItems, setTransitionItems] = useState<historyObject[]>(history);
-  const historyItemRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
-  const UListRef = useRef<HTMLUListElement | null>(null);
+function History({ history, removeFromHistory, clearHistory }: HistoryProp) {
+  const [historyShown, setHistoryShown] = useState<boolean>(true);
 
-  const onHistoryClicked = useCallback((key: string) => {
-    const element = historyItemRefs.current.get(key);
-    if (element) {
-      element.classList.add("item-exit");
-      requestAnimationFrame(() => {
-        element.classList.add("item-exit-active");
-        setTimeout(() => {
-          setTransitionItems(prevItems => prevItems.filter(item => item.key !== key));
-          removeFromHistory(key);
-        }, 300);
-      });
-    }
-  }, [removeFromHistory]);
-
-  const handleEnterAnim = useCallback((key: string) => {
-    const element = historyItemRefs.current.get(key);
-    if (element) {
-      element.classList.add("item-enter");
-      requestAnimationFrame(() => {
-        element.classList.add("item-enter-active");
-      });
-    }
-  }, []);
-
-  //! FIXME: What the fuck is this code?
   useEffect(() => {
-    if (UListRef.current) {
-      UListRef.current.scrollTop = UListRef.current.scrollHeight;
+    if (history.length > 0) {
+      setHistoryShown(true);
+      return;
     }
 
-    const timeoutIds: number[] = [];
+    setHistoryShown(false);
+  }, [history]);
 
-    //* INFO: IF MORE ITEMS THAN IN TRANSITION, ADD IT
-    const newItems = history.filter(
-      (item) => !transitionItems.some((transItem) => transItem.key === item.key)
-    );
-
-    if (newItems.length > 0) {
-      setTransitionItems(prevItems => [...prevItems, ...newItems]);
-    }
-
-    transitionItems.forEach(item => {
-      //* INFO: IF HISTORY IS OUT OF SYNC, SYNC
-      if (!history.some(hItem => hItem.key === item.key)) {
-        const element = historyItemRefs.current.get(item.key);
-        if (element) {
-          element.classList.add("item-exit");
-          requestAnimationFrame(() => {
-            element.classList.add("item-exit-active");
-            const timeoutId = setTimeout(() => {
-              setTransitionItems(prevItems => prevItems.filter(tranItem => tranItem.key !== item.key));
-              removeFromHistory(item.key);
-            }, 300);
-
-            timeoutIds.push(timeoutId);
-          });
-        }
-      }
-      else {
-        handleEnterAnim(item.key);
-      }
-    });
-
-
-    return () => {
-      timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
-    }
-  }, [history, transitionItems, handleEnterAnim, removeFromHistory]);
+  const toggleHistoryShown = (): void => {
+    if (!historyShown) setHistoryShown(prev => !prev);
+  }
 
   return (
-    <section className="history-div" onClick={toggleHistoryShown}>
-      {history.length > 0 ?
-        <ul ref={UListRef}>
-          {transitionItems.map(elem => (
-            <li
-              key={elem.key}
-              ref={el => historyItemRefs.current.set(elem.key, el)}
-            >
-              <div className="history-part">
-                <p className="operation">{elem.operation}</p>
-                <span>{elem.needsRounding ? "≈" : "="}</span>
-                <p className="result">{elem.result}</p>
-              </div>
-              <div className="detail">
-                <button className="del-btn" onClick={() => onHistoryClicked(elem.key)}>
-                  <IoTrashBinOutline className="del-icon" />
-                </button>
-                <span className="index">
-                  {(history.length - transitionItems.findIndex(item => item.key === elem.key))}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul> :
-        <p className="no-history">Nothing in history</p>
-      }
-    </section>
+    <div className={`hidables ${historyShown ? "shown" : "hidden"}`}>
+      <HistoryList
+        history={history}
+        removeFromHistory={removeFromHistory}
+        toggleHistoryShown={toggleHistoryShown}
+        clearHistory={clearHistory}
+      />
+      <button
+        className="show-hide-btn"
+        type="button"
+        onClick={() => setHistoryShown(prev => !prev)}
+      >
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          strokeWidth="0"
+          viewBox="0 0 24 24"
+          height="1em"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            className="outer-circle"
+            d="M11.998 2.5A9.503 9.503 0 0 0 3.378 8H5.75a.75.75 0 0 1 0 1.5H2a1 1 0 0 1-1-1V4.75a.75.75 0 0 1 1.5 0v1.697A10.997 10.997 0 0 1 11.998 1C18.074 1 23 5.925 23 12s-4.926 11-11.002 11C6.014 23 1.146 18.223 1 12.275a.75.75 0 0 1 1.5-.037 9.5 9.5 0 0 0 9.498 9.262c5.248 0 9.502-4.253 9.502-9.5s-4.254-9.5-9.502-9.5Z"
+          >
+          </path>
+          <path
+            className="clock-hands"
+            d="M12.5 7.25a.75.75 0 0 0-1.5 0v5.5c0 .27.144.518.378.651l3.5 2a.75.75 0 0 0 .744-1.302L12.5 12.315V7.25Z"
+          >
+          </path>
+        </svg>
+      </button>
+    </div>
   );
 }
 

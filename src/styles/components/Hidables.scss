@@ -10,83 +10,71 @@
   grid-template-columns: 1fr 3rem;
   gap: 1rem;
 
-  .history-control {
+  .history-div {
     overflow: hidden;
     border-radius: 0.5rem;
+    box-sizing: border-box;
 
-    .history-div {
-      -webkit-transition: max-height 0.5s ease, opacity 0.5s ease-in;
-      transition: max-height 0.5s ease, opacity 0.5s ease-in;
+    -webkit-transition: max-height 0.5s ease, opacity 0.5s ease-in;
+    transition: max-height 0.5s ease, opacity 0.5s ease-in;
 
-      .no-history {
-        min-height: 2.5rem;
-        text-align: center;
+    .no-history {
+      min-height: 2.5rem;
+      text-align: center;
 
-        display: grid;
-        align-items: center;
+      display: grid;
+      align-items: center;
 
-        text-transform: uppercase;
-        font-family: "ExtraLight";
-        font-size: 1.2rem;
-        color: var(--col-window-bg);
-        background-color: var(--col-white-faded);
-      }
+      text-transform: uppercase;
+      font-family: "ExtraLight";
+      font-size: 1.2rem;
+      color: var(--col-window-bg);
+      background-color: var(--col-white-faded);
     }
   }
 
   .show-hide-btn {
+    bottom: 0;
+    right: 0.5rem;
+
     display: grid;
-    justify-content: end;
-    padding-inline: 0.5rem;
-    position: relative;
+    border: none;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
 
-    button {
-      position: absolute;
-      bottom: 0;
-      right: 0.5rem;
+    padding: 0.5rem;
+    background: var(--col-tertiary);
+    position: absolute;
+    transition: transform 0.1s ease-in-out, background-color 0.5s ease;
 
-      display: grid;
-      border: none;
-      aspect-ratio: 1/1;
-      border-radius: 100%;
+    svg {
+      width: 3ch;
+      height: 3ch;
+      stroke-width: 0.5;
+    }
 
-      background: var(--col-tertiary);
-      padding: 0.5rem;
-      transition: transform 0.1s ease-in-out, background-color 0.5s ease;
-
-      svg {
-        fill: var(--col-window-bg);
-        width: 3ch;
-        height: 3ch;
-        color: var(--col-window-bg);
-        stroke-width: 0.5;
-      }
-
-      .outer-circle {
-        transform-origin: center;
-        transform: rotateZ(360deg);
-        transition: transform 0.5s ease-in-out;
-      }
+    .outer-circle {
+      transform-origin: center;
+      transform: rotateZ(360deg);
+      transition: transform 0.5s ease-in-out;
     }
   }
 }
 
 .hidables.shown {
   .show-hide-btn {
-    button {
-      box-shadow: 3px 3px 3px hsla(0, 0%, 0%, 0.2);
-      background-color: var(--col-tertiary);
-      animation-name: bounce-in;
-      animation-duration: 0.3s;
-      animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
+    box-shadow: 3px 3px 3px hsla(0, 0%, 0%, 0.2);
+    background-color: var(--col-tertiary);
+    animation-name: bounce-in;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
 
-      svg {
-        color: var(--col-white);
-        fill: var(--col-white);
+    svg {
+      color: var(--col-white);
+      fill: var(--col-white);
 
-        .outer-circle {
-          transform: rotateZ(0deg);
-        }
+      .outer-circle {
+        transform: rotateZ(0deg);
       }
     }
 
@@ -101,7 +89,7 @@
     }
   }
 
-  .history-control .history-div {
+  .history-div {
     max-height: 50vh;
 
     ul {
@@ -117,26 +105,24 @@
 
 .hidables.hidden {
   .show-hide-btn {
-    button {
-      background-color: var(--col-primary);
-      box-shadow: inset 1px 1px hsla(0, 0%, 0%, 0.2);
-      animation-name: bounce-out;
-      animation-duration: 0.3s;
-      animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
+    background-color: var(--col-primary);
+    box-shadow: inset 1px 1px hsla(0, 0%, 0%, 0.2);
+    animation-name: bounce-out;
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
 
-      @keyframes bounce-out {
-        50% {
-          transform: scale(0.9);
-        }
+    @keyframes bounce-out {
+      50% {
+        transform: scale(0.9);
+      }
 
-        100% {
-          transform: scale(1);
-        }
+      100% {
+        transform: scale(1);
       }
     }
   }
 
-  .history-control .history-div {
+  .history-div {
     max-height: 1rem;
     align-self: end;
 

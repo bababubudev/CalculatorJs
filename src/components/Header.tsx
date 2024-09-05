@@ -14,7 +14,10 @@ function Header() {
       <h1>calculator</h1>
       <div className="option-area">
         {showOptions && <Options />}
-        <button onClick={showHideOptions}>
+        <button
+          onClick={showHideOptions}
+          className="setting-btn"
+        >
           <IoSettings />
         </button>
       </div>

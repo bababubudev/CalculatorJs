@@ -19,6 +19,7 @@ export type optionObject = {
   angleUnit?: angleUnit,
   precision?: number,
   theme?: string,
+  clearHistory?: () => void;
 }
 
 export enum functionKeys {

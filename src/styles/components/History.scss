@@ -6,8 +6,9 @@ $gradiant-color: white;
   background: var(--col-white-faded);
 
   ul {
-    padding: 1rem;
-    padding-right: 0.5rem;
+    padding: 1rem 1rem;
+    padding-right: 0.8rem;
+
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-gutter: stable;
@@ -61,7 +62,6 @@ $gradiant-color: white;
         overflow-x: scroll;
 
         .operation {
-          font-weight: bold;
           text-overflow: ellipsis;
         }
 
@@ -128,12 +128,11 @@ $gradiant-color: white;
     }
 
     &::-webkit-scrollbar {
-      width: 0.5rem;
-      z-index: 200;
+      width: 0.2rem;
     }
 
     &::-webkit-scrollbar-track {
-      background: none;
+      background-color: transparent;
     }
 
     &::-webkit-scrollbar-thumb {
