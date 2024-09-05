@@ -5,10 +5,10 @@ function Header() {
   return (
     <header>
       <h1>calculator</h1>
-      <button type="button" className="option-area">
-        {false && <Options />}
+      <div className="option-area">
+        <Options />
         <IoSettings />
-      </button>
+      </div>
     </header>
   );
 }

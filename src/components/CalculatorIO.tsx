@@ -1,4 +1,4 @@
-import type { historyObject, inputInfo, suggestionObject } from "../utils/types";
+import type { historyObject, inputInfo, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -6,15 +6,16 @@ import {
   calculate,
   roundNumbers,
   suggestMathFunctions
-} from "../utils/UtilityFuncitons";
+} from "../utils/utilityFunctions";
 import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
   needsRounding: boolean;
+  option: optionObject;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -97,7 +98,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
 
-    const info: inputInfo = { input: currentValue, angleUnit: "radian" };
+    const info: inputInfo = { input: currentValue, angleUnit: option.angleUnit ?? "radian" };
     const updatedValue = autoCompleteBrackets(currentValue);
     const output = calculate(info);
     const possibleFunctions = suggestMathFunctions(currentValue);
@@ -121,7 +122,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    const info: inputInfo = { input: inputValue, angleUnit: "radian" };
+    const info: inputInfo = { input: inputValue, angleUnit: option.angleUnit ?? "radian" };
     const output = calculate(info);
     const roundedResult = roundNumbers(Number(output.result))
 
@@ -191,7 +192,7 @@ function CalculatorIO({ addToHistory, needsRounding }: CalculatorIOProps) {
           </div>
         </div>
         <button className="submission-area" type="submit">
-          <p className="angle-unit">rad</p>
+          <p className="angle-unit">{option.angleUnit === "degree" ? "deg" : "rad"}</p>
           <p className="submit-icon">=</p>
         </button>
       </form>

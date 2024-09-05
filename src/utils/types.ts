@@ -15,6 +15,12 @@ export type comparisonObject = {
   comparator: string
 }
 
+export type optionObject = {
+  angleUnit?: angleUnit,
+  precision?: number,
+  theme?: string,
+}
+
 export enum functionKeys {
   sin = "sin",
   cos = "cos",

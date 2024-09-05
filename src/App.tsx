@@ -1,12 +1,15 @@
 import Header from "./components/Header";
 import Calculator from "./pages/Calculator";
+import OptionsProvider from "./context/OptionsProvider";
 
 function App() {
   return (
-    <main>
-      <Header />
-      <Calculator />
-    </main>
+    <OptionsProvider>
+      <main>
+        <Header />
+        <Calculator />
+      </main>
+    </OptionsProvider>
   )
 }
 

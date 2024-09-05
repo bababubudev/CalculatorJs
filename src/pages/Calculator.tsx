@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import type { historyObject } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
-
+import { useOptions } from "../context/OptionsContext";
 
 function Calculator() {
   const [history, setHistory] = useState<historyObject[]>([]);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
+  const { options } = useOptions();
 
   useEffect(() => {
     if (history.length > 0) {
@@ -75,6 +76,7 @@ function Calculator() {
         </div>
       </div>
       <CalculatorIO
+        option={options}
         needsRounding={history[history.length - 1]?.needsRounding ?? false}
         addToHistory={addToHistory}
       />
