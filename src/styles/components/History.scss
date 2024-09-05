@@ -82,8 +82,7 @@ $gradiant-color: white;
         }
 
         &::-webkit-scrollbar-track {
-          background: rgba($color: #bf8935, $alpha: 0.3);
-          border-radius: 0.5rem;
+          background: none;
         }
 
         &::-webkit-scrollbar-thumb {
