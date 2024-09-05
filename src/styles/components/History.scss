@@ -5,26 +5,6 @@ $gradiant-color: white;
   display: grid;
   background: var(--col-white-faded);
 
-  ::-webkit-scrollbar {
-    width: 0.5rem;
-    z-index: 200;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: none;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--col-tertiary);
-    border-radius: 0.5rem;
-
-    box-shadow: 0 1px 1px rgba($color: #000000, $alpha: 0.3);
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--col-window-bg);
-  }
-
   ul {
     padding: 1rem;
     padding-right: 0.5rem;
@@ -60,22 +40,25 @@ $gradiant-color: white;
     }
 
     li {
+      box-sizing: border-box;
       position: relative;
       display: grid;
       justify-content: center;
       grid-template-columns: 1fr 2rem;
-      gap: 1rem;
+      gap: 0.5ch;
 
       background: var(--col-white-faded);
       border-radius: 0.5rem;
       box-shadow: 0 0 1px var(--std-col-box-shadow);
 
-      padding: 0.5rem 1.5rem;
+      padding: 0.5rem 1rem;
 
       .history-part {
         display: grid;
         grid-template-columns: 1fr 1rem 1fr;
         align-items: center;
+
+        overflow-x: scroll;
 
         .operation {
           font-weight: bold;
@@ -89,9 +72,23 @@ $gradiant-color: white;
         }
 
         .result {
+          justify-self: start;
           font-family: "ExtraBold";
           text-align: center;
-          font-size: 1.5rem;
+        }
+
+        &::-webkit-scrollbar {
+          height: 0.3rem;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: rgba($color: #bf8935, $alpha: 0.3);
+          border-radius: 0.5rem;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: var(--col-tertiary);
+          border-radius: 0.5rem;
         }
       }
 
@@ -129,6 +126,26 @@ $gradiant-color: white;
           border-radius: 0 0 .2rem .2rem;
         }
       }
+    }
+
+    &::-webkit-scrollbar {
+      width: 0.5rem;
+      z-index: 200;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: none;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--col-tertiary);
+      border-radius: 0.5rem;
+
+      box-shadow: 0 1px 1px rgba($color: #000000, $alpha: 0.3);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--col-window-bg);
     }
   }
 }

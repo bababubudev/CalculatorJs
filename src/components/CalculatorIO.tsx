@@ -124,7 +124,7 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
 
     const info: inputInfo = { input: inputValue, angleUnit: option.angleUnit ?? "radian" };
     const output = calculate(info);
-    const roundedResult = roundNumbers(Number(output.result))
+    const roundedResult = roundNumbers(Number(output.result), option.precision);
 
     const displayResult = roundedResult.requires
       ? roundedResult.rounded

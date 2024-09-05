@@ -45,26 +45,18 @@ header {
       }
     }
 
-    svg {
-      fill: var(--col-primary);
-      width: 3ch;
-      height: 3ch;
-      margin: 0;
-      transition: all 0.2s ease-in;
+    button {
+      border: none;
+      background: none;
+      display: grid;
 
-      &:hover {
-        animation: rotate-around 0.8s linear infinite forwards;
+      svg {
+        fill: var(--col-primary);
+        width: 2rem;
+        height: 2rem;
+        margin: 0;
+        transition: all 0.2s ease-in;
       }
     }
-  }
-}
-
-@keyframes rotate-around {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
   }
 }

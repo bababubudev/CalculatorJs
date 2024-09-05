@@ -9,7 +9,7 @@ function Options() {
   };
 
   return (
-    <form>
+    <form onSubmit={e => e.preventDefault()}>
       <ul>
         <li>
           Angle Unit:
@@ -21,18 +21,16 @@ function Options() {
         </li>
         <li>
           Precision:
-          <input
-            type="number"
-            name="precision"
-            value={options.precision || ''}
-            onChange={handleChange}
-            min="0"
-            max="10"
-          />
+          <select name="precision" value={options.precision} onChange={handleChange}>
+            <option value="1">1</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+          </select>
         </li>
         <li>Theme: {options.theme}</li>
       </ul>
-    </form>
+    </form >
   );
 }
 
