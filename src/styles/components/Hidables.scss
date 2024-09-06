@@ -144,6 +144,11 @@
     animation-duration: 0.3s;
     animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1);
 
+    svg {
+      color: var(--col-window-bg);
+      fill: var(--col-window-bg);
+    }
+
     @keyframes bounce-out {
       50% {
         transform: scale(0.9);
