@@ -72,7 +72,7 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
         const after = prev.slice(lastIndex + attempt.length);
         const currentChanges = before + suggestions[index] + after;
 
-        // ? There must be a better way of updating this
+        // ? REFACTORABLE: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
         onInputChange(currentEvent, true);
 

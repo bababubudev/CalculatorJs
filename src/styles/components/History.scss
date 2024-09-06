@@ -5,6 +5,10 @@ $gradiant-color: white;
   display: grid;
   background: var(--col-white-faded);
 
+  &.clearing {
+    height: 50vh;
+  }
+
   ul {
     padding: 1rem 1rem;
     padding-right: 0.8rem;
@@ -12,10 +16,10 @@ $gradiant-color: white;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-gutter: stable;
+    list-style-type: none;
 
     max-height: 50vh;
     display: grid;
-    list-style-type: none;
     gap: 0.5rem;
 
     .item-enter {
@@ -26,7 +30,7 @@ $gradiant-color: white;
     .item-enter-active {
       opacity: 1;
       transform: translateX(0);
-      transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
+      transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
     }
 
     .item-exit {
@@ -37,11 +41,10 @@ $gradiant-color: white;
     .item-exit-active {
       opacity: 0;
       transform: translateX(-100%);
-      transition: transform 500ms ease-in-out, opacity 500ms ease-in-out;
+      transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
     }
 
     li {
-      box-sizing: border-box;
       position: relative;
       display: grid;
       justify-content: center;
@@ -92,6 +95,10 @@ $gradiant-color: white;
       }
 
       .detail {
+        >button {
+          cursor: pointer;
+        }
+
         display: flex;
         align-items: center;
         justify-content: center;

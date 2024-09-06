@@ -21,7 +21,6 @@ function Calculator() {
       <History
         history={history}
         removeFromHistory={removeFromHistory}
-        clearHistory={() => { setHistory([]); }}
       />
       <CalculatorIO
         option={options}

@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IoTrashBinOutline } from "react-icons/io5";
-import { FaBroom } from "react-icons/fa";
+import { TbClearAll } from "react-icons/tb";
 import { historyObject } from "../utils/types";
+import Modal from "./Modal";
 
 interface HistoryListProps {
   history: historyObject[];
   removeFromHistory: (key: string) => void;
   toggleHistoryShown: () => void;
-  clearHistory: () => void;
 }
 
-function HistoryList({ history, removeFromHistory, toggleHistoryShown, clearHistory }: HistoryListProps) {
+function HistoryList({ history, removeFromHistory, toggleHistoryShown }: HistoryListProps) {
   const [transitionItems, setTransitionItems] = useState<historyObject[]>(history);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const historyItemRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
   const UListRef = useRef<HTMLUListElement | null>(null);
 
@@ -19,12 +21,14 @@ function HistoryList({ history, removeFromHistory, toggleHistoryShown, clearHist
     const element = historyItemRefs.current.get(key);
     if (element) {
       element.classList.add("item-exit");
+      element.classList.remove("item-enter");
       requestAnimationFrame(() => {
         element.classList.add("item-exit-active");
+        element.classList.remove("item-enter-active");
         setTimeout(() => {
           setTransitionItems(prevItems => prevItems.filter(item => item.key !== key));
           removeFromHistory(key);
-        }, 500);
+        }, 300);
       });
     }
   }, [removeFromHistory]);
@@ -39,15 +43,24 @@ function HistoryList({ history, removeFromHistory, toggleHistoryShown, clearHist
     }
   }, []);
 
-  const handleClearAll = useCallback(async () => {
-    //* INFO: Sequential call
+  const handleClearAll = useCallback(() => {
     for (const item of transitionItems) {
       onRemovalCalled(item.key);
-      await new Promise(resolve => setTimeout(resolve, 50));
     }
+  }, [transitionItems, onRemovalCalled]);
 
-    setTimeout(() => clearHistory(), 500);
-  }, [transitionItems, clearHistory, onRemovalCalled]);
+  const handleClearAllClicked = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmClearAll = () => {
+    handleClearAll();
+    setIsModalOpen(false);
+  };
+
+  const handleCancelClearAll = () => {
+    setIsModalOpen(false);
+  };
 
   //! FIXME: What the fuck is this code?
   useEffect(() => {
@@ -77,7 +90,7 @@ function HistoryList({ history, removeFromHistory, toggleHistoryShown, clearHist
             const timeoutId = setTimeout(() => {
               setTransitionItems(prevItems => prevItems.filter(tranItem => tranItem.key !== item.key));
               removeFromHistory(item.key);
-            }, 500);
+            }, 300);
 
             timeoutIds.push(timeoutId);
           });
@@ -95,9 +108,9 @@ function HistoryList({ history, removeFromHistory, toggleHistoryShown, clearHist
   }, [history, transitionItems, handleEnterAnim, removeFromHistory]);
 
   return (
-    <section className="history-div" onClick={toggleHistoryShown}>
-      {history.length > 0 ?
-        <>
+    <>
+      <section className={"history-div"} onClick={toggleHistoryShown}>
+        {history.length > 0 ?
           <ul ref={UListRef}>
             {transitionItems.map(elem => (
               <li
@@ -119,17 +132,25 @@ function HistoryList({ history, removeFromHistory, toggleHistoryShown, clearHist
                 </div>
               </li>
             ))}
-          </ul>
-          <button
-            onClick={handleClearAll}
-            className="clear-all-btn"
-          >
-            <FaBroom />
-          </button>
-        </> :
-        <p className="no-history">Nothing in history</p>
-      }
-    </section >
+          </ul> :
+          <p className="no-history">Nothing in history</p>
+        }
+      </section >
+      <button
+        onClick={handleClearAllClicked}
+        className="clear-all-btn"
+        disabled={history.length === 0}
+      >
+        <TbClearAll />
+      </button>
+      <Modal
+        dialogue="Clear all history"
+        description="Are you sure you want to clear everything from history?"
+        isOpen={isModalOpen}
+        onConfirm={handleConfirmClearAll}
+        onCancel={handleCancelClearAll}
+      />
+    </>
   );
 }
 
