@@ -31,6 +31,7 @@
     }
 
     .preview-list {
+
       li {
         box-shadow: none;
 
@@ -39,6 +40,10 @@
 
           &::after {
             color: var(--col-window-bg);
+          }
+
+          &::before {
+            background: none;
           }
         }
       }
@@ -81,10 +86,17 @@
       }
 
       &::before {
-        content: ".";
+        content: "";
         position: absolute;
-        bottom: 0;
 
+        bottom: 0rem;
+        left: calc(50% - 1rem);
+
+        background: var(--col-secondary);
+        width: 1rem;
+        height: 0.1rem;
+
+        border-radius: 1rem;
 
         font-family: "Bold";
         color: var(--col-secondary);

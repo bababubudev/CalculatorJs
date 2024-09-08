@@ -38,6 +38,8 @@ export enum functionKeys {
   factorialLong = "factorial",
 }
 
+export type MathFunctions = (x: number) => unknown;
+
 export type inputInfo = {
   input: string,
   angleUnit?: angleUnit

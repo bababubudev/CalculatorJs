@@ -1,8 +1,10 @@
-import type { angleUnit, functionKeys } from "./types";
+import type { angleUnit, MathFunctions } from "./types";
 
 // type SeperatedInput = [string[], string | null, string[]];
 
-export const mathFunctions: { [key in functionKeys]: (x: number) => number } = {
+let currentAngleUnit: angleUnit = "radian";
+
+export const mathFunctions: { [key: string]: MathFunctions } = {
   sin: (x: number) => Math.sin(toCurrentAngle(x)),
   cos: (x: number) => Math.cos(toCurrentAngle(x)),
   tan: (x: number) => Math.tan(toCurrentAngle(x)),
@@ -15,10 +17,11 @@ export const mathFunctions: { [key in functionKeys]: (x: number) => number } = {
   ln: Math.log,
   abs: Math.abs,
   factorial: factorialize,
-  "!": factorialize,
 };
 
-let currentAngleUnit: angleUnit = "radian";
+export function addCustomFunction(name: string, func: MathFunctions) {
+  mathFunctions[name] = func;
+}
 
 export function setAngleUnit(_angleUnit: angleUnit = "radian"): void {
   currentAngleUnit = _angleUnit;
@@ -254,9 +257,9 @@ function evaluateRPN(rpn: string[]): number {
       stack.push(parseFloat(token));
     }
     else {
-      if (mathFunctions[token as functionKeys]) {
+      if (mathFunctions[token]) {
         const a = stack.pop() as number;
-        stack.push(mathFunctions[token as functionKeys](a));
+        stack.push(mathFunctions[token](a) as number);
       }
       else {
         const b = stack.pop() as number;

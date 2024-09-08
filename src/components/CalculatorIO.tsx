@@ -1,5 +1,5 @@
 import type { angleUnit, calculationInfo, historyObject, optionObject, suggestionObject } from "../utils/types";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
@@ -60,20 +60,6 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  useEffect(() => {
-    if (!passedInput) return;
-    const recalculatedResult = calculate(passedInput.operation, passedInput.angleUnit).result;
-
-    setInputValue(passedInput.operation);
-    setBracketPreview(passedInput.operation);
-    setTopDisplay(recalculatedResult);
-    setIsSubmitted(false);
-
-    if (!inputRef.current) return;
-    inputRef.current.focus();
-    setIsInputBlur(false);
-  }, [passedInput, option, passedInput.operation]);
-
   const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
@@ -116,7 +102,7 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
     }
   };
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
+  const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
 
     const updatedValue = autoCompleteBrackets(currentValue);
@@ -137,7 +123,7 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
     setTopDisplay(output.result || "");
-  };
+  }, [option.angleUnit]);
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
@@ -164,6 +150,21 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
       });
     }
   };
+
+  //? REFACTOR: There must be a better way
+  useEffect(() => {
+    if (!passedInput) return;
+
+    const currentEvent = { target: { value: passedInput.operation } } as React.ChangeEvent<HTMLInputElement>;
+    onInputChange(currentEvent, true);
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+      setIsInputBlur(false);
+    }
+
+    setIsInputBlur(false);
+  }, [passedInput, onInputChange]);
 
   return (
     <>
