@@ -9,10 +9,10 @@ function Options() {
   };
 
   return (
-    <form onSubmit={e => e.preventDefault()}>
+    <form onSubmit={e => e.preventDefault()} className="option-form">
       <ul>
         <li>
-          Angle Unit:
+          Angle Unit
           <select name="angleUnit" value={options.angleUnit} onChange={handleChange}>
             <option value="degree">Degree</option>
             <option value="radian">Radian</option>

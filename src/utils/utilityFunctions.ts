@@ -3,7 +3,7 @@ import evaluateExpression, {
   setAngleUnit,
   getAngleUnit
 } from "./evaluator";
-import type { calculationInfo, inputInfo, suggestionObject } from "./types";
+import type { angleUnit, calculationInfo, suggestionObject } from "./types";
 
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
@@ -68,21 +68,21 @@ export function roundNumbers(num: number, precision: number = 5) {
   };
 }
 
-export function calculate(inputInfo: inputInfo): calculationInfo {
+export function calculate(input: string, angleUnit?: angleUnit): calculationInfo {
   let output: number = 0;
 
   try {
-    setAngleUnit(inputInfo.angleUnit);
-    output = evaluateExpression(inputInfo.input);
+    setAngleUnit(angleUnit);
+    output = evaluateExpression(input);
 
     const modifiedResult = output === undefined ? "" : output.toString();
 
     return {
-      operation: inputInfo.input,
+      operation: input,
       result: modifiedResult,
       angleUnit: getAngleUnit()
     }
   } catch (error) {
-    return { operation: inputInfo.input, result: (error as Error).message };
+    return { operation: input, result: (error as Error).message };
   }
 }

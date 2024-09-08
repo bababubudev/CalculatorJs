@@ -4,6 +4,7 @@ $gradiant-color: white;
   position: relative;
   display: grid;
   background: var(--col-white-faded);
+  cursor: pointer;
 
   &.clearing {
     height: 50vh;
@@ -56,6 +57,17 @@ $gradiant-color: white;
       box-shadow: 0 0 1px var(--std-col-box-shadow);
 
       padding: 0.5rem 1rem;
+      user-select: none;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 5px var(--std-col-box-shadow);
+      }
+
+      &:active {
+        background: var(--col-secondary);
+        color: var(--col-white);
+      }
 
       .history-part {
         display: grid;
@@ -89,7 +101,7 @@ $gradiant-color: white;
         }
 
         &::-webkit-scrollbar-thumb {
-          background: var(--col-tertiary);
+          background: var(--col-white-faded);
           border-radius: 0.5rem;
         }
       }

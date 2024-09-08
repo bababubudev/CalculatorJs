@@ -40,7 +40,7 @@ export enum functionKeys {
 
 export type inputInfo = {
   input: string,
-  angleUnit: angleUnit
+  angleUnit?: angleUnit
 }
 
 export type calculationInfo = {

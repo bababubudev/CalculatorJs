@@ -1,4 +1,4 @@
-import type { angleUnit, historyObject, inputInfo, optionObject, suggestionObject } from "../utils/types";
+import type { angleUnit, calculationInfo, historyObject, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -12,10 +12,11 @@ import PreviewDisplay from "./PreviewDisplay";
 interface CalculatorIOProps {
   needsRounding: boolean;
   option: optionObject;
+  passedInput: calculationInfo;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -59,6 +60,20 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (!passedInput) return;
+    const recalculatedResult = calculate(passedInput.operation, passedInput.angleUnit).result;
+
+    setInputValue(passedInput.operation);
+    setBracketPreview(passedInput.operation);
+    setTopDisplay(recalculatedResult);
+    setIsSubmitted(false);
+
+    if (!inputRef.current) return;
+    inputRef.current.focus();
+    setIsInputBlur(false);
+  }, [passedInput, option, passedInput.operation]);
+
   const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
@@ -72,7 +87,7 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
         const after = prev.slice(lastIndex + attempt.length);
         const currentChanges = before + suggestions[index] + after;
 
-        // ? REFACTORABLE: There must be a better way of updating this
+        // ? REFACTOR: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
         onInputChange(currentEvent, true);
 
@@ -104,9 +119,8 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
 
-    const info: inputInfo = { input: currentValue, angleUnit: option.angleUnit ?? "radian" };
     const updatedValue = autoCompleteBrackets(currentValue);
-    const output = calculate(info);
+    const output = calculate(currentValue, option.angleUnit);
     const possibleFunctions = suggestMathFunctions(currentValue);
 
     setInputValue(currentValue);
@@ -122,14 +136,13 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
       ? setFunctionPreview({ attemptString: currentAttempt, suggestions: currentSuggestions, suggestionUsed: usedCall })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
-    setTopDisplay(output.result || "")
-  }
+    setTopDisplay(output.result || "");
+  };
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    const info: inputInfo = { input: inputValue, angleUnit: option.angleUnit ?? "radian" };
-    const output = calculate(info);
+    const output = calculate(inputValue, option.angleUnit);
     const roundedResult = roundNumbers(Number(output.result), option.precision);
 
     const displayResult = roundedResult.requires
@@ -150,7 +163,7 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
         angleUnit: output?.angleUnit
       });
     }
-  }
+  };
 
   return (
     <>
@@ -166,12 +179,11 @@ function CalculatorIO({ addToHistory, needsRounding, option }: CalculatorIOProps
       <form
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
-        onPointerDown={() => inputRef.current?.focus()}
       >
         <div className="display">
           <p
             className="top-display"
-            onMouseDown={e => e.preventDefault()}
+            onPointerDown={e => e.preventDefault()}
           >
             {topDisplay}
           </p>

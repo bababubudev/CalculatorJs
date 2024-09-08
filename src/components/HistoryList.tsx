@@ -7,10 +7,11 @@ import Modal from "./Modal";
 interface HistoryListProps {
   history: historyObject[];
   removeFromHistory: (key: string) => void;
+  onHistoryClicked: (key: string) => void;
   toggleHistoryShown: () => void;
 }
 
-function HistoryList({ history, removeFromHistory, toggleHistoryShown }: HistoryListProps) {
+function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHistoryShown }: HistoryListProps) {
   const [transitionItems, setTransitionItems] = useState<historyObject[]>(history);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -115,6 +116,7 @@ function HistoryList({ history, removeFromHistory, toggleHistoryShown }: History
             {transitionItems.map(elem => (
               <li
                 key={elem.key}
+                onClick={() => onHistoryClicked(elem.key)}
                 ref={el => historyItemRefs.current.set(elem.key, el)}
               >
                 <div className="history-part">

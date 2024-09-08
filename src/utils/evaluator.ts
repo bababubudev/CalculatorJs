@@ -20,7 +20,7 @@ export const mathFunctions: { [key in functionKeys]: (x: number) => number } = {
 
 let currentAngleUnit: angleUnit = "radian";
 
-export function setAngleUnit(_angleUnit: angleUnit): void {
+export function setAngleUnit(_angleUnit: angleUnit = "radian"): void {
   currentAngleUnit = _angleUnit;
 }
 

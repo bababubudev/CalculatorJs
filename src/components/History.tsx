@@ -5,9 +5,10 @@ import HistoryList from "./HistoryList";
 interface HistoryProp {
   history: historyObject[];
   removeFromHistory: (key: string) => void;
+  onHistoryClicked: (key: string) => void;
 }
 
-function History({ history, removeFromHistory }: HistoryProp) {
+function History({ history, removeFromHistory, onHistoryClicked }: HistoryProp) {
   const [historyShown, setHistoryShown] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ function History({ history, removeFromHistory }: HistoryProp) {
         history={history}
         removeFromHistory={removeFromHistory}
         toggleHistoryShown={toggleHistoryShown}
+        onHistoryClicked={onHistoryClicked}
       />
       <button
         className="show-hide-btn"

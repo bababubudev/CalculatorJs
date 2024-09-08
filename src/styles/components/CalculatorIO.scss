@@ -14,7 +14,6 @@
   grid-template-columns: 1fr 5rem;
 
   &:focus-within {
-    box-shadow: inset 2px 1px rgba($color: #000000, $alpha: 0.2);
     background-color: var(--col-white, white);
   }
 
@@ -82,6 +81,10 @@
     overflow: hidden;
     position: relative;
 
+    &:active {
+      box-shadow: inset 2px 1px rgba(0, 0, 0, 0.25);
+    }
+
     .angle-unit {
       position: absolute;
       color: var(--col-white);
@@ -101,10 +104,6 @@
 
       font-family: "FiraSans";
       font-size: 2rem;
-
-      &:active {
-        box-shadow: inset 2px 1px rgba(0, 0, 0, 0.25);
-      }
     }
   }
 }
