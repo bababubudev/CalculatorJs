@@ -85,48 +85,65 @@
       text-align: center;
       cursor: pointer;
       user-select: none;
-
-      &:hover {
-        background: linear-gradient(145deg, #bec2a6, #a0a38c);
-        box-shadow: 5px 5px 10px #979a84,
-          -5px -5px 10px #cdd0b2;
-
-
-        p {
-          color: var(--col-white);
-        }
-      }
-
-      .options-select {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 2.5rem;
-
-        display: grid;
-        border-radius: 0.2rem;
-
-        z-index: 1000;
-        background: var(--col-primary);
-
-        &.hidden {
-          display: none;
-        }
-
-        &.shown {
-          display: grid;
-        }
-
-        .current {
-          color: var(--col-secondary);
-          background: var(--col-white);
-        }
-
-        div:hover {
-          color: var(--col-secondary);
-          background: var(--col-white-faded);
-        }
-      }
     }
+  }
+}
+
+.options-select {
+  overflow-y: scroll;
+  position: absolute;
+  right: calc(100% + 1rem);
+  top: 0rem;
+  width: 10rem;
+
+  display: grid;
+  border-radius: 0.2rem;
+
+  z-index: 1000;
+  background: var(--col-primary);
+  padding-block: 0.5rem;
+  padding-left: 0.2rem;
+
+  &.hidden {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.2s ease-in-out, opacity 0.5s, visibility 0s linear 0.5s;
+  }
+
+  &.shown {
+    max-height: 10rem;
+    opacity: 1;
+    visibility: visible;
+    transition: max-height 0.2s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
+  }
+
+  div {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+
+    &:hover {
+      color: var(--col-secondary);
+    }
+
+    &.current {
+      color: var(--col-white);
+      background: var(--col-secondary);
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 0.2rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--col-tertiary);
+    border-radius: 0.5rem;
+
+    box-shadow: 0 1px 1px rgba($color: #000000, $alpha: 0.3);
   }
 }
