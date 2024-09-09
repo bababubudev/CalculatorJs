@@ -4,12 +4,8 @@
 .calculator {
   position: relative;
   display: grid;
-  align-self: self-end;
   gap: 0.5rem;
   z-index: 1000;
-
-  margin-bottom: 3rem;
-  margin-inline: 2rem;
 
   border-radius: 0.5rem;
 }

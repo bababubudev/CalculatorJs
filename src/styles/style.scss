@@ -28,14 +28,23 @@
 }
 
 main {
-  display: grid;
-  justify-content: stretch;
-  align-items: start;
-  grid-template-rows: 10rem 1fr;
-
   position: relative;
 
   font-family: "FiraSans", monospace;
   background: var(--col-window-bg);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   min-height: 100vh;
+
+  .calculator,
+  header {
+    margin-block: 3rem;
+    margin-inline: 2rem;
+  }
+}
+
+.seperator {
+  flex-grow: 1;
 }
