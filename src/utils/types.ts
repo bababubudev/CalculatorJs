@@ -18,8 +18,7 @@ export type comparisonObject = {
 export type optionObject = {
   angleUnit?: angleUnit,
   precision?: number,
-  theme?: string,
-  clearHistory?: () => void;
+  theme?: "light" | "dark" | "default",
 }
 
 export enum functionKeys {
