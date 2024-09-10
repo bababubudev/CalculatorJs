@@ -36,7 +36,7 @@ function CustomSelect({
               onClick={e => handleOptionClick(e, options[idx])}
               className={`${selectedOption === options[idx] ? "current" : ""}`}
             >
-              {option.charAt(0).toUpperCase() + option.slice(1)}
+              {option}
             </div>)) :
           options.map((option) => (
             <div
@@ -44,7 +44,7 @@ function CustomSelect({
               onClick={e => handleOptionClick(e, option)}
               className={`${selectedOption === option ? "current" : ""}`}
             >
-              {option.charAt(0).toUpperCase() + option.slice(1)}
+              {option}
             </div>
           ))}
       </div>

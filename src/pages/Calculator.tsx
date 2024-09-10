@@ -1,11 +1,12 @@
 import { useState } from "react";
-import type { calculationInfo, historyObject } from "../utils/types";
+import type { historyObject } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
 import { useOptions } from "../context/OptionsContext";
 
 function Calculator() {
-  const [passedInput, setPassedInput] = useState<calculationInfo>({ operation: "", result: "" });
+  const [passedInput, setPassedInput] = useState<string>("");
+
   const [history, setHistory] = useState<historyObject[]>([]);
   const { options } = useOptions();
 
@@ -20,10 +21,9 @@ function Calculator() {
   const setCurrentInput = (key: string) => {
     const selectedItem = history.find(elem => elem.key === key);
 
-    //? REFACTOR: Triggers a re-render
     if (selectedItem) {
-      setPassedInput({ operation: "", result: "" });
-      setTimeout(() => setPassedInput(selectedItem), 0);
+      setPassedInput("");
+      setInterval(() => setPassedInput(selectedItem.operation), 0);
     }
   }
 
@@ -35,10 +35,10 @@ function Calculator() {
         onHistoryClicked={setCurrentInput}
       />
       <CalculatorIO
-        option={options}
         needsRounding={history[history.length - 1]?.needsRounding ?? false}
-        addToHistory={addToHistory}
         passedInput={passedInput}
+        options={options}
+        addToHistory={addToHistory}
       />
     </div>
   );

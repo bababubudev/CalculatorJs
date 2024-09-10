@@ -1,5 +1,5 @@
-import type { angleUnit, calculationInfo, historyObject, optionObject, suggestionObject } from "../utils/types";
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
+import { cloneElement, FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
@@ -11,12 +11,12 @@ import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
   needsRounding: boolean;
-  option: optionObject;
-  passedInput: calculationInfo;
+  passedInput: string;
+  options: optionObject;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -38,6 +38,34 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
     radian: "rad",
     gradian: "grad",
   };
+
+  const updateInputValue = useCallback((value: string, called: boolean = false) => {
+    const updatedValue = autoCompleteBrackets(value);
+    const output = calculate(value, options.angleUnit);
+
+    console.log(called);
+    setInputValue(value);
+    setIsInputBlur(false);
+    setIsSubmitted(false);
+    setBracketPreview(updatedValue);
+    setSelectedPreview(0);
+
+    setFunctionPreview({ attemptString: "", suggestions: [] });
+    setTopDisplay(output.result || "");
+  }, [options.angleUnit]);
+
+  useEffect(() => {
+    if (!passedInput) return;
+    updateInputValue(passedInput, true);
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [passedInput, updateInputValue]);
+
+  useEffect(() => {
+    updateInputValue(inputValue, false);
+  }, [options, updateInputValue, inputValue]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -102,11 +130,11 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
     }
   };
 
-  const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     const currentValue = e.target.value;
 
     const updatedValue = autoCompleteBrackets(currentValue);
-    const output = calculate(currentValue, option.angleUnit);
+    const output = calculate(currentValue, options.angleUnit);
     const possibleFunctions = suggestMathFunctions(currentValue);
 
     setInputValue(currentValue);
@@ -123,13 +151,13 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
     setTopDisplay(output.result || "");
-  }, [option.angleUnit]);
+  };
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    const output = calculate(inputValue, option.angleUnit);
-    const roundedResult = roundNumbers(Number(output.result), option.precision);
+    const output = calculate(inputValue, options.angleUnit);
+    const roundedResult = roundNumbers(Number(output.result), options.precision);
 
     const displayResult = roundedResult.requires
       ? roundedResult.rounded
@@ -150,21 +178,6 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
       });
     }
   };
-
-  //? REFACTOR: There must be a better way
-  useEffect(() => {
-    if (!passedInput) return;
-
-    const currentEvent = { target: { value: passedInput.operation } } as React.ChangeEvent<HTMLInputElement>;
-    onInputChange(currentEvent, true);
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-      setIsInputBlur(false);
-    }
-
-    setIsInputBlur(false);
-  }, [passedInput, onInputChange]);
 
   return (
     <>
@@ -211,7 +224,7 @@ function CalculatorIO({ addToHistory, needsRounding, option, passedInput }: Calc
           </div>
         </div>
         <button className="submission-area" type="submit">
-          <p className="angle-unit">{angleUnitLabels[option.angleUnit ?? "radian"]}</p>
+          <p className="angle-unit">{angleUnitLabels[options.angleUnit ?? "radian"]}</p>
           <p className="submit-icon">=</p>
         </button>
       </form>

@@ -22,10 +22,8 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
     const element = historyItemRefs.current.get(key);
     if (element) {
       element.classList.add("item-exit");
-      element.classList.remove("item-enter");
       requestAnimationFrame(() => {
         element.classList.add("item-exit-active");
-        element.classList.remove("item-enter-active");
         setTimeout(() => {
           setTransitionItems(prevItems => prevItems.filter(item => item.key !== key));
           removeFromHistory(key);

@@ -40,8 +40,8 @@ $gradiant-color: white;
     }
 
     .item-exit-active {
-      opacity: 0;
       transform: translateX(-100%);
+      opacity: 0;
       transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
     }
 
