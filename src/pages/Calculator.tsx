@@ -1,13 +1,13 @@
 import { useState } from "react";
-import type { historyObject } from "../utils/types";
+import type { calculationInfo, historyObject } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
 import { useOptions } from "../context/OptionsContext";
 
 function Calculator() {
-  const [passedInput, setPassedInput] = useState<string>("");
-
+  const [passedInput, setPassedInput] = useState<calculationInfo>({ operation: "", result: "" });
   const [history, setHistory] = useState<historyObject[]>([]);
+
   const { options } = useOptions();
 
   const addToHistory = (info: historyObject) => {
@@ -20,10 +20,11 @@ function Calculator() {
 
   const setCurrentInput = (key: string) => {
     const selectedItem = history.find(elem => elem.key === key);
+    console.log("call");
 
     if (selectedItem) {
-      setPassedInput("");
-      setInterval(() => setPassedInput(selectedItem.operation), 0);
+      setPassedInput({ operation: "", result: "" });
+      setTimeout(() => setPassedInput(selectedItem), 0);
     }
   }
 

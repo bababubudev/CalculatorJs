@@ -4,7 +4,6 @@ $gradiant-color: white;
   position: relative;
   display: grid;
   background: var(--col-white-faded);
-  cursor: pointer;
 
   &.clearing {
     height: 50vh;
@@ -51,23 +50,9 @@ $gradiant-color: white;
       justify-content: center;
       grid-template-columns: 1fr 2rem;
       gap: 0.5ch;
+      cursor: pointer;
 
-      background: var(--col-white-faded);
-      border-radius: 0.5rem;
-      box-shadow: 0 0 1px var(--std-col-box-shadow);
-
-      padding: 0.5rem 1rem;
       user-select: none;
-
-      &:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 5px var(--std-col-box-shadow);
-      }
-
-      &:active {
-        background: var(--col-secondary);
-        color: var(--col-white);
-      }
 
       .history-part {
         display: grid;
@@ -75,6 +60,20 @@ $gradiant-color: white;
         align-items: center;
 
         overflow-x: scroll;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: var(--col-window-bg);
+        background: var(--col-white-faded);
+        box-shadow: 0 0 1px var(--std-col-box-shadow);
+
+        &:hover {
+          box-shadow: 0 0 5px var(--std-col-box-shadow);
+        }
+
+        &:active {
+          background: var(--col-secondary);
+          color: var(--col-white);
+        }
 
         .operation {
           text-overflow: ellipsis;
@@ -111,37 +110,59 @@ $gradiant-color: white;
           cursor: pointer;
         }
 
+        &:hover {
+          box-shadow: 0 0 5px var(--std-col-box-shadow);
+        }
+
+        &:active {
+          background: var(--col-white);
+
+          .del-btn svg {
+            color: var(--col-accent);
+          }
+        }
+
         display: flex;
         align-items: center;
         justify-content: center;
+        background: var(--col-accent);
+        border-radius: 0.5rem;
 
         font-family: "ExtraLight";
 
         .del-btn {
           align-self: center;
+          justify-self: center;
 
           background: none;
           border: none;
 
           svg {
-            color: var(--col-accent);
+            color: var(--col-white);
+            fill: var(--col-white);
+
             width: 1.2rem;
             height: 1.2rem;
+
+            filter: drop-shadow(0px 1px var(--std-col-box-shadow));
           }
         }
 
         .index {
           position: absolute;
-          right: 0.3rem;
+          right: 2.5rem;
           top: 0;
 
           font-size: 0.8rem;
           font-family: "Bold";
 
+          color: var(--col-window-bg);
           background: var(--col-tertiary);
-          padding: 0.1rem;
+
+          padding: 0.15rem;
 
           border-radius: 0 0 .2rem .2rem;
+          box-shadow: 1px 1px 1px var(--std-col-box-shadow);
         }
       }
     }

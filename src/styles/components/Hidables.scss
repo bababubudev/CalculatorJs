@@ -90,8 +90,7 @@
 
 .hidables.shown {
 
-  .show-hide-btn,
-  .clear-all-btn {
+  .show-hide-btn {
     box-shadow: 3px 3px 3px hsla(0, 0%, 0%, 0.2);
     animation-name: bounce-in;
     animation-duration: 0.3s;

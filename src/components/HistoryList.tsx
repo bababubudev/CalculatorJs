@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IoTrashBinOutline } from "react-icons/io5";
-import { TbClearAll } from "react-icons/tb";
+import { PiBroomFill } from "react-icons/pi";
 import { historyObject } from "../utils/types";
 import Modal from "./Modal";
 
@@ -114,10 +114,12 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
             {transitionItems.map(elem => (
               <li
                 key={elem.key}
-                onClick={() => onHistoryClicked(elem.key)}
                 ref={el => historyItemRefs.current.set(elem.key, el)}
               >
-                <div className="history-part">
+                <div
+                  className="history-part"
+                  onClick={() => onHistoryClicked(elem.key)}
+                >
                   <p className="operation">{elem.operation}</p>
                   <span>{elem.needsRounding ? "≈" : "="}</span>
                   <p className="result">{elem.result}</p>
@@ -131,6 +133,7 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
                   </span>
                 </div>
               </li>
+
             ))}
           </ul> :
           <p className="no-history">Nothing in history</p>
@@ -141,7 +144,7 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
         className="clear-all-btn"
         disabled={history.length === 0}
       >
-        <TbClearAll />
+        <PiBroomFill />
       </button>
       <Modal
         dialogue="Clear all history"

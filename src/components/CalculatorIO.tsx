@@ -1,5 +1,5 @@
-import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
-import { cloneElement, FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import type { angleUnit, calculationInfo, historyObject, optionObject, suggestionObject } from "../utils/types";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
@@ -11,7 +11,7 @@ import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
   needsRounding: boolean;
-  passedInput: string;
+  passedInput: calculationInfo;
   options: optionObject;
   addToHistory: (info: historyObject) => void;
 }
@@ -38,34 +38,6 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
     radian: "rad",
     gradian: "grad",
   };
-
-  const updateInputValue = useCallback((value: string, called: boolean = false) => {
-    const updatedValue = autoCompleteBrackets(value);
-    const output = calculate(value, options.angleUnit);
-
-    console.log(called);
-    setInputValue(value);
-    setIsInputBlur(false);
-    setIsSubmitted(false);
-    setBracketPreview(updatedValue);
-    setSelectedPreview(0);
-
-    setFunctionPreview({ attemptString: "", suggestions: [] });
-    setTopDisplay(output.result || "");
-  }, [options.angleUnit]);
-
-  useEffect(() => {
-    if (!passedInput) return;
-    updateInputValue(passedInput, true);
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [passedInput, updateInputValue]);
-
-  useEffect(() => {
-    updateInputValue(inputValue, false);
-  }, [options, updateInputValue, inputValue]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

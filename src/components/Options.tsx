@@ -13,9 +13,16 @@ function Options() {
     setOptions({ [name]: value });
   };
 
+  const getOrdinalSuffix = (num: number) => {
+    if (num % 10 === 1 && num % 100 !== 11) return `${num}st`;
+    if (num % 10 === 2 && num % 100 !== 12) return `${num}nd`;
+    if (num % 10 === 3 && num % 100 !== 13) return `${num}rd`;
+    return `${num}th`;
+  };
+
   const precisionOptions = Array.from({ length: 14 }, (_, i) => ({
     value: (i + 2).toString(),
-    display: `${i + 2} Decimal Place`,
+    display: `${getOrdinalSuffix(i + 2)} decimal`,
   }));
 
   const handleDropDownClick = (name: string) => {
