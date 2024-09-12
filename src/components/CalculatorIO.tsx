@@ -16,7 +16,7 @@ interface CalculatorIOProps {
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, needsRounding, options }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
