@@ -38,6 +38,7 @@ export function excludeRight(str: string, character: string) {
 
 export function suggestMathFunctions(input: string): suggestionObject {
   const functionMatch = input.match(/([a-z]+)\(?$/i);
+  console.log(functionMatch);
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];

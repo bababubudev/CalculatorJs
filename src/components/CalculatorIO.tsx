@@ -1,4 +1,4 @@
-import type { angleUnit, calculationInfo, historyObject, optionObject, suggestionObject } from "../utils/types";
+import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -11,33 +11,63 @@ import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
   needsRounding: boolean;
-  passedInput: calculationInfo;
+  passedInput: historyObject | undefined;
   options: optionObject;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, needsRounding, options }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
-  const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
-
-  const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [bracketPreview, setBracketPreview] = useState<string>("");
+
+  const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
+  const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
-
-  const hidePreview = (isSubmitted
-    || functionPreview?.suggestions.length <= 0
-    || functionPreview?.suggestionUsed);
+  const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
 
   const angleUnitLabels: Record<angleUnit, string> = {
     degree: "deg",
     radian: "rad",
     gradian: "grad",
   };
+
+  const [lastPassedInput, setLastPassedInput] = useState<historyObject | undefined>(passedInput);
+
+  const focusInput = () => {
+    if (!inputRef.current) return;
+    setIsInputBlur(false);
+    inputRef.current.focus();
+  }
+
+  useEffect(() => {
+    focusInput();
+    if (!passedInput) return;
+
+    if (lastPassedInput && passedInput.key === lastPassedInput.key) {
+      //TODO: Add ability to see changes when options change.
+
+      return;
+    }
+
+    const { operation } = passedInput;
+    const { result } = calculate(operation, options.angleUnit);
+    const newBracketPreview = autoCompleteBrackets(operation);
+
+    setIsSubmitted(false);
+    setInputValue(operation);
+    setTopDisplay(result);
+    setFunctionPreview({ attemptString: "", suggestions: [], suggestionUsed: true });
+
+    setBracketPreview(newBracketPreview);
+    setLastPassedInput(passedInput);
+    focusInput();
+  }, [passedInput, lastPassedInput, options]);
+
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -103,23 +133,21 @@ function CalculatorIO({ addToHistory, needsRounding, options }: CalculatorIOProp
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
+    setIsInputBlur(false);
+    setIsSubmitted(false);
+
     const currentValue = e.target.value;
 
     const updatedValue = autoCompleteBrackets(currentValue);
     const output = calculate(currentValue, options.angleUnit);
-    const possibleFunctions = suggestMathFunctions(currentValue);
+    const { attemptString, suggestions } = suggestMathFunctions(currentValue);
 
     setInputValue(currentValue);
-    setIsInputBlur(false);
-    setIsSubmitted(false);
     setBracketPreview(updatedValue);
     setSelectedPreview(0);
 
-    const currentAttempt = possibleFunctions.attemptString;
-    const currentSuggestions = possibleFunctions.suggestions.map(func => `${func}(`);
-
-    possibleFunctions.suggestions.length > 0
-      ? setFunctionPreview({ attemptString: currentAttempt, suggestions: currentSuggestions, suggestionUsed: usedCall })
+    suggestions.length > 0
+      ? setFunctionPreview({ attemptString, suggestions: suggestions.map(func => `${func}(`), suggestionUsed: usedCall })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
     setTopDisplay(output.result || "");
@@ -142,7 +170,8 @@ function CalculatorIO({ addToHistory, needsRounding, options }: CalculatorIOProp
 
       addToHistory({
         key: uuidv4(),
-        operation: bracketPreview,
+        operation: inputValue,
+        displayOperation: bracketPreview,
         result: displayResult,
         needsRounding: roundedResult.requires,
         currentCalculation: output,

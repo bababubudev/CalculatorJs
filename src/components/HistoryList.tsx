@@ -120,7 +120,7 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
                   className="history-part"
                   onClick={() => onHistoryClicked(elem.key)}
                 >
-                  <p className="operation">{elem.operation}</p>
+                  <p className="operation">{elem.displayOperation}</p>
                   <span>{elem.needsRounding ? "≈" : "="}</span>
                   <p className="result">{elem.result}</p>
                 </div>

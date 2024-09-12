@@ -52,6 +52,7 @@ export type calculationInfo = {
 
 export type historyObject = calculationInfo & {
   key: string,
+  displayOperation?: string,
   needsRounding?: boolean,
   currentCalculation?: calculationInfo,
 }
