@@ -36,7 +36,9 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 100vh;
+  min-height: 100svh;
+
+  padding-bottom: env(safe-area-inset-bottom);
 
   .calculator,
   header {
@@ -47,4 +49,12 @@ main {
 
 .seperator {
   flex-grow: 1;
+}
+
+input {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+html {
+  scroll-padding-bottom: env(safe-area-inset-bottom);
 }
