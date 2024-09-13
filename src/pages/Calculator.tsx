@@ -35,7 +35,6 @@ function Calculator() {
         onHistoryClicked={setCurrentInput}
       />
       <CalculatorIO
-        needsRounding={history[history.length - 1]?.needsRounding ?? false}
         passedInput={passedInput}
         options={options}
         addToHistory={addToHistory}

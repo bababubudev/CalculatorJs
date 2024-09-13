@@ -10,13 +10,12 @@ import {
 import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
-  needsRounding: boolean;
   passedInput: historyObject | undefined;
   options: optionObject;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -36,6 +35,7 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
     gradian: "grad",
   };
 
+  const [currentCalc, setCurrentCalc] = useState<historyObject | undefined>(undefined);
   const [lastPassedInput, setLastPassedInput] = useState<historyObject | undefined>(passedInput);
 
   const focusInput = () => {
@@ -45,29 +45,67 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
   }
 
   useEffect(() => {
-    focusInput();
     if (!passedInput) return;
+    focusInput();
+
+    setIsSubmitted(false);
+    const { operation } = passedInput;
 
     if (lastPassedInput && passedInput.key === lastPassedInput.key) {
-      //TODO: Add ability to see changes when options change.
+      const { result } = calculate(operation, options.angleUnit);
+      const roundedResult = roundNumbers(Number(result), options.precision);
+      const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+      const newBracketPreview = autoCompleteBrackets(operation);
+
+      setTopDisplay(displayResult);
+      setInputValue(operation);
+      setBracketPreview(newBracketPreview)
 
       return;
     }
 
-    const { operation } = passedInput;
     const { result } = calculate(operation, options.angleUnit);
     const newBracketPreview = autoCompleteBrackets(operation);
+    const roundedResult = roundNumbers(Number(result), options.precision);
+    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
 
-    setIsSubmitted(false);
     setInputValue(operation);
-    setTopDisplay(result);
+    setTopDisplay(displayResult);
     setFunctionPreview({ attemptString: "", suggestions: [], suggestionUsed: true });
 
     setBracketPreview(newBracketPreview);
     setLastPassedInput(passedInput);
-    focusInput();
-  }, [passedInput, lastPassedInput, options]);
+  }, [passedInput, lastPassedInput, options.angleUnit, options.precision]);
 
+  useEffect(() => {
+    if (!currentCalc || passedInput) {
+      return;
+    }
+
+    focusInput();
+    const { operation, displayOperation } = currentCalc;
+    const { result } = calculate(operation, options.angleUnit);
+
+    const roundedResult = roundNumbers(Number(result), options.precision);
+    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+    const newBracketPreview = autoCompleteBrackets(displayResult);
+
+    setInputValue(displayResult);
+    setTopDisplay(displayOperation ?? operation);
+    setBracketPreview(newBracketPreview);
+
+  }, [currentCalc, options.angleUnit, options.precision, passedInput]);
+
+  useEffect(() => {
+    if (currentCalc || passedInput || topDisplay === "") return;
+
+    focusInput();
+    const { result } = calculate(inputValue, options.angleUnit);
+    const roundedResult = roundNumbers(Number(result), options.precision);
+    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+
+    setTopDisplay(displayResult);
+  }, [inputValue, topDisplay, currentCalc, passedInput, options.angleUnit, options.precision]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -135,11 +173,15 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     setIsInputBlur(false);
     setIsSubmitted(false);
+    setCurrentCalc(undefined);
 
     const currentValue = e.target.value;
 
     const updatedValue = autoCompleteBrackets(currentValue);
-    const output = calculate(currentValue, options.angleUnit);
+    const { result } = calculate(currentValue, options.angleUnit);
+    const roundedResult = roundNumbers(Number(result), options.precision);
+    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+
     const { attemptString, suggestions } = suggestMathFunctions(currentValue);
 
     setInputValue(currentValue);
@@ -150,12 +192,13 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
       ? setFunctionPreview({ attemptString, suggestions: suggestions.map(func => `${func}(`), suggestionUsed: usedCall })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
-    setTopDisplay(output.result || "");
+    setTopDisplay(displayResult);
   };
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
+    setIsSubmitted(true);
     const output = calculate(inputValue, options.angleUnit);
     const roundedResult = roundNumbers(Number(output.result), options.precision);
 
@@ -166,17 +209,18 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
     if (output.result !== "") {
       setTopDisplay(bracketPreview);
       setInputValue(displayResult);
-      setIsSubmitted(true);
 
-      addToHistory({
+      const currentInfo: historyObject = {
         key: uuidv4(),
         operation: inputValue,
         displayOperation: bracketPreview,
         result: displayResult,
         needsRounding: roundedResult.requires,
-        currentCalculation: output,
         angleUnit: output?.angleUnit
-      });
+      };
+
+      setCurrentCalc(currentInfo);
+      addToHistory(currentInfo);
     }
   };
 
@@ -205,7 +249,7 @@ function CalculatorIO({ addToHistory, needsRounding, options, passedInput }: Cal
           <div className="interaction">
             {isSubmitted
               ? <p className="submit-text">
-                {needsRounding ? "≈" : "="}
+                {currentCalc?.needsRounding ? "≈" : "="}
               </p>
               : <div className="bracket-preview">
                 {bracketPreview}
