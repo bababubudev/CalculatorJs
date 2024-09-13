@@ -68,6 +68,11 @@
     }
   }
 
+  .submission-area,
+  .submission-area>* {
+    transition: background-color 0.5s ease-out;
+  }
+
   .submission-area {
     display: grid;
     justify-content: center;
@@ -104,6 +109,15 @@
 
       font-family: "FiraSans";
       font-size: 2rem;
+    }
+  }
+
+  &.submitted {
+
+    .submission-area,
+    .submission-area>* {
+      background: var(--col-accent);
+      transition: background-color 0.5s ease-out;
     }
   }
 }

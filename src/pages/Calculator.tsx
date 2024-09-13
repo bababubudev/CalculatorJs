@@ -27,6 +27,12 @@ function Calculator() {
     }
   }
 
+  const removePassedInput = () => {
+    if (passedInput) {
+      setPassedInput(undefined);
+    }
+  }
+
   return (
     <div className="calculator">
       <History
@@ -38,6 +44,7 @@ function Calculator() {
         passedInput={passedInput}
         options={options}
         addToHistory={addToHistory}
+        removePassedInput={removePassedInput}
       />
     </div>
   );

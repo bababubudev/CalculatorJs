@@ -12,10 +12,11 @@ import PreviewDisplay from "./PreviewDisplay";
 interface CalculatorIOProps {
   passedInput: historyObject | undefined;
   options: optionObject;
+  removePassedInput: () => void;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -46,8 +47,8 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
 
   useEffect(() => {
     if (!passedInput) return;
-    focusInput();
 
+    focusInput();
     setIsSubmitted(false);
     const { operation } = passedInput;
 
@@ -59,15 +60,15 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
 
       setTopDisplay(displayResult);
       setInputValue(operation);
-      setBracketPreview(newBracketPreview)
+      setBracketPreview(newBracketPreview);
 
       return;
     }
 
     const { result } = calculate(operation, options.angleUnit);
-    const newBracketPreview = autoCompleteBrackets(operation);
     const roundedResult = roundNumbers(Number(result), options.precision);
     const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+    const newBracketPreview = autoCompleteBrackets(operation);
 
     setInputValue(operation);
     setTopDisplay(displayResult);
@@ -75,7 +76,7 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
 
     setBracketPreview(newBracketPreview);
     setLastPassedInput(passedInput);
-  }, [passedInput, lastPassedInput, options.angleUnit, options.precision]);
+  }, [passedInput, lastPassedInput, options.precision, options.angleUnit]);
 
   useEffect(() => {
     if (!currentCalc || passedInput) {
@@ -93,7 +94,6 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
     setInputValue(displayResult);
     setTopDisplay(displayOperation ?? operation);
     setBracketPreview(newBracketPreview);
-
   }, [currentCalc, options.angleUnit, options.precision, passedInput]);
 
   useEffect(() => {
@@ -118,6 +118,19 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
 
       if (validKeys && !isSupportedKeyCombo) {
         inputRef.current.focus();
+        if (event.key === "Backspace" && currentCalc) {
+          event.preventDefault();
+          setIsInputBlur(false);
+
+          const { operation, result } = currentCalc;
+
+          setInputValue(operation);
+          setTopDisplay(result);
+          setBracketPreview(autoCompleteBrackets(operation));
+
+          setIsSubmitted(false);
+          setCurrentCalc(undefined);
+        }
       }
       else if (event.key === "Escape") {
         inputRef.current.blur();
@@ -126,7 +139,7 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [currentCalc]);
 
   const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;
@@ -174,6 +187,8 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
     setIsInputBlur(false);
     setIsSubmitted(false);
     setCurrentCalc(undefined);
+    removePassedInput();
+    setLastPassedInput(undefined);
 
     const currentValue = e.target.value;
 
@@ -198,7 +213,8 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    setIsSubmitted(true);
+    if (isSubmitted) return;
+
     const output = calculate(inputValue, options.angleUnit);
     const roundedResult = roundNumbers(Number(output.result), options.precision);
 
@@ -209,6 +225,7 @@ function CalculatorIO({ addToHistory, options, passedInput }: CalculatorIOProps)
     if (output.result !== "") {
       setTopDisplay(bracketPreview);
       setInputValue(displayResult);
+      setIsSubmitted(true);
 
       const currentInfo: historyObject = {
         key: uuidv4(),
