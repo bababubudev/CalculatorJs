@@ -37,7 +37,6 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
   };
 
   const [currentCalc, setCurrentCalc] = useState<historyObject | undefined>(undefined);
-  const [lastPassedInput, setLastPassedInput] = useState<historyObject | undefined>(passedInput);
 
   const focusInput = () => {
     if (!inputRef.current) return;
@@ -51,21 +50,8 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
     focusInput();
     setIsSubmitted(false);
     const { operation } = passedInput;
-
-    if (lastPassedInput && passedInput.key === lastPassedInput.key) {
-      const { result } = calculate(operation, options.angleUnit);
-      const roundedResult = roundNumbers(Number(result), options.precision);
-      const displayResult = roundedResult.requires ? roundedResult.rounded : result;
-      const newBracketPreview = autoCompleteBrackets(operation);
-
-      setTopDisplay(displayResult);
-      setInputValue(operation);
-      setBracketPreview(newBracketPreview);
-
-      return;
-    }
-
     const { result } = calculate(operation, options.angleUnit);
+
     const roundedResult = roundNumbers(Number(result), options.precision);
     const displayResult = roundedResult.requires ? roundedResult.rounded : result;
     const newBracketPreview = autoCompleteBrackets(operation);
@@ -75,8 +61,7 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
     setFunctionPreview({ attemptString: "", suggestions: [], suggestionUsed: true });
 
     setBracketPreview(newBracketPreview);
-    setLastPassedInput(passedInput);
-  }, [passedInput, lastPassedInput, options.precision, options.angleUnit]);
+  }, [passedInput, options.precision, options.angleUnit]);
 
   useEffect(() => {
     if (!currentCalc || passedInput) {
@@ -97,7 +82,7 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
   }, [currentCalc, options.angleUnit, options.precision, passedInput]);
 
   useEffect(() => {
-    if (currentCalc || passedInput || topDisplay === "") return;
+    if (currentCalc || passedInput || !topDisplay) return;
 
     focusInput();
     const { result } = calculate(inputValue, options.angleUnit);
@@ -188,7 +173,6 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
     setIsSubmitted(false);
     setCurrentCalc(undefined);
     removePassedInput();
-    setLastPassedInput(undefined);
 
     const currentValue = e.target.value;
 
