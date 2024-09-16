@@ -34,8 +34,6 @@ function Calculator() {
   }
 
   const ans = (index: number): number => {
-    console.log(historyList);
-    console.log(historyList.length - index);
     if (index < 1 || index >= historyList.length + 1) return NaN;
     return Number(historyList[historyList.length - index].result);
   }
