@@ -1,9 +1,57 @@
-import evaluateExpression, {
-  mathFunctions,
-  setAngleUnit,
-  getAngleUnit
-} from "./evaluator";
-import type { angleUnit, calculationInfo, suggestionObject } from "./types";
+import evaluateExpression from "./evaluator";
+import type { angleUnit, calculationInfo, mathFunctions, suggestionObject } from "./types";
+
+export const functions: { [key: string]: mathFunctions } = {
+  sin: (x: number) => Math.sin(toCurrentAngle(x)),
+  cos: (x: number) => Math.cos(toCurrentAngle(x)),
+  tan: (x: number) => Math.tan(toCurrentAngle(x)),
+  asin: (x: number) => Math.asin(x) * (180 / Math.PI),
+  acos: (x: number) => Math.acos(x) * (180 / Math.PI),
+  atan: (x: number) => Math.atan(x) * (180 / Math.PI),
+  sqrt: Math.sqrt,
+  log: Math.log,
+  lg: Math.log10,
+  ln: Math.log,
+  abs: Math.abs,
+  factorial: factorialize,
+  pi: Math.PI,
+  e: Math.E,
+};
+
+export function addCustomFunction(name: string, func: mathFunctions) {
+  functions[name] = func;
+}
+
+let currentAngleUnit: angleUnit = "radian";
+
+export function setAngleUnit(_angleUnit: angleUnit = "radian"): void {
+  currentAngleUnit = _angleUnit;
+}
+
+export function getAngleUnit(): angleUnit {
+  return currentAngleUnit;
+}
+
+function factorialize(x: number): number {
+  if (x === undefined) return 0;
+  if (x < 0) return -1;
+  if (x > 180) return Infinity;
+
+  else if (x === 0) return 1;
+  else return (x * factorialize(x - 1));
+}
+
+function toCurrentAngle(angle: number): number {
+  switch (currentAngleUnit) {
+    case "degree":
+      return angle * (Math.PI / 180);
+    case "gradian":
+      return angle * (Math.PI / 200);
+    case "radian":
+    default:
+      return angle;
+  }
+}
 
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
@@ -45,7 +93,7 @@ export function suggestMathFunctions(input: string): suggestionObject {
 
     return {
       attemptString: partialFunciton,
-      suggestions: Object.keys(mathFunctions).filter(func => regex.test(func)),
+      suggestions: Object.keys(functions).filter(func => regex.test(func)),
       suggestionUsed: false,
     };
   }

@@ -4,7 +4,7 @@
 .calculation-display {
   z-index: -1;
   color: var(--col-window-bg);
-  background: var(--col-white-faded);
+  background-color: var(--col-white, white);
   border-radius: 0.5rem;
   padding-inline: 1em;
   padding-block: 0.5em;
@@ -12,10 +12,6 @@
 
   display: grid;
   grid-template-columns: 1fr 5rem;
-
-  &:focus-within {
-    background-color: var(--col-white, white);
-  }
 
   .display {
     .top-display {

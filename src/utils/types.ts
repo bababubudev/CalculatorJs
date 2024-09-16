@@ -22,22 +22,23 @@ export type optionObject = {
 }
 
 export enum functionKeys {
-  sin = "sin",
-  cos = "cos",
-  tan = "tan",
-  asin = "asin",
-  acos = "acos",
-  atan = "atan",
-  sqrt = "sqrt",
-  log = "log",
-  lg = "lg",
-  ln = "ln",
-  abs = "abs",
-  factorial = "!",
-  factorialLong = "factorial",
+  sin = "sin(",
+  cos = "cos(",
+  tan = "tan(",
+  asin = "asin(",
+  acos = "acos(",
+  atan = "atan(",
+  sqrt = "sqrt(",
+  log = "log(",
+  lg = "lg(",
+  ln = "ln(",
+  abs = "abs(",
+  factorial = "factorial(",
+  PI = "pi",
+  e = "e"
 }
 
-export type MathFunctions = (x: number) => unknown;
+export type mathFunctions = ((x: number) => unknown) | number;
 
 export type inputInfo = {
   input: string,

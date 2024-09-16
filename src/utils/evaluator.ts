@@ -1,56 +1,6 @@
-import type { angleUnit, MathFunctions } from "./types";
+import { functions } from "./utilityFunctions";
 
 // type SeperatedInput = [string[], string | null, string[]];
-
-let currentAngleUnit: angleUnit = "radian";
-
-export const mathFunctions: { [key: string]: MathFunctions } = {
-  sin: (x: number) => Math.sin(toCurrentAngle(x)),
-  cos: (x: number) => Math.cos(toCurrentAngle(x)),
-  tan: (x: number) => Math.tan(toCurrentAngle(x)),
-  asin: (x: number) => Math.asin(x) * (180 / Math.PI),
-  acos: (x: number) => Math.acos(x) * (180 / Math.PI),
-  atan: (x: number) => Math.atan(x) * (180 / Math.PI),
-  sqrt: Math.sqrt,
-  log: Math.log,
-  lg: Math.log10,
-  ln: Math.log,
-  abs: Math.abs,
-  factorial: factorialize,
-};
-
-export function addCustomFunction(name: string, func: MathFunctions) {
-  mathFunctions[name] = func;
-}
-
-export function setAngleUnit(_angleUnit: angleUnit = "radian"): void {
-  currentAngleUnit = _angleUnit;
-}
-
-export function getAngleUnit(): angleUnit {
-  return currentAngleUnit;
-}
-
-function toCurrentAngle(angle: number): number {
-  switch (currentAngleUnit) {
-    case "degree":
-      return angle * (Math.PI / 180);
-    case "gradian":
-      return angle * (Math.PI / 200);
-    case "radian":
-    default:
-      return angle;
-  }
-}
-
-function factorialize(x: number): number {
-  if (x === undefined) return 0;
-  if (x < 0) return -1;
-  if (x > 180) return Infinity;
-
-  else if (x === 0) return 1;
-  else return (x * factorialize(x - 1));
-}
 
 function evaluateExpression(input: string): number {
   input = autoCompleteParentheses(input);
@@ -87,7 +37,7 @@ function tokenize(input: string): string[] {
   const size = input.length;
   const operators = new Set(['+', '-', '*', '/', '^', '(', ')']);
   const comparators = new Set(['=', '<', '>']);
-  const functions = new Set(Object.keys(mathFunctions))
+  const functionSet = new Set(Object.keys(functions))
   let currentToken = "";
 
   for (let i = 0; i < size; i++) {
@@ -128,7 +78,7 @@ function tokenize(input: string): string[] {
     //* INFO: Handles mathematical functions (sin, cos)
     else {
       currentToken += char;
-      if (functions.has(currentToken)) {
+      if (functionSet.has(currentToken)) {
         tokens.push(currentToken);
         currentToken = "";
       }
@@ -195,7 +145,7 @@ function shuntingYard(tokens: string[]): string[] {
 
   const rightAssociative = new Set(['^']);
   const operators = new Set(['+', '-', '*', '/', '^']);
-  const functions = new Set(Object.keys(mathFunctions));
+  const functionSet = new Set(Object.keys(functions));
 
   const outputQueue: string[] = [];
   const operatorStack: string[] = [];
@@ -204,7 +154,7 @@ function shuntingYard(tokens: string[]): string[] {
     if (!isNaN(parseFloat(token))) {
       outputQueue.push(token);
     }
-    else if (functions.has(token)) {
+    else if (functionSet.has(token)) {
       operatorStack.push(token);
     }
     else if (operators.has(token)) {
@@ -236,7 +186,7 @@ function shuntingYard(tokens: string[]): string[] {
 
       operatorStack.pop();
 
-      if (functions.has(operatorStack[operatorStack.length - 1])) {
+      if (functionSet.has(operatorStack[operatorStack.length - 1])) {
         outputQueue.push(operatorStack.pop() as string);
       }
     }
@@ -256,34 +206,40 @@ function evaluateRPN(rpn: string[]): number {
     if (!isNaN(parseFloat(token))) {
       stack.push(parseFloat(token));
     }
-    else {
-      if (mathFunctions[token]) {
-        const a = stack.pop() as number;
-        stack.push(mathFunctions[token](a) as number);
+    else if (functions[token]) {
+      switch (typeof functions[token]) {
+        case "number":
+          stack.push(functions[token] as number);
+          break;
+        case "function":
+          stack.push((functions[token] as (x: number) => number)(stack.pop() as number));
+          break;
+        default:
+          break;
       }
-      else {
-        const b = stack.pop() as number;
-        const a = stack.pop() as number;
+    }
+    else {
+      const b = stack.pop() as number;
+      const a = stack.pop() as number;
 
-        switch (token) {
-          case '+':
-            stack.push(a + b);
-            break;
-          case '-':
-            stack.push(a - b);
-            break;
-          case '*':
-            stack.push(a * b);
-            break;
-          case '/':
-            stack.push(a / b);
-            break;
-          case '^':
-            stack.push(Math.pow(a, b));
-            break;
-          default:
-            stack.push(NaN);
-        }
+      switch (token) {
+        case '+':
+          stack.push(a + b);
+          break;
+        case '-':
+          stack.push(a - b);
+          break;
+        case '*':
+          stack.push(a * b);
+          break;
+        case '/':
+          stack.push(a / b);
+          break;
+        case '^':
+          stack.push(Math.pow(a, b));
+          break;
+        default:
+          stack.push(NaN);
       }
     }
   });
