@@ -6,20 +6,20 @@ import { useOptions } from "../context/OptionsContext";
 
 function Calculator() {
   const [passedInput, setPassedInput] = useState<string>("");
-  const [history, setHistory] = useState<historyObject[]>([]);
+  const [historyList, setHistoryList] = useState<historyObject[]>([]);
 
   const { options } = useOptions();
 
   const addToHistory = (info: historyObject) => {
-    setHistory(prev => [...prev, info]);
+    setHistoryList(prev => [...prev, info]);
   }
 
   const removeFromHistory = (key: string) => {
-    setHistory(prev => prev.filter(elem => elem.key !== key));
+    setHistoryList(prev => prev.filter(elem => elem.key !== key));
   }
 
   const setCurrentInput = (key: string) => {
-    const selectedItem = history.find(elem => elem.key === key);
+    const selectedItem = historyList.find(elem => elem.key === key);
 
     if (selectedItem) {
       setPassedInput("");
@@ -33,16 +33,24 @@ function Calculator() {
     }
   }
 
+  const ans = (index: number): number => {
+    console.log(historyList);
+    console.log(historyList.length - index);
+    if (index < 1 || index >= historyList.length + 1) return NaN;
+    return Number(historyList[historyList.length - index].result);
+  }
+
   return (
     <div className="calculator">
       <History
-        history={history}
+        history={historyList}
         removeFromHistory={removeFromHistory}
         onHistoryClicked={setCurrentInput}
       />
       <CalculatorIO
         passedInput={passedInput}
         options={options}
+        askForAnswer={ans}
         addToHistory={addToHistory}
         removePassedInput={removePassedInput}
       />

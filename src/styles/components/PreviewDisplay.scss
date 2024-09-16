@@ -8,7 +8,7 @@
   justify-content: stretch;
   position: relative;
 
-  p {
+  .tooltip {
     position: absolute;
     top: -0.9rem;
 
@@ -24,7 +24,7 @@
   &.blurred {
     background: rgba(255, 255, 255, 0.5);
 
-    p {
+    .tooltip {
       background: #8e999a;
       color: var(--col-window-bg);
       box-shadow: none;
@@ -36,7 +36,9 @@
         box-shadow: none;
 
         &.selected {
-          color: var(--col-window-bg);
+          p {
+            color: var(--col-window-bg);
+          }
 
           &::after {
             color: var(--col-window-bg);
@@ -62,7 +64,7 @@
   gap: 0.5rem;
 
   li {
-    color: var(--col-window-bg);
+    position: relative;
     padding: 0.2rem;
     border-radius: 0.5rem;
 
@@ -70,31 +72,37 @@
     font-family: "Light";
     cursor: pointer;
 
+    p {
+      color: var(--col-window-bg);
+      text-align: center;
+    }
+
     &.selected {
-      color: var(--col-secondary);
-      position: relative;
+      p {
+        color: var(--col-secondary);
+      }
 
       &::after {
         content: "\203A";
         position: absolute;
         top: 0.2rem;
         bottom: 0;
-        left: 0.5rem;
+        left: 0;
 
         font-family: "Bold";
         color: var(--col-secondary);
       }
 
-      &::before {
+      p::before {
         content: "";
         position: absolute;
 
         bottom: 0rem;
-        left: calc(50% - 1rem);
+        left: 50%;
 
         background: var(--col-secondary);
-        width: 1rem;
-        height: 0.1rem;
+        width: 0.5rem;
+        aspect-ratio: 4/1;
 
         border-radius: 1rem;
 
@@ -103,14 +111,14 @@
       }
     }
 
-    &:hover {
+    &:hover p {
       color: var(--col-secondary);
     }
 
     &:active {
       background: rgba(0, 0, 0, 0.1);
 
-      &.selected {
+      &.selected p {
         &::after {
           content: "";
         }

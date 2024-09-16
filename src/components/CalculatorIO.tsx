@@ -1,3 +1,4 @@
+import { functionKeys } from "../utils/types";
 import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -12,11 +13,12 @@ import PreviewDisplay from "./PreviewDisplay";
 interface CalculatorIOProps {
   passedInput: string;
   options: optionObject;
+  askForAnswer: (x: number) => number;
   removePassedInput: () => void;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
@@ -140,7 +142,11 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
       if (lastIndex !== -1) {
         const before = prev.slice(0, lastIndex);
         const after = prev.slice(lastIndex + attempt.length);
-        const currentChanges = before + suggestions[index] + "(" + after;
+
+        const selectedFunc = suggestions[index];
+        const selectedAutofill = functionKeys[selectedFunc];
+
+        const currentChanges = before + selectedAutofill + after;
 
         // ? REFACTOR: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
@@ -177,7 +183,15 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
     setCurrentCalc(undefined);
     removePassedInput();
 
-    const currentValue = e.target.value;
+    let currentValue = e.target.value;
+
+    //*NOTE: Replace ans(n) with the value from history or leave it unchanged if invalid
+    const ansPattern = /ans\((\d+)([^)]*)/g;
+    currentValue = currentValue.replace(ansPattern, (match, index) => {
+      const ansValue = askForAnswer(Number(index));
+      return ansValue !== undefined ? String(ansValue) : match;
+    });
+
 
     const updatedValue = autoCompleteBrackets(currentValue);
     const { result } = calculate(currentValue, options.angleUnit);

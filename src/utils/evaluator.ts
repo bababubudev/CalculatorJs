@@ -1,6 +1,53 @@
-import { functions } from "./utilityFunctions";
+import { angleUnit, mathFunctions } from "./types";
+// type SeperatedInput = [string[], string | null, string[]]
 
-// type SeperatedInput = [string[], string | null, string[]];
+export const functions: { [key: string]: mathFunctions } = {
+  sin: (x: number) => Math.sin(toCurrentAngle(x)),
+  cos: (x: number) => Math.cos(toCurrentAngle(x)),
+  tan: (x: number) => Math.tan(toCurrentAngle(x)),
+  asin: (x: number) => Math.asin(x) * (180 / Math.PI),
+  acos: (x: number) => Math.acos(x) * (180 / Math.PI),
+  atan: (x: number) => Math.atan(x) * (180 / Math.PI),
+  sqrt: Math.sqrt,
+  log: Math.log,
+  lg: Math.log10,
+  ln: Math.log,
+  abs: Math.abs,
+  factorial: factorialize,
+  π: Math.PI,
+  e: Math.E
+};
+
+let currentAngleUnit: angleUnit = "radian";
+
+export function setAngleUnit(_angleUnit: angleUnit = "radian"): void {
+  currentAngleUnit = _angleUnit;
+}
+
+export function getAngleUnit(): angleUnit {
+  return currentAngleUnit;
+}
+
+function factorialize(x: number): number {
+  if (x === undefined) return 0;
+  if (x < 0) return -1;
+  if (x > 180) return Infinity;
+
+  else if (x === 0) return 1;
+  else return (x * factorialize(x - 1));
+}
+
+function toCurrentAngle(angle: number): number {
+  switch (currentAngleUnit) {
+    case "degree":
+      return angle * (Math.PI / 180);
+    case "gradian":
+      return angle * (Math.PI / 200);
+    case "radian":
+    default:
+      return angle;
+  }
+}
 
 function evaluateExpression(input: string): number {
   input = autoCompleteParentheses(input);
@@ -37,7 +84,8 @@ function tokenize(input: string): string[] {
   const size = input.length;
   const operators = new Set(['+', '-', '*', '/', '^', '(', ')']);
   const comparators = new Set(['=', '<', '>']);
-  const functionSet = new Set(Object.keys(functions))
+  const functionSet = new Set(Object.keys(functions));
+
   let currentToken = "";
 
   for (let i = 0; i < size; i++) {
@@ -78,6 +126,7 @@ function tokenize(input: string): string[] {
     //* INFO: Handles mathematical functions (sin, cos)
     else {
       currentToken += char;
+
       if (functionSet.has(currentToken)) {
         tokens.push(currentToken);
         currentToken = "";
@@ -88,50 +137,6 @@ function tokenize(input: string): string[] {
   if (currentToken) tokens.push(currentToken);
   return tokens;
 }
-
-//#region FIXME: Comparison operation after new algorithm
-// function evaluateAndCompareToken(tokens: string[]): number {
-//   let comparison: boolean = false;
-//   const [leftInput, comparator, rightInput] = seperateInput(tokens);
-
-//   if (!comparator) {
-//     return evaluateTokens(tokens);
-//   }
-
-//   const leftResult = evaluateTokens(leftInput).toFixed(2);
-//   if (comparator && rightInput.length === 0) Number(leftResult);
-//   const rightResult = evaluateTokens(rightInput).toFixed(2);
-
-//   switch (comparator) {
-//     case '=':
-//       comparison = (leftResult === rightResult);
-//       break;
-//     case '>':
-//       comparison = (leftResult > rightResult);
-//       break;
-//     case '<':
-//       comparison = (leftResult < rightResult);
-//       break
-//     default:
-//       comparison = false;
-//       break;
-//   }
-
-//   return comparison ? 1 : 0;
-// }
-
-// function seperateInput(tokens: string[]): SeperatedInput {
-//   const tokensToFind = ['=', '>', '<'];
-//   const comparatorIndex = tokens.findIndex(token => tokensToFind.includes(token));
-
-//   if (comparatorIndex === -1) return [tokens, null, []];
-//   const leftInput = tokens.slice(0, comparatorIndex);
-//   const comparator = tokens[comparatorIndex];
-//   const rightInput = tokens.slice(comparatorIndex + 1);
-
-//   return [leftInput, comparator, rightInput];
-// }
-//#endregion
 
 function shuntingYard(tokens: string[]): string[] {
   const precedence: { [key: string]: number } = {
@@ -146,6 +151,7 @@ function shuntingYard(tokens: string[]): string[] {
   const rightAssociative = new Set(['^']);
   const operators = new Set(['+', '-', '*', '/', '^']);
   const functionSet = new Set(Object.keys(functions));
+  const constantSet = new Set(["PI", "e"]);
 
   const outputQueue: string[] = [];
   const operatorStack: string[] = [];
@@ -154,11 +160,14 @@ function shuntingYard(tokens: string[]): string[] {
     if (!isNaN(parseFloat(token))) {
       outputQueue.push(token);
     }
+    else if (constantSet.has(token)) {
+      outputQueue.push(token);
+    }
     else if (functionSet.has(token)) {
       operatorStack.push(token);
     }
     else if (operators.has(token)) {
-      /* NOTE: Checks whether an operator is right associative */
+      //* NOTE: Checks whether an operator is right associative
       while (operatorStack.length > 0 && operators.has(operatorStack[operatorStack.length - 1])) {
         const topOperator = operatorStack[operatorStack.length - 1];
         const isRightAssociative = rightAssociative.has(token);
@@ -206,21 +215,27 @@ function evaluateRPN(rpn: string[]): number {
     if (!isNaN(parseFloat(token))) {
       stack.push(parseFloat(token));
     }
-    else if (functions[token]) {
-      switch (typeof functions[token]) {
+    else if (token in functions) {
+      const valueOrFunction = functions[token];
+      switch (typeof valueOrFunction) {
         case "number":
-          stack.push(functions[token] as number);
+          stack.push(valueOrFunction);
           break;
         case "function":
-          stack.push((functions[token] as (x: number) => number)(stack.pop() as number));
+          stack.push((valueOrFunction)(stack.pop() as number));
           break;
         default:
           break;
+
       }
     }
     else {
       const b = stack.pop() as number;
       const a = stack.pop() as number;
+
+      if (a === undefined || b === undefined) {
+        return NaN;
+      }
 
       switch (token) {
         case '+':

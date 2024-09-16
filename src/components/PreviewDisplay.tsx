@@ -1,4 +1,4 @@
-import type { suggestionObject } from "../utils/types";
+import { functionKeys, type suggestionObject } from "../utils/types";
 
 interface PreviewDisplayProp {
   attempt: string;
@@ -30,20 +30,32 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
     <>
       {!hidePreview &&
         <div className={`preview-display ${isInputBlur ? "blurred" : ""}`}>
-          <p>suggestion</p>
+          <p className="tooltip">suggestion</p>
           <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
-            {previews.suggestions.map((preview, index) =>
-            (
-              <li
-                key={index}
-                className={previewSelection === index ? "selected" : ""}
-                onPointerDown={() => { setPreviewSelection(index) }}
-                onClick={() => { autoFillPreview(index); }}
-              >
-                {highlightCharacters(preview, attempt)}
-                {"("}<span style={{ fontFamily: "Bold" }}>x</span>{")"}
-              </li>
-            ))}
+            {previews.suggestions.map((preview, index) => {
+              const autoFill = functionKeys[preview];
+              const showBraces = autoFill.endsWith("(");
+
+              return (
+                (
+                  <li
+                    key={index}
+                    className={previewSelection === index ? "selected" : ""}
+                    onPointerDown={() => { setPreviewSelection(index) }}
+                    onClick={() => { autoFillPreview(index); }}
+                  >
+                    <p>
+                      {highlightCharacters(preview, attempt)}
+                      {showBraces && (
+                        <>
+                          {"("}<span style={{ fontFamily: "Bold" }}>x</span>{")"}
+                        </>
+                      )}
+                    </p>
+                  </li>
+                )
+              )
+            })}
           </ul>
         </div >
       }

@@ -21,24 +21,25 @@ export type optionObject = {
   theme?: "light" | "dark" | "default",
 }
 
-export enum functionKeys {
-  sin = "sin(",
-  cos = "cos(",
-  tan = "tan(",
-  asin = "asin(",
-  acos = "acos(",
-  atan = "atan(",
-  sqrt = "sqrt(",
-  log = "log(",
-  lg = "lg(",
-  ln = "ln(",
-  abs = "abs(",
-  factorial = "factorial(",
-  PI = "pi",
-  e = "e"
+export const functionKeys: Record<string, string> = {
+  "sin": "sin(",
+  "cos": "cos(",
+  "tan": "tan(",
+  "asin": "asin(",
+  "acos": "acos(",
+  "atan": "atan(",
+  "sqrt": "sqrt(",
+  "log": "log(",
+  "lg": "lg(",
+  "ln": "ln(",
+  "abs": "abs(",
+  "ans": "ans(",
+  "factorial": "factorial(",
+  "PI": "π",
+  "e": "e",
 }
 
-export type mathFunctions = ((x: number) => unknown) | number;
+export type mathFunctions = ((x: number) => number) | number;
 
 export type inputInfo = {
   input: string,

@@ -3,7 +3,7 @@
 .hidables {
   position: absolute;
   bottom: 5.2rem;
-  width: 60vw;
+  width: clamp(15rem, 80vw, 50rem);
   justify-self: end;
 
   display: grid;

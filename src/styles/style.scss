@@ -43,7 +43,11 @@ main {
   .calculator,
   header {
     margin-block: 3rem;
-    margin-inline: 2rem;
+    margin-inline: 2.5rem;
+  }
+
+  .calculator {
+    margin-inline: auto;
   }
 }
 

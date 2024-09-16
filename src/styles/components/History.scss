@@ -56,11 +56,15 @@ $gradiant-color: white;
 
       .history-part {
         display: grid;
-        grid-template-columns: 1fr 1rem 1fr;
+        grid-template-columns: 1rem 1fr;
+        grid-template-rows: 1rem 1fr;
+
         align-items: center;
 
         overflow-x: scroll;
-        padding: 0.5rem 1rem;
+
+        height: 4rem;
+        padding: 0.5rem;
         border-radius: 0.5rem;
         color: var(--col-window-bg);
         background: var(--col-white-faded);
@@ -73,9 +77,17 @@ $gradiant-color: white;
         &:active {
           background: var(--col-secondary);
           color: var(--col-white);
+
+          &~.detail .index {
+            color: var(--col-white);
+          }
         }
 
         .operation {
+          grid-column: span 2;
+          font-family: "ExtraBold";
+          height: 1rem;
+          overflow: hidden;
           text-overflow: ellipsis;
         }
 
@@ -86,8 +98,8 @@ $gradiant-color: white;
         }
 
         .result {
+          font-size: 1.2rem;
           justify-self: start;
-          font-family: "ExtraBold";
           text-align: center;
         }
 

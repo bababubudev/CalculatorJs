@@ -4,6 +4,7 @@
 .calculator {
   position: relative;
   display: grid;
+  width: clamp(15rem, 80vw, 80rem);
   gap: 0.5rem;
   z-index: 1000;
 

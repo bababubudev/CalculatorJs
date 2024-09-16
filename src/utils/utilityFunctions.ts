@@ -1,57 +1,7 @@
-import evaluateExpression from "./evaluator";
-import type { angleUnit, calculationInfo, mathFunctions, suggestionObject } from "./types";
+import evaluateExpression, { getAngleUnit, setAngleUnit } from "./evaluator";
+import { angleUnit, calculationInfo, functionKeys, suggestionObject } from "./types";
 
-export const functions: { [key: string]: mathFunctions } = {
-  sin: (x: number) => Math.sin(toCurrentAngle(x)),
-  cos: (x: number) => Math.cos(toCurrentAngle(x)),
-  tan: (x: number) => Math.tan(toCurrentAngle(x)),
-  asin: (x: number) => Math.asin(x) * (180 / Math.PI),
-  acos: (x: number) => Math.acos(x) * (180 / Math.PI),
-  atan: (x: number) => Math.atan(x) * (180 / Math.PI),
-  sqrt: Math.sqrt,
-  log: Math.log,
-  lg: Math.log10,
-  ln: Math.log,
-  abs: Math.abs,
-  factorial: factorialize,
-  pi: Math.PI,
-  e: Math.E,
-};
-
-export function addCustomFunction(name: string, func: mathFunctions) {
-  functions[name] = func;
-}
-
-let currentAngleUnit: angleUnit = "radian";
-
-export function setAngleUnit(_angleUnit: angleUnit = "radian"): void {
-  currentAngleUnit = _angleUnit;
-}
-
-export function getAngleUnit(): angleUnit {
-  return currentAngleUnit;
-}
-
-function factorialize(x: number): number {
-  if (x === undefined) return 0;
-  if (x < 0) return -1;
-  if (x > 180) return Infinity;
-
-  else if (x === 0) return 1;
-  else return (x * factorialize(x - 1));
-}
-
-function toCurrentAngle(angle: number): number {
-  switch (currentAngleUnit) {
-    case "degree":
-      return angle * (Math.PI / 180);
-    case "gradian":
-      return angle * (Math.PI / 200);
-    case "radian":
-    default:
-      return angle;
-  }
-}
+const FILTER_KEYS = Object.keys(functionKeys).sort();
 
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
@@ -79,21 +29,15 @@ export function autoCompleteBrackets(input: string): string {
   return result;
 }
 
-export function excludeRight(str: string, character: string) {
-  const lastIndex = str.lastIndexOf(character);
-  return lastIndex === -1 ? str : str.substring(0, lastIndex + 1);
-}
-
 export function suggestMathFunctions(input: string): suggestionObject {
   const functionMatch = input.match(/([a-z]+)\(?$/i);
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
-    const regex = new RegExp(partialFunciton, "i");
 
     return {
       attemptString: partialFunciton,
-      suggestions: Object.keys(functions).filter(func => regex.test(func)),
+      suggestions: FILTER_KEYS.filter(func => func.startsWith(partialFunciton)),
       suggestionUsed: false,
     };
   }
