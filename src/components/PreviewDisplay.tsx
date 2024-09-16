@@ -41,7 +41,7 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
                 onClick={() => { autoFillPreview(index); }}
               >
                 {highlightCharacters(preview, attempt)}
-                <span style={{ fontFamily: "Bold" }}>x</span>{")"}
+                {"("}<span style={{ fontFamily: "Bold" }}>x</span>{")"}
               </li>
             ))}
           </ul>

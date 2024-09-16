@@ -1,5 +1,5 @@
 import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
@@ -10,7 +10,7 @@ import {
 import PreviewDisplay from "./PreviewDisplay";
 
 interface CalculatorIOProps {
-  passedInput: historyObject | undefined;
+  passedInput: string;
   options: optionObject;
   removePassedInput: () => void;
   addToHistory: (info: historyObject) => void;
@@ -23,75 +23,78 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
   const [topDisplay, setTopDisplay] = useState<string>("");
   const [bracketPreview, setBracketPreview] = useState<string>("");
 
-  const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
 
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
   const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
 
-  const angleUnitLabels: Record<angleUnit, string> = {
+  const angleUnitLabels = useMemo<Record<angleUnit, string>>(() => ({
     degree: "deg",
     radian: "rad",
     gradian: "grad",
-  };
+  }), []);
 
   const [currentCalc, setCurrentCalc] = useState<historyObject | undefined>(undefined);
 
   const focusInput = () => {
     if (!inputRef.current) return;
+    inputRef.current?.focus();
     setIsInputBlur(false);
-    inputRef.current.focus();
-  }
+  };
 
+  const updateDisplay = useCallback((operation: string, displayOperation?: string, angle?: angleUnit, isFlipped: boolean = false, precision: number = 5) => {
+    const { result } = calculate(operation, angle);
+    const roundedResult = roundNumbers(Number(result), precision);
+    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+
+    if (!isFlipped) {
+      setInputValue(operation);
+      setTopDisplay(displayResult);
+      setBracketPreview(autoCompleteBrackets(operation));
+    }
+    else {
+      setIsSubmitted(true);
+      setInputValue(displayResult);
+      setTopDisplay(displayOperation ?? operation);
+    }
+  }, []);
+
+  //* INFO: Update input with passed input & when options change
   useEffect(() => {
-    if (!passedInput) return;
+    if (passedInput === "") return;
 
     focusInput();
     setIsSubmitted(false);
-    const { operation } = passedInput;
-    const { result } = calculate(operation, options.angleUnit);
+    updateDisplay(passedInput, undefined, options.angleUnit, false, options.precision);
+    setFunctionPreview({
+      attemptString: "",
+      suggestions: [],
+      suggestionUsed: true
+    });
+  }, [passedInput, updateDisplay, options.precision, options.angleUnit]);
 
-    const roundedResult = roundNumbers(Number(result), options.precision);
-    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
-    const newBracketPreview = autoCompleteBrackets(operation);
-
-    setInputValue(operation);
-    setTopDisplay(displayResult);
-    setFunctionPreview({ attemptString: "", suggestions: [], suggestionUsed: true });
-
-    setBracketPreview(newBracketPreview);
-  }, [passedInput, options.precision, options.angleUnit]);
-
+  //* INFO: Update submitted input when options change
   useEffect(() => {
-    if (!currentCalc || passedInput) {
+    if (!currentCalc || passedInput !== "") {
       return;
     }
 
     focusInput();
     const { operation, displayOperation } = currentCalc;
-    const { result } = calculate(operation, options.angleUnit);
+    updateDisplay(operation, displayOperation, options.angleUnit, true, options.precision);
+  }, [currentCalc, updateDisplay, options.angleUnit, options.precision, passedInput]);
 
-    const roundedResult = roundNumbers(Number(result), options.precision);
-    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
-    const newBracketPreview = autoCompleteBrackets(displayResult);
-
-    setInputValue(displayResult);
-    setTopDisplay(displayOperation ?? operation);
-    setBracketPreview(newBracketPreview);
-  }, [currentCalc, options.angleUnit, options.precision, passedInput]);
-
+  //* INFO: Update input value when options change
   useEffect(() => {
-    if (currentCalc || passedInput || !topDisplay) return;
+    if (currentCalc || passedInput !== "") return;
 
     focusInput();
-    const { result } = calculate(inputValue, options.angleUnit);
-    const roundedResult = roundNumbers(Number(result), options.precision);
-    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+    updateDisplay(inputValue, undefined, options.angleUnit, false, options.precision);
+  }, [inputValue, topDisplay, updateDisplay, currentCalc, passedInput, options.angleUnit, options.precision]);
 
-    setTopDisplay(displayResult);
-  }, [inputValue, topDisplay, currentCalc, passedInput, options.angleUnit, options.precision]);
-
+  //* INFO: Handle input focus
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!inputRef.current) return;
@@ -137,7 +140,7 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
       if (lastIndex !== -1) {
         const before = prev.slice(0, lastIndex);
         const after = prev.slice(lastIndex + attempt.length);
-        const currentChanges = before + suggestions[index] + after;
+        const currentChanges = before + suggestions[index] + "(" + after;
 
         // ? REFACTOR: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
@@ -188,7 +191,7 @@ function CalculatorIO({ addToHistory, options, passedInput, removePassedInput }:
     setSelectedPreview(0);
 
     suggestions.length > 0
-      ? setFunctionPreview({ attemptString, suggestions: suggestions.map(func => `${func}(`), suggestionUsed: usedCall })
+      ? setFunctionPreview({ attemptString, suggestions, suggestionUsed: usedCall })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
     setTopDisplay(displayResult);

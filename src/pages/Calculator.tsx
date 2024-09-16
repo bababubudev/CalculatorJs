@@ -5,7 +5,7 @@ import History from "../components/History";
 import { useOptions } from "../context/OptionsContext";
 
 function Calculator() {
-  const [passedInput, setPassedInput] = useState<historyObject | undefined>();
+  const [passedInput, setPassedInput] = useState<string>("");
   const [history, setHistory] = useState<historyObject[]>([]);
 
   const { options } = useOptions();
@@ -22,14 +22,14 @@ function Calculator() {
     const selectedItem = history.find(elem => elem.key === key);
 
     if (selectedItem) {
-      setPassedInput(undefined);
-      setTimeout(() => setPassedInput(selectedItem), 0);
+      setPassedInput("");
+      setTimeout(() => setPassedInput(selectedItem.operation), 0);
     }
   }
 
   const removePassedInput = () => {
     if (passedInput) {
-      setPassedInput(undefined);
+      setPassedInput("");
     }
   }
 
