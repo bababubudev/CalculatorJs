@@ -2,6 +2,7 @@
 @use "./Calculator.scss";
 @use "./components/Header.scss";
 @use "./components/Modal.scss";
+@use "./media-query.scss";
 
 :root {
   --col-window-bg: #1F3333;
@@ -43,11 +44,19 @@ main {
   .calculator,
   header {
     margin-block: 3rem;
-    margin-inline: 2.5rem;
+    margin-inline: auto;
+  }
+
+  header {
+    width: clamp(15rem, 80vw, 90rem);
   }
 
   .calculator {
-    margin-inline: auto;
+    width: clamp(15rem, 60vw, 80rem);
+
+    .hidables {
+      width: clamp(15rem, 50vw, 35rem);
+    }
   }
 }
 

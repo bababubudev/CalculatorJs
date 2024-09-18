@@ -14,7 +14,9 @@ export const functions: { [key: string]: mathFunctions } = {
   ln: Math.log,
   abs: Math.abs,
   factorial: factorialize,
+  pi: Math.PI,
   π: Math.PI,
+  τ: Math.PI * 2,
   e: Math.E
 };
 
@@ -151,7 +153,7 @@ function shuntingYard(tokens: string[]): string[] {
   const rightAssociative = new Set(['^']);
   const operators = new Set(['+', '-', '*', '/', '^']);
   const functionSet = new Set(Object.keys(functions));
-  const constantSet = new Set(["PI", "e"]);
+  const constantSet = new Set(["pi", "tau", "e", "π", "τ"]);
 
   const outputQueue: string[] = [];
   const operatorStack: string[] = [];

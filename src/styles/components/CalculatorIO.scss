@@ -1,6 +1,5 @@
 @use "./PreviewDisplay.scss";
 
-
 .calculation-display {
   z-index: -1;
   color: var(--col-window-bg);
@@ -114,6 +113,11 @@
     .submission-area>* {
       background: var(--col-accent);
       transition: background-color 0.5s ease-out;
+
+      .submit-icon {
+        font-size: 1.5rem;
+        font-style: italic;
+      }
     }
   }
 }

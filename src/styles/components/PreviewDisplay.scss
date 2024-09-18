@@ -22,10 +22,7 @@
   }
 
   &.blurred {
-    background: rgba(255, 255, 255, 0.5);
-
     .tooltip {
-      background: #8e999a;
       color: var(--col-window-bg);
       box-shadow: none;
     }
@@ -79,6 +76,7 @@
 
     &.selected {
       p {
+        position: relative;
         color: var(--col-secondary);
       }
 
@@ -97,12 +95,12 @@
         content: "";
         position: absolute;
 
-        bottom: 0rem;
-        left: 50%;
+        bottom: -0.2rem;
+        right: 42%;
 
         background: var(--col-secondary);
-        width: 0.5rem;
-        aspect-ratio: 4/1;
+        width: 1rem;
+        height: 0.2rem;
 
         border-radius: 1rem;
 

@@ -90,7 +90,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   //* INFO: Update input value when options change
   useEffect(() => {
-    if (currentCalc || passedInput !== "") return;
+    if (currentCalc || passedInput !== "") {
+      if (passedInput) setCurrentCalc(undefined);
+      return;
+    }
 
     focusInput();
     updateDisplay(inputValue, undefined, options.angleUnit, false, options.precision);
@@ -135,13 +138,17 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
 
+
     setSelectedPreview(index);
     setInputValue(prev => {
-      const lastIndex = prev.lastIndexOf(attempt);
+      const previousValue = prev.toLowerCase();
+      const lastIndex = previousValue.lastIndexOf(attempt);
+
+      console.log(previousValue, suggestions);
 
       if (lastIndex !== -1) {
-        const before = prev.slice(0, lastIndex);
-        const after = prev.slice(lastIndex + attempt.length);
+        const before = previousValue.slice(0, lastIndex);
+        const after = previousValue.slice(lastIndex + attempt.length);
 
         const selectedFunc = suggestions[index];
         const selectedAutofill = functionKeys[selectedFunc];
@@ -185,13 +192,12 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     let currentValue = e.target.value;
 
-    //*NOTE: Replace ans(n) with the value from history or leave it unchanged if invalid
+    //*NOTE: Replace ans(n) with the value from history
     const ansPattern = /ans\((\d+)([^)]*)/g;
-    currentValue = currentValue.replace(ansPattern, (match, index) => {
+    currentValue = currentValue.replace(ansPattern, (_, index) => {
       const ansValue = askForAnswer(Number(index));
-      return ansValue !== undefined ? String(ansValue) : match;
+      return isNaN(ansValue) ? `NaN` : String(ansValue);
     });
-
 
     const updatedValue = autoCompleteBrackets(currentValue);
     const { result } = calculate(currentValue, options.angleUnit);
@@ -214,7 +220,11 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
     event?.preventDefault();
 
-    if (isSubmitted) return;
+    if (isSubmitted) {
+      const currentEvent = { target: { value: "" } } as React.ChangeEvent<HTMLInputElement>;
+      onInputChange(currentEvent, true);
+      return;
+    }
 
     const output = calculate(inputValue, options.angleUnit);
     const roundedResult = roundNumbers(Number(output.result), options.precision);
@@ -288,7 +298,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         </div>
         <button className="submission-area" type="submit">
           <p className="angle-unit">{angleUnitLabels[options.angleUnit ?? "radian"]}</p>
-          <p className="submit-icon">=</p>
+          <p className="submit-icon">{isSubmitted ? "AC" : "="}</p>
         </button>
       </form>
     </>

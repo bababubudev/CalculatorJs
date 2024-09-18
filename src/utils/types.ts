@@ -35,7 +35,8 @@ export const functionKeys: Record<string, string> = {
   "abs": "abs(",
   "ans": "ans(",
   "factorial": "factorial(",
-  "PI": "π",
+  "pi": "π",
+  "tau": "τ",
   "e": "e",
 }
 

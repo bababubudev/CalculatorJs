@@ -10,7 +10,7 @@ $gradiant-color: white;
   }
 
   ul {
-    padding: 1rem 1rem;
+    padding: 0.5rem 1rem;
     padding-right: 0.8rem;
 
     overflow-y: scroll;
@@ -63,8 +63,7 @@ $gradiant-color: white;
 
         overflow-x: scroll;
 
-        height: 4rem;
-        padding: 0.5rem;
+        padding: 0.25rem;
         border-radius: 0.5rem;
         color: var(--col-window-bg);
         background: var(--col-white-faded);
@@ -86,19 +85,20 @@ $gradiant-color: white;
         .operation {
           grid-column: span 2;
           font-family: "ExtraBold";
-          height: 1rem;
-          overflow: hidden;
+          overflow-x: hidden;
           text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 1em;
         }
 
         span {
-          font-size: 1.2rem;
+          font-size: 1.3em;
           text-align: center;
           font-family: "ExtraBold";
         }
 
         .result {
-          font-size: 1.2rem;
+          font-size: 1.3em;
           justify-self: start;
           text-align: center;
         }

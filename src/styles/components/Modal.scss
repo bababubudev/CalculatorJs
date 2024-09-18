@@ -10,6 +10,7 @@
   justify-content: center;
   z-index: 1000;
   transition: opacity 0.3s ease;
+  font-size: 1em;
 
   &.visible {
     opacity: 1;
@@ -26,7 +27,7 @@
 .modal-content {
   background: var(--col-white);
   color: var(--col-window-bg);
-  padding: 1rem;
+  padding: 1em;
   border-radius: 0.5rem;
   max-width: 500px;
   width: 100%;
@@ -67,10 +68,11 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 1em;
 
     button {
-      padding: 0.5rem 1rem;
+      font-size: 1em;
+      padding: 0.5em 1em;
       border: none;
       border-radius: 0.3rem;
       cursor: pointer;

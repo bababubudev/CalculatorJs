@@ -1,5 +1,6 @@
 import evaluateExpression, { getAngleUnit, setAngleUnit } from "./evaluator";
-import { angleUnit, calculationInfo, functionKeys, suggestionObject } from "./types";
+import { functionKeys } from "./types";
+import type { angleUnit, calculationInfo, suggestionObject } from "./types.ts";
 
 const FILTER_KEYS = Object.keys(functionKeys).sort();
 
