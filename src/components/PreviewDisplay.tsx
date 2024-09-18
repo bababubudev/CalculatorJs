@@ -34,7 +34,6 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
           <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
             {previews.suggestions.map((preview, index) => {
               const autoFill = functionKeys[preview];
-              console.log(autoFill);
               const showBraces = autoFill.endsWith("(");
 
               return (

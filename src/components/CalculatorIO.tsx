@@ -144,8 +144,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       const previousValue = prev.toLowerCase();
       const lastIndex = previousValue.lastIndexOf(attempt);
 
-      console.log(previousValue, suggestions);
-
       if (lastIndex !== -1) {
         const before = previousValue.slice(0, lastIndex);
         const after = previousValue.slice(lastIndex + attempt.length);
