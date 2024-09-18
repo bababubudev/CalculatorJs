@@ -41,7 +41,7 @@
             color: var(--col-window-bg);
           }
 
-          &::before {
+          p::before {
             background: none;
           }
         }
@@ -100,7 +100,7 @@
 
         background: var(--col-secondary);
         width: 1rem;
-        height: 0.2rem;
+        height: 0.05rem;
 
         border-radius: 1rem;
 
