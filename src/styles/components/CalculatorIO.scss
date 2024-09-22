@@ -33,6 +33,7 @@
       }
 
       input {
+        position: relative;
         z-index: 1;
         font-family: "FiraSans";
         color: var(--col-window-bg);
@@ -60,6 +61,7 @@
 
       user-select: none;
       z-index: 0;
+      white-space: pre;
     }
   }
 
