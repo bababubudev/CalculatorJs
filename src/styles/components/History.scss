@@ -10,8 +10,8 @@ $gradiant-color: white;
   }
 
   ul {
-    padding: 0.5rem 1rem;
-    padding-right: 0.8rem;
+    padding: 0.5em 0.75em;
+    padding-right: 0.8em;
 
     overflow-y: scroll;
     overflow-x: hidden;
@@ -49,7 +49,7 @@ $gradiant-color: white;
       display: grid;
       justify-content: center;
       grid-template-columns: 1fr 2rem;
-      gap: 0.5ch;
+      gap: 0.25em;
       cursor: pointer;
 
       user-select: none;
@@ -63,7 +63,9 @@ $gradiant-color: white;
 
         overflow-x: scroll;
 
-        padding: 0.25rem;
+        padding: 0.5em;
+        padding-right: 0;
+
         border-radius: 0.5rem;
         color: var(--col-window-bg);
         background: var(--col-white-faded);
@@ -162,19 +164,21 @@ $gradiant-color: white;
 
         .index {
           position: absolute;
-          right: 2.5rem;
+          right: 3rem;
           top: 0;
 
-          font-size: 0.8rem;
+          font-size: 1.5em;
           font-family: "Bold";
+          font-style: italic;
 
           color: var(--col-window-bg);
-          background: var(--col-tertiary);
+          opacity: 0.5;
 
-          padding: 0.15rem;
 
-          border-radius: 0 0 .2rem .2rem;
-          box-shadow: 1px 1px 1px var(--std-col-box-shadow);
+          // border-radius: 0 0 .2rem .2rem;
+          // box-shadow: 1px 1px 1px var(--std-col-box-shadow);
+
+
         }
       }
     }

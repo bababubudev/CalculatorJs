@@ -19,7 +19,19 @@ interface CalculatorIOProps {
 }
 
 function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
+  const PLACEHOLDERS = [
+    "ex. 2-2(3-3)",
+    "ex. sqrt(4)",
+    "ex. asin(0.6)",
+    "ex. cos(90)",
+  ];
+
+  const getRandomPlaceholder = () => {
+
+  }
+
   const inputRef = useRef<HTMLInputElement>(null);
+  const bracketPrevRef = useRef<HTMLDivElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
@@ -27,6 +39,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
+  const [placeholder, setPlaceholder] = useState<string>(PLACEHOLDERS[0]);
 
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
@@ -62,6 +75,15 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       setTopDisplay(displayOperation ?? operation);
     }
   }, []);
+
+  const syncBracketPreview = () => {
+    if (inputRef.current && bracketPrevRef.current) {
+      const inputElement = inputRef.current;
+      const scrollOffset = inputElement.scrollLeft;
+
+      bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
+    }
+  };
 
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
@@ -133,6 +155,20 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentCalc]);
+
+  useEffect(() => {
+    const inputElement = inputRef.current;
+
+    if (inputElement) {
+      inputElement.addEventListener("scroll", syncBracketPreview);
+    }
+
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener("scroll", syncBracketPreview);
+      }
+    };
+  }, []);
 
   const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;
@@ -277,13 +313,14 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
               ? <p className="submit-text">
                 {currentCalc?.needsRounding ? "≈" : "="}
               </p>
-              : <div className="bracket-preview">
+              : <div className="bracket-preview" ref={bracketPrevRef}>
                 {bracketPreview}
               </div>
             }
             <input
               type="text"
               className="bottom-display"
+              placeholder="ex. sqrt(2)"
               ref={inputRef}
               value={inputValue}
               onChange={onInputChange}
