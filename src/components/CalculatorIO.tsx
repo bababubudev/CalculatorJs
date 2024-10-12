@@ -51,7 +51,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   const focusInput = () => {
     if (!inputRef.current) return;
-    inputRef.current?.focus();
+    inputRef.current.focus();
     setIsInputBlur(false);
   };
 
@@ -155,15 +155,12 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   //* INFO: Handles positioning bracket preview
   useEffect(() => {
     const inputElement = inputRef.current;
+    if (!inputElement) return;
 
-    if (inputElement) {
-      inputElement.addEventListener("scroll", syncBracketPreview);
-    }
+    inputElement.addEventListener("scroll", syncBracketPreview);
 
     return () => {
-      if (inputElement) {
-        inputElement.removeEventListener("scroll", syncBracketPreview);
-      }
+      inputElement.removeEventListener("scroll", syncBracketPreview);
     };
   }, []);
 
@@ -223,11 +220,21 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     let currentValue = e.target.value;
 
+    if (inputRef.current) {
+      if (currentValue.includes("(") && !isSubmitted) {
+        console.log(bracketPreview);
+        inputRef.current.style.paddingRight = "1rem";
+      }
+      else {
+        inputRef.current.style.paddingRight = "unset";
+      }
+    }
+
     //*NOTE: Replace ans(n) with the value from history
     const ansPattern = /ans\((\d+)([^)]*)/g;
     currentValue = currentValue.replace(ansPattern, (_, index) => {
       const ansValue = askForAnswer(Number(index));
-      return isNaN(ansValue) ? `NaN` : String(ansValue);
+      return isNaN(ansValue) ? `0` : String(ansValue);
     });
 
     const updatedValue = autoCompleteBrackets(currentValue);
@@ -303,7 +310,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
       >
-        <div className="display">
+        <div className="display" onPointerDown={() => focusInput()}>
           <p
             className="top-display"
             onPointerDown={e => e.preventDefault()}

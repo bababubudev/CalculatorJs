@@ -12,9 +12,6 @@
   }
 
   .hidables {
-    position: absolute;
-    bottom: 5.8em;
-    justify-self: end;
     width: clamp(15rem, 80vw, 50rem) !important;
 
     .history-div {

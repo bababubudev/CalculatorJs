@@ -30,7 +30,9 @@ $gradiant-color: white;
     .item-enter-active {
       opacity: 1;
       transform: translateX(0);
-      transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+      transition:
+        transform 300ms ease-in-out,
+        opacity 300ms ease-in-out;
     }
 
     .item-exit {
@@ -41,7 +43,9 @@ $gradiant-color: white;
     .item-exit-active {
       transform: translateX(-100%);
       opacity: 0;
-      transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+      transition:
+        transform 300ms ease-in-out,
+        opacity 300ms ease-in-out;
     }
 
     li {
@@ -80,7 +84,7 @@ $gradiant-color: white;
           background: var(--col-secondary);
           color: var(--col-white);
 
-          &~.detail .index {
+          & ~ .detail .index {
             color: var(--col-white);
           }
         }
@@ -92,6 +96,7 @@ $gradiant-color: white;
           text-overflow: ellipsis;
           white-space: nowrap;
           font-size: 1em;
+          padding-right: 1.1em;
         }
 
         span {
@@ -121,7 +126,7 @@ $gradiant-color: white;
       }
 
       .detail {
-        >button {
+        > button {
           cursor: pointer;
         }
 
@@ -175,11 +180,8 @@ $gradiant-color: white;
           color: var(--col-window-bg);
           opacity: 0.5;
 
-
           // border-radius: 0 0 .2rem .2rem;
           // box-shadow: 1px 1px 1px var(--std-col-box-shadow);
-
-
         }
       }
     }

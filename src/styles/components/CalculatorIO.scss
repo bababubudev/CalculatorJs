@@ -14,11 +14,14 @@
   grid-template-columns: 1fr 5rem;
 
   .display {
+    cursor: text;
+
     .top-display {
       padding: 0;
       margin: 0;
-      height: 1.5em;
+      min-height: 1.5em;
       font-weight: bold;
+      word-break: break-all;
     }
 
     .interaction {
@@ -41,7 +44,6 @@
         background: none;
         border: none;
         width: 100%;
-        padding-right: 1rem;
 
         font-size: 1.5em;
         -webkit-tap-highlight-color: transparent;
@@ -72,7 +74,7 @@
   }
 
   .submission-area,
-  .submission-area>* {
+  .submission-area > * {
     transition: background-color 0.5s ease-out;
   }
 
@@ -116,9 +118,8 @@
   }
 
   &.submitted {
-
     .submission-area,
-    .submission-area>* {
+    .submission-area > * {
       background: var(--col-accent);
       transition: background-color 0.5s ease-out;
 
