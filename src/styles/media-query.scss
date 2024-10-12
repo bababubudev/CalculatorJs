@@ -1,8 +1,4 @@
 @media screen and (max-width: 650px) {
-  body {
-    font-size: 0.85rem;
-  }
-
   main .calculator {
     width: clamp(15rem, 80vw, 80rem) !important;
   }
@@ -13,17 +9,5 @@
 
   .hidables {
     width: clamp(15rem, 80vw, 50rem) !important;
-
-    .history-div {
-      ul {
-        padding: 0.5rem 0.3rem;
-        padding-left: 0.5rem;
-
-        .history-part {
-          padding: 0.2rem 0.3rem;
-          font-size: 0.85rem;
-        }
-      }
-    }
   }
 }

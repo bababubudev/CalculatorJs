@@ -21,26 +21,30 @@ export type optionObject = {
   theme?: "light" | "dark" | "default",
 }
 
-export const functionKeys: Record<string, string> = {
-  "sin": "sin(",
-  "cos": "cos(",
-  "tan": "tan(",
-  "asin": "asin(",
-  "acos": "acos(",
-  "atan": "atan(",
-  "sqrt": "sqrt(",
-  "log": "log(",
-  "lg": "lg(",
-  "ln": "ln(",
-  "abs": "abs(",
-  "ans": "ans(",
-  "factorial": "factorial(",
-  "pi": "π",
-  "tau": "τ",
-  "e": "e",
+export type functionValue = {
+  pasteAs: string,
+  description: string,
 }
 
-export type mathFunctions = ((x: number) => number) | number;
+export const functionKeys: Record<string, functionValue> = {
+  "sin": { pasteAs: "sin(", description: "" },
+  "cos": { pasteAs: "cos(", description: "" },
+  "tan": { pasteAs: "tan(", description: "" },
+  "asin": { pasteAs: "asin(", description: "" },
+  "acos": { pasteAs: "acos(", description: "" },
+  "atan": { pasteAs: "atan(", description: "" },
+  "sqrt": { pasteAs: "sqrt(", description: "" },
+  "log": { pasteAs: "log(", description: "" },
+  "lg": { pasteAs: "lg(", description: "" },
+  "ln": { pasteAs: "ln(", description: "" },
+  "abs": { pasteAs: "abs(", description: "" },
+  "ans": { pasteAs: "ans(", description: "" },
+  "fact": { pasteAs: "fact(", description: "" },
+  "add": { pasteAs: "add(", description: "" },
+  "largest": { pasteAs: "largest(", description: "" },
+  "pi": { pasteAs: "π", description: "" },
+  "e": { pasteAs: "e", description: "" },
+}
 
 export type inputInfo = {
   input: string,

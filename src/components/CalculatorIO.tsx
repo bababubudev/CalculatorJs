@@ -179,7 +179,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         const after = previousValue.slice(lastIndex + attempt.length);
 
         const selectedFunc = suggestions[index];
-        const selectedAutofill = functionKeys[selectedFunc];
+        const selectedAutofill = functionKeys[selectedFunc].pasteAs;
 
         const currentChanges = before + selectedAutofill + after;
 
@@ -222,7 +222,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     if (inputRef.current) {
       if (currentValue.includes("(") && !isSubmitted) {
-        console.log(bracketPreview);
         inputRef.current.style.paddingRight = "1rem";
       }
       else {

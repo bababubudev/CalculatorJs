@@ -33,7 +33,7 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
           <p className="tooltip">suggestion</p>
           <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
             {previews.suggestions.map((preview, index) => {
-              const autoFill = functionKeys[preview];
+              const autoFill = functionKeys[preview].pasteAs;
               const showBraces = autoFill.endsWith("(");
 
               return (
