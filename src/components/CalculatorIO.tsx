@@ -49,9 +49,16 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   const [currentCalc, setCurrentCalc] = useState<historyObject | undefined>(undefined);
 
-  const focusInput = () => {
+  const inputFocus = (focus = true) => {
     if (!inputRef.current) return;
-    inputRef.current.focus();
+
+    if (focus) {
+      inputRef.current.focus();
+      setIsInputBlur(false);
+      return;
+    }
+
+    inputRef.current.blur();
     setIsInputBlur(false);
   };
 
@@ -85,7 +92,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   useEffect(() => {
     if (passedInput === "") return;
 
-    focusInput();
+    inputFocus();
     setIsSubmitted(false);
     updateDisplay(passedInput, undefined, options.angleUnit, false, options.precision);
     setFunctionPreview({
@@ -101,7 +108,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       return;
     }
 
-    focusInput();
+    inputFocus();
     const { operation, displayOperation } = currentCalc;
     updateDisplay(operation, displayOperation, options.angleUnit, true, options.precision);
   }, [currentCalc, updateDisplay, options.angleUnit, options.precision, passedInput]);
@@ -113,7 +120,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       return;
     }
 
-    focusInput();
+    inputFocus();
     updateDisplay(inputValue, undefined, options.angleUnit, false, options.precision);
   }, [inputValue, topDisplay, updateDisplay, currentCalc, passedInput, options.angleUnit, options.precision]);
 
@@ -144,7 +151,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         }
       }
       else if (event.key === "Escape") {
-        inputRef.current.blur();
+        inputFocus(false);
       }
     };
 
@@ -309,7 +316,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
       >
-        <div className="display" onPointerDown={() => focusInput()}>
+        <div className="display" onPointerDown={() => { inputFocus(true); }}>
           <p
             className="top-display"
             onPointerDown={e => e.preventDefault()}

@@ -8,7 +8,7 @@ interface OptionsProviderProps {
 
 function OptionsProvider({ children }: OptionsProviderProps) {
   const [options, setOptions] = useState<optionObject>({
-    angleUnit: "radian",
+    angleUnit: "degree",
     precision: 5,
     theme: "default",
   });

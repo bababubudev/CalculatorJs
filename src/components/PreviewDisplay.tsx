@@ -11,13 +11,16 @@ interface PreviewDisplayProp {
 }
 
 function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSelection, autoFillPreview, setPreviewSelection }: PreviewDisplayProp) {
-  const highlightCharacters = (preview: string, attempt: string) => {
+
+  const highlightCharacters = (preview: string, attempt: string): JSX.Element[] => {
     let attemptIndex = 0;
     const attemptLength = attempt.length;
+    console.log(functionKeys[preview].description);
 
     return preview.split("").map((char, index) => {
       const isBold = attemptIndex < attemptLength && char.toLowerCase() === attempt[attemptIndex].toLowerCase();
       if (isBold) attemptIndex++;
+
       return (
         <span key={index} style={{ fontFamily: isBold ? "FiraSans" : "" }}>
           {char}
@@ -34,26 +37,24 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
           <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
             {previews.suggestions.map((preview, index) => {
               const autoFill = functionKeys[preview].pasteAs;
-              const showBraces = autoFill.endsWith("(");
+              const showBraces = autoFill.endsWith(")");
 
               return (
-                (
-                  <li
-                    key={index}
-                    className={previewSelection === index ? "selected" : ""}
-                    onPointerDown={() => { setPreviewSelection(index) }}
-                    onClick={() => { autoFillPreview(index); }}
-                  >
-                    <p>
-                      {highlightCharacters(preview, attempt)}
-                      {showBraces && (
-                        <>
-                          {"("}<span style={{ fontFamily: "Bold" }}>x</span>{")"}
-                        </>
-                      )}
-                    </p>
-                  </li>
-                )
+                <li
+                  key={index}
+                  className={previewSelection === index ? "selected" : ""}
+                  onPointerDown={() => { setPreviewSelection(index) }}
+                  onClick={() => { autoFillPreview(index); }}
+                >
+                  <p>
+                    {highlightCharacters(preview, attempt)}
+                    {showBraces && (
+                      <>
+                        {"("}<span style={{ fontFamily: "Bold" }}>x</span>{")"}
+                      </>
+                    )}
+                  </p>
+                </li>
               )
             })}
           </ul>
