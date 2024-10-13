@@ -1,6 +1,6 @@
 .preview-display {
   position: absolute;
-  background: var(--col-white);
+  background: var(--col-white-faded);
   border-radius: 0.5rem;
   box-shadow: 0 5px 3px hsla(0, 0%, 0%, 0.5);
 
@@ -10,7 +10,35 @@
   display: grid;
   justify-content: stretch;
 
+  z-index: 1000;
+  animation-name: bounce-in;
+  animation-duration: 0.2s;
+  animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  opacity: 1;
+
+  transform-origin: bottom left;
+  transition:
+    transform 0.2s,
+    opacity 0.3s ease;
+
+  @keyframes bounce-in {
+    50% {
+      transform: scale(1.1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
   &.blurred {
+    pointer-events: none;
+    z-index: -10000;
+
+    opacity: 0;
+    transform-origin: bottom left;
+    transform: scale(0.1);
+
     .preview-list {
       li {
         box-shadow: none;
@@ -52,6 +80,8 @@
     font-family: "Light";
     cursor: pointer;
 
+    background: var(--col-white);
+
     p {
       color: var(--col-window-bg);
       text-align: center;
@@ -60,7 +90,7 @@
     &.selected {
       p {
         position: relative;
-        color: var(--col-secondary);
+        color: var(--col-tertiary);
       }
 
       &::after {
@@ -68,10 +98,10 @@
         position: absolute;
         top: 0.2rem;
         bottom: 0;
-        left: 0;
+        left: 0.5rem;
 
         font-family: "Bold";
-        color: var(--col-secondary);
+        color: var(--col-tertiary);
       }
 
       p::before {
@@ -79,25 +109,25 @@
         position: absolute;
 
         bottom: -0.2rem;
-        right: 42%;
+        right: 38%;
 
-        background: var(--col-secondary);
-        width: 1rem;
-        height: 0.05rem;
+        background: var(--col-tertiary);
+        width: 2rem;
+        height: 0.1rem;
 
         border-radius: 1rem;
 
         font-family: "Bold";
-        color: var(--col-secondary);
+        color: var(--col-white);
       }
     }
 
     &:hover p {
-      color: var(--col-secondary);
+      color: var(--col-tertiary);
     }
 
     &:active {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.9);
 
       &.selected p {
         &::after {

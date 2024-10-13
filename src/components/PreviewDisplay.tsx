@@ -43,7 +43,7 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
     return (
       <>
         {highlightCharacters(beforeParams, attempt)}
-        <span style={{ fontFamily: "Bold" }}>
+        <span style={{ fontStyle: "italic", fontWeight: "bold" }}>
           {highlightCharacters(params, attempt)}
         </span>
         {highlightCharacters(afterParams, attempt)}

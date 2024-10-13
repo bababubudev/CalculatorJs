@@ -19,13 +19,6 @@ interface CalculatorIOProps {
 }
 
 function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
-  const PLACEHOLDERS = [
-    "ex. 2-2(3-3)",
-    "ex. sqrt(4)",
-    "ex. asin(0.6)",
-    "ex. cos(90)",
-  ];
-
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +29,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
 
-  const [placeholderInd, setPlaceholderInd] = useState<number>(0);
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
   const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
@@ -267,11 +259,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     if (isSubmitted) {
       const currentEvent = { target: { value: "" } } as React.ChangeEvent<HTMLInputElement>;
       onInputChange(currentEvent, true);
-      setPlaceholderInd(prev => {
-        const nextInd = prev + 1;
-        return nextInd < PLACEHOLDERS.length ? nextInd : 0;
-      });
-
       return;
     }
 
@@ -335,7 +322,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
             <input
               type="text"
               className="bottom-display"
-              placeholder={PLACEHOLDERS[placeholderInd]}
               ref={inputRef}
               value={inputValue}
               onChange={onInputChange}

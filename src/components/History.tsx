@@ -1,5 +1,5 @@
 import type { historyObject } from "../utils/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HistoryList from "./HistoryList";
 
 interface HistoryProp {
@@ -9,6 +9,7 @@ interface HistoryProp {
 }
 
 function History({ history, removeFromHistory, onHistoryClicked }: HistoryProp) {
+  const historyDisplayRef = useRef<HTMLDivElement | null>(null);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
 
   useEffect(() => {
@@ -24,8 +25,25 @@ function History({ history, removeFromHistory, onHistoryClicked }: HistoryProp) 
     if (!historyShown) setHistoryShown(prev => !prev);
   }
 
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (historyDisplayRef.current && !historyDisplayRef.current.contains(event.target as Node)) {
+        setHistoryShown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+  }, []);
+
   return (
-    <div className={`hidables ${historyShown ? "shown" : "hidden"}`}>
+    <div
+      ref={historyDisplayRef}
+      className={`hidables ${historyShown ? "shown" : "hidden"}`}
+    >
       <HistoryList
         history={history}
         removeFromHistory={removeFromHistory}
