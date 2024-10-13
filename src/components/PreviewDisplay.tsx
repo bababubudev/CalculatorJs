@@ -12,12 +12,11 @@ interface PreviewDisplayProp {
 
 function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSelection, autoFillPreview, setPreviewSelection }: PreviewDisplayProp) {
 
-  const highlightCharacters = (preview: string, attempt: string): JSX.Element[] => {
+  const highlightCharacters = (display: string, attempt: string): JSX.Element[] => {
     let attemptIndex = 0;
     const attemptLength = attempt.length;
-    console.log(functionKeys[preview].description);
 
-    return preview.split("").map((char, index) => {
+    return display.split("").map((char, index) => {
       const isBold = attemptIndex < attemptLength && char.toLowerCase() === attempt[attemptIndex].toLowerCase();
       if (isBold) attemptIndex++;
 
@@ -29,15 +28,36 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
     });
   };
 
+  const renderDisplayWithBoldParams = (display: string) => {
+    const openParenIndex = display.indexOf("(");
+    const closeParenIndex = display.indexOf(")");
+
+    if (openParenIndex === -1 || closeParenIndex === -1) {
+      return highlightCharacters(display, attempt);
+    }
+
+    const beforeParams = display.substring(0, openParenIndex + 1);
+    const params = display.substring(openParenIndex + 1, closeParenIndex);
+    const afterParams = display.substring(closeParenIndex);
+
+    return (
+      <>
+        {highlightCharacters(beforeParams, attempt)}
+        <span style={{ fontFamily: "Bold" }}>
+          {highlightCharacters(params, attempt)}
+        </span>
+        {highlightCharacters(afterParams, attempt)}
+      </>
+    );
+  };
+
   return (
     <>
       {!hidePreview &&
         <div className={`preview-display ${isInputBlur ? "blurred" : ""}`}>
-          <p className="tooltip">suggestion</p>
           <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
             {previews.suggestions.map((preview, index) => {
-              const autoFill = functionKeys[preview].pasteAs;
-              const showBraces = autoFill.endsWith(")");
+              const autoFill = functionKeys[preview].displayAs;
 
               return (
                 <li
@@ -46,14 +66,7 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
                   onPointerDown={() => { setPreviewSelection(index) }}
                   onClick={() => { autoFillPreview(index); }}
                 >
-                  <p>
-                    {highlightCharacters(preview, attempt)}
-                    {showBraces && (
-                      <>
-                        {"("}<span style={{ fontFamily: "Bold" }}>x</span>{")"}
-                      </>
-                    )}
-                  </p>
+                  <p>{renderDisplayWithBoldParams(autoFill)}</p>
                 </li>
               )
             })}

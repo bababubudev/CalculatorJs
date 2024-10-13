@@ -4,31 +4,13 @@
   border-radius: 0.5rem;
   box-shadow: 0 5px 3px hsla(0, 0%, 0%, 0.5);
 
-  width: 8rem;
+  width: 10rem;
 
   bottom: 5rem;
   display: grid;
   justify-content: stretch;
 
-  .tooltip {
-    position: absolute;
-    top: -0.9rem;
-
-    color: var(--col-secondary);
-    background: var(--col-white);
-
-    border-radius: 0.5rem 0.5rem 0 0;
-    font-size: 0.7rem;
-
-    padding: 0.3rem 0.5rem;
-  }
-
   &.blurred {
-    .tooltip {
-      color: var(--col-window-bg);
-      box-shadow: none;
-    }
-
     .preview-list {
       li {
         box-shadow: none;

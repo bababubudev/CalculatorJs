@@ -86,34 +86,34 @@ export const functionKeys: Record<string, functionValue> = {
   },
   
   "ans": { 
-    displayAs: "ans(1 - n)",
+    displayAs: "ans(n)",
     pasteAs: "ans(", 
     description: "Returns answer from history with a given number" 
   },
   "fact": {
-    displayAs: "fact(1 - n)",
+    displayAs: "fact(n)",
     pasteAs: "fact(", 
     description: "Factorial of a number" 
   },
   "add": { 
-    displayAs: "add(m, n, o...)",
+    displayAs: "add(n₁, n₂, ...)",
     pasteAs: "add(", 
-    description: "Adds all the given numbers together" 
+    description: "Adds all the 'n' numbers together" 
   },
   "high": {
-    displayAs: "high(m, n, o...)",
+    displayAs: "high(n₁, n₂, ...)",
     pasteAs: "high(", 
-    description: "Returns the largest value among the given numbers" 
+    description: "Returns the largest value among the 'n' numbers" 
   },
   "root": {
     displayAs: "root(m, n)",
     pasteAs: "root(", 
-    description: "Calculates the nth root of a number (ex. root(8, 3) = 2)" 
+    description: "Calculates the 'n:th' root of number 'm' (ex. root(8, 3) = 2)" 
   },
   "log": { 
     displayAs: "log(m, n)",
     pasteAs: "log(", 
-    description: "Calculates the log with a specified base (ex. log(2, 8) = 3)" 
+    description: "Calculates the log 'n' with a base 'm' (ex. log(2, 8) = 3)" 
   },
   
   "pi": { 
