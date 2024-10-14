@@ -305,10 +305,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
       >
-        <div className="display" onPointerDown={() => { inputFocus(true); }}>
+        <div className="display">
           <p
             className="top-display"
-            onPointerDown={e => e.preventDefault()}
+            onClick={() => inputFocus(true)}
           >
             {topDisplay}
           </p>
