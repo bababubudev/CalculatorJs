@@ -147,7 +147,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       const inputElement = inputRef.current;
       const scrollOffset = inputElement.scrollLeft;
 
-      bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
+      bracketPrevRef.current.style.left = `-${scrollOffset}px`;
     }
   };
 
