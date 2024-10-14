@@ -21,6 +21,7 @@ interface CalculatorIOProps {
 function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
@@ -70,15 +71,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       setTopDisplay(displayOperation ?? operation);
     }
   }, []);
-
-  const syncBracketPreview = () => {
-    if (inputRef.current && bracketPrevRef.current) {
-      const inputElement = inputRef.current;
-      const scrollOffset = inputElement.scrollLeft;
-
-      bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
-    }
-  };
 
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
@@ -151,22 +143,32 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentCalc]);
 
+  const syncBracketPreview = () => {
+    if (inputRef.current && bracketPrevRef.current) {
+      const inputElement = inputRef.current;
+      const scrollOffset = inputElement.scrollLeft;
+
+      bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
+    }
+  };
+
   //* INFO: Handles positioning bracket preview
   useEffect(() => {
     const inputElement = inputRef.current;
     if (!inputElement) return;
 
-    inputElement.addEventListener("scroll", syncBracketPreview);
+    inputElement.addEventListener("scroll", syncBracketPreview, { passive: false });
+    inputElement.addEventListener("touchmove", syncBracketPreview, { passive: false });
 
     return () => {
       inputElement.removeEventListener("scroll", syncBracketPreview);
+      inputElement.removeEventListener("touchmove", syncBracketPreview);
     };
   }, []);
 
   const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
-
 
     setSelectedPreview(index);
     setInputValue(prev => {
@@ -244,13 +246,13 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     setInputValue(currentValue);
     setBracketPreview(updatedValue);
-    setSelectedPreview(0);
+    setTopDisplay(displayResult);
 
     suggestions.length > 0
       ? setFunctionPreview({ attemptString, suggestions, suggestionUsed: usedCall })
       : setFunctionPreview({ attemptString: "", suggestions: [] });
 
-    setTopDisplay(displayResult);
+    setSelectedPreview(0);
   };
 
   const onCalculationSubmit = (event?: FormEvent<HTMLFormElement>): void => {
@@ -311,25 +313,21 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
             {topDisplay}
           </p>
           <div className="interaction">
-            {isSubmitted
-              ? <p className="submit-text">
-                {currentCalc?.needsRounding ? "≈" : "="}
-              </p>
-              : <div className="bracket-preview" ref={bracketPrevRef}>
-                {bracketPreview}
-              </div>
-            }
-            <input
-              type="text"
-              className="bottom-display"
-              ref={inputRef}
-              value={inputValue}
-              onChange={onInputChange}
-              onKeyDown={handleKeyDown}
-              onBlur={() => setIsInputBlur(true)}
-              onFocus={() => setIsInputBlur(false)}
-              autoFocus
-            />
+            {isSubmitted && <p className="submit-text">{currentCalc?.needsRounding ? "≈" : "="}</p>}
+            <div ref={wrapperRef} className="input-wrapper">
+              <input
+                type="text"
+                className="bottom-display"
+                ref={inputRef}
+                value={inputValue}
+                onChange={onInputChange}
+                onKeyDown={handleKeyDown}
+                onBlur={() => setIsInputBlur(true)}
+                onFocus={() => setIsInputBlur(false)}
+                autoFocus
+              />
+              {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}
+            </div>
           </div>
         </div>
         <button className="submission-area" type="submit">

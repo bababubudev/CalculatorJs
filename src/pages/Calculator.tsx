@@ -22,8 +22,7 @@ function Calculator() {
     const selectedItem = historyList.find(elem => elem.key === key);
 
     if (selectedItem) {
-      setPassedInput("");
-      setTimeout(() => setPassedInput(selectedItem.operation), 0);
+      setPassedInput(selectedItem.operation);
     }
   }
 

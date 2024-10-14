@@ -9,41 +9,14 @@ interface HistoryProp {
 }
 
 function History({ history, removeFromHistory, onHistoryClicked }: HistoryProp) {
-  const historyDisplayRef = useRef<HTMLDivElement | null>(null);
   const [historyShown, setHistoryShown] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (history.length > 0) {
-      setHistoryShown(true);
-      return;
-    }
-
-    setHistoryShown(false);
-  }, [history]);
 
   const toggleHistoryShown = (): void => {
     if (!historyShown) setHistoryShown(prev => !prev);
   }
 
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (historyDisplayRef.current && !historyDisplayRef.current.contains(event.target as Node)) {
-        setHistoryShown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    }
-  }, []);
-
   return (
-    <div
-      ref={historyDisplayRef}
-      className={`hidables ${historyShown ? "shown" : "hidden"}`}
-    >
+    <div className={`hidables ${historyShown ? "shown" : "hidden"}`}>
       <HistoryList
         history={history}
         removeFromHistory={removeFromHistory}

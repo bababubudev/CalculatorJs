@@ -73,7 +73,7 @@
 
   li {
     position: relative;
-    padding: 0.2rem;
+    padding: 0.75rem 0;
     border-radius: 0.5rem;
 
     text-align: center;
@@ -96,9 +96,9 @@
       &::after {
         content: "\203A";
         position: absolute;
-        top: 0.2rem;
+        top: 0.75rem;
         bottom: 0;
-        left: 0.5rem;
+        left: 0.75rem;
 
         font-family: "Bold";
         color: var(--col-tertiary);
