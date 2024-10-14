@@ -7,8 +7,8 @@
   box-shadow: 0 5px 3px var(--std-col-box-shadow);
   border-radius: 0.5rem;
 
-  padding-inline: 0.75em;
-  padding-block: 0.5em;
+  padding-inline: 0.75rem;
+  padding-block: 0.5rem;
 
   display: grid;
   grid-template-columns: 1fr 5rem;
@@ -27,7 +27,7 @@
     .interaction {
       position: relative;
       display: flex;
-      gap: 0.5em;
+      gap: 0.5rem;
       overflow: hidden;
 
       p {
@@ -45,7 +45,7 @@
         border: none;
         width: 100%;
 
-        font-size: 1.5em;
+        font-size: 1.5rem;
         -webkit-tap-highlight-color: transparent;
 
         &:focus {
@@ -64,7 +64,7 @@
       border: none;
       background: none;
 
-      font-size: 1.5em;
+      font-size: 1.5rem;
       font-family: "FiraSans";
       opacity: 0.7;
 
