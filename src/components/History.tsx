@@ -1,5 +1,5 @@
 import type { historyObject } from "../utils/types";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import HistoryList from "./HistoryList";
 
 interface HistoryProp {
