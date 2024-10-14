@@ -143,11 +143,13 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   }, [currentCalc]);
 
   const syncBracketPreview = () => {
-    if (inputRef.current && bracketPrevRef.current) {
+    if (inputRef.current) {
       const inputElement = inputRef.current;
       const scrollOffset = inputElement.scrollLeft;
 
-      bracketPrevRef.current.style.left = `-${scrollOffset}px`;
+      requestAnimationFrame(() => {
+        if (bracketPrevRef.current) bracketPrevRef.current.style.left = `-${scrollOffset}px`;
+      });
     }
   };
 
@@ -156,12 +158,14 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     const inputElement = inputRef.current;
     if (!inputElement) return;
 
-    inputElement.addEventListener("scroll", syncBracketPreview, { passive: false });
-    inputElement.addEventListener("touchmove", syncBracketPreview, { passive: false });
+    const handleScroll = () => syncBracketPreview();
+
+    inputElement.addEventListener("scroll", handleScroll, { passive: false });
+    inputElement.addEventListener("touchmove", handleScroll, { passive: false });
 
     return () => {
-      inputElement.removeEventListener("scroll", syncBracketPreview);
-      inputElement.removeEventListener("touchmove", syncBracketPreview);
+      inputElement.removeEventListener("scroll", handleScroll);
+      inputElement.removeEventListener("touchmove", handleScroll);
     };
   }, []);
 
