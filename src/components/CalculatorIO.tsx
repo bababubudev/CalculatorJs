@@ -21,7 +21,6 @@ interface CalculatorIOProps {
 function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
@@ -314,20 +313,18 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
           </p>
           <div className="interaction">
             {isSubmitted && <p className="submit-text">{currentCalc?.needsRounding ? "≈" : "="}</p>}
-            <div ref={wrapperRef} className="input-wrapper">
-              <input
-                type="text"
-                className="bottom-display"
-                ref={inputRef}
-                value={inputValue}
-                onChange={onInputChange}
-                onKeyDown={handleKeyDown}
-                onBlur={() => setIsInputBlur(true)}
-                onFocus={() => setIsInputBlur(false)}
-                autoFocus
-              />
-              {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}
-            </div>
+            <input
+              type="text"
+              className="bottom-display"
+              ref={inputRef}
+              value={inputValue}
+              onChange={onInputChange}
+              onKeyDown={handleKeyDown}
+              onBlur={() => setIsInputBlur(true)}
+              onFocus={() => setIsInputBlur(false)}
+              autoFocus
+            />
+            {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}
           </div>
         </div>
         <button className="submission-area" type="submit">
