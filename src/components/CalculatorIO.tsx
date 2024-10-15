@@ -148,7 +148,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       const scrollOffset = inputElement.scrollLeft;
 
       requestAnimationFrame(() => {
-        if (bracketPrevRef.current) bracketPrevRef.current.style.left = `-${scrollOffset}px`;
+        if (bracketPrevRef.current) {
+          bracketPrevRef.current.style.transform = `translateX(-${scrollOffset}px)`;
+          bracketPrevRef.current.style.willChange = "transform";
+        }
       });
     }
   };

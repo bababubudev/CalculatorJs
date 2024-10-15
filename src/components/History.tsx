@@ -1,5 +1,5 @@
 import type { historyObject } from "../utils/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HistoryList from "./HistoryList";
 
 interface HistoryProp {
@@ -10,6 +10,15 @@ interface HistoryProp {
 
 function History({ history, removeFromHistory, onHistoryClicked }: HistoryProp) {
   const [historyShown, setHistoryShown] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (history.length > 0) {
+      setHistoryShown(true);
+      return;
+    }
+
+    setHistoryShown(false);
+  }, [history]);
 
   const toggleHistoryShown = (): void => {
     if (!historyShown) setHistoryShown(prev => !prev);
