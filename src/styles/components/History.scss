@@ -22,37 +22,15 @@ $gradiant-color: white;
     display: grid;
     gap: 0.5rem;
 
-    .item-enter {
-      opacity: 0;
-      transform: translateX(100%);
-    }
-
-    .item-enter-active {
-      opacity: 1;
-      transform: translateX(0);
-      transition:
-        transform 300ms ease-in-out,
-        opacity 300ms ease-in-out;
-    }
-
-    .item-exit {
-      transform: translateX(0);
-      opacity: 1;
-    }
-
-    .item-exit-active {
-      transform: translateX(-100%);
-      opacity: 0;
-      transition:
-        transform 300ms ease-in-out,
-        opacity 300ms ease-in-out;
-    }
-
     li {
+      &.show-del {
+        display: grid;
+        grid-template-columns: 1fr 2rem;
+        justify-content: center;
+      }
+
       position: relative;
-      display: grid;
-      justify-content: center;
-      grid-template-columns: 1fr 2rem;
+      width: 100%;
       gap: 0.25em;
       cursor: pointer;
 
@@ -125,7 +103,7 @@ $gradiant-color: white;
         }
       }
 
-      .detail {
+      &.show-del .detail {
         > button {
           cursor: pointer;
         }
@@ -161,28 +139,28 @@ $gradiant-color: white;
             color: var(--col-white);
             fill: var(--col-white);
 
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 1.5rem;
+            height: 1.5rem;
 
             filter: drop-shadow(0px 1px var(--std-col-box-shadow));
           }
         }
+      }
 
-        .index {
-          position: absolute;
-          right: 3rem;
-          top: 0;
+      .index {
+        position: absolute;
+        right: 3rem;
+        top: 0;
 
-          font-size: 1.5em;
-          font-family: "Bold";
-          font-style: italic;
+        font-size: 1.5em;
+        font-family: "Bold";
+        font-style: italic;
 
-          color: var(--col-window-bg);
-          opacity: 0.5;
+        color: var(--col-window-bg);
+        opacity: 0.5;
 
-          // border-radius: 0 0 .2rem .2rem;
-          // box-shadow: 1px 1px 1px var(--std-col-box-shadow);
-        }
+        // border-radius: 0 0 .2rem .2rem;
+        // box-shadow: 1px 1px 1px var(--std-col-box-shadow);
       }
     }
 
