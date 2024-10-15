@@ -149,13 +149,8 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
       requestAnimationFrame(() => {
         if (bracketPrevRef.current) {
-          bracketPrevRef.current.style.transform = `translateX(-${scrollOffset}px)`;
+          bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
           bracketPrevRef.current.style.willChange = "transform";
-
-          //? REFACTOR: Force repaint
-          bracketPrevRef.current.style.display = "none";
-          bracketPrevRef.current.offsetHeight; // Trigger reflow
-          bracketPrevRef.current.style.display = "block";
         }
       });
     }
@@ -168,8 +163,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     const handleScroll = () => syncBracketPreview();
 
-    inputElement.addEventListener("scroll", handleScroll, { passive: false });
-    inputElement.addEventListener("touchmove", handleScroll, { passive: false });
+    inputElement.addEventListener("scroll", handleScroll);
 
     return () => {
       inputElement.removeEventListener("scroll", handleScroll);
