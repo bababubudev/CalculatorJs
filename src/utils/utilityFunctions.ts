@@ -4,6 +4,8 @@ import type { angleUnit, calculationInfo, suggestionObject } from "./types.ts";
 
 const FILTER_KEYS = Object.keys(functionKeys).sort();
 
+export const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent);
+
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
   let result = "";

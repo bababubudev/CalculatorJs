@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
   calculate,
+  isIOS,
   roundNumbers,
   suggestMathFunctions,
 } from "../utils/utilityFunctions";
@@ -47,6 +48,8 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     if (focus) {
       inputRef.current.focus();
       setIsInputBlur(false);
+      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+
       return;
     }
 
@@ -70,6 +73,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       setTopDisplay(displayOperation ?? operation);
     }
   }, []);
+
 
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
@@ -143,6 +147,11 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   }, [currentCalc]);
 
   const syncBracketPreview = () => {
+    if (isIOS() && bracketPrevRef.current) {
+      bracketPrevRef.current.style.display = "none";
+      return;
+    }
+
     if (inputRef.current) {
       const inputElement = inputRef.current;
       const scrollOffset = inputElement.scrollLeft;
@@ -161,13 +170,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     const inputElement = inputRef.current;
     if (!inputElement) return;
 
-    const handleScroll = () => syncBracketPreview();
-
-    inputElement.addEventListener("scroll", handleScroll);
+    inputElement.addEventListener("scroll", syncBracketPreview);
 
     return () => {
-      inputElement.removeEventListener("scroll", handleScroll);
-      inputElement.removeEventListener("touchmove", handleScroll);
+      inputElement.removeEventListener("scroll", syncBracketPreview);
     };
   }, []);
 
@@ -221,6 +227,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     setIsInputBlur(false);
     setIsSubmitted(false);
+
     setCurrentCalc(undefined);
     removePassedInput();
 
@@ -233,6 +240,12 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       else {
         inputRef.current.style.paddingRight = "unset";
       }
+    }
+
+    //? REFACTOR.
+    const currentBracketState = bracketPrevRef.current;
+    if (currentBracketState && currentBracketState.style.display === "none") {
+      currentBracketState.style.display = "block";
     }
 
     //*NOTE: Replace ans(n) with the value from history
@@ -266,6 +279,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     if (isSubmitted) {
       const currentEvent = { target: { value: "" } } as React.ChangeEvent<HTMLInputElement>;
       onInputChange(currentEvent, true);
+
       return;
     }
 
