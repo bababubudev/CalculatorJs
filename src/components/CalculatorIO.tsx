@@ -151,6 +151,11 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         if (bracketPrevRef.current) {
           bracketPrevRef.current.style.transform = `translateX(-${scrollOffset}px)`;
           bracketPrevRef.current.style.willChange = "transform";
+
+          //? REFACTOR: Force repaint
+          bracketPrevRef.current.style.display = "none";
+          bracketPrevRef.current.offsetHeight; // Trigger reflow
+          bracketPrevRef.current.style.display = "block";
         }
       });
     }
