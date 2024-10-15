@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
   calculate,
-  isIOS,
   roundNumbers,
   suggestMathFunctions,
 } from "../utils/utilityFunctions";
@@ -147,11 +146,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   }, [currentCalc]);
 
   const syncBracketPreview = () => {
-    if (isIOS() && bracketPrevRef.current) {
-      bracketPrevRef.current.style.display = "none";
-      return;
-    }
-
     if (inputRef.current) {
       const inputElement = inputRef.current;
       const scrollOffset = inputElement.scrollLeft;
@@ -240,12 +234,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       else {
         inputRef.current.style.paddingRight = "unset";
       }
-    }
-
-    //? REFACTOR.
-    const currentBracketState = bracketPrevRef.current;
-    if (currentBracketState && currentBracketState.style.display === "none") {
-      currentBracketState.style.display = "block";
     }
 
     //*NOTE: Replace ans(n) with the value from history
