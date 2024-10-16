@@ -42,9 +42,7 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
   };
 
   const onHistoryPartClicked = (currentItem: historyObject) => {
-    if (currentItem.counter === 1) {
-      onHistoryClicked(currentItem.key);
-    }
+    onHistoryClicked(currentItem.key);
   };
 
   return (
@@ -62,7 +60,6 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
 
                   key={elem.key}
                   ref={el => historyItemRefs.current.set(elem.key, el)}
-                  className={elem.counter > 0 ? "show-del" : ""}
                 >
                   <div
                     className="history-part"
@@ -72,14 +69,11 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
                     <span>{elem.needsRounding ? "≈" : "="}</span>
                     <p className="result">{elem.result}</p>
                   </div>
-                  {elem.counter > 0 &&
-                    <div className="detail">
-                      <button className="del-btn" onClick={() => onRemovalCalled(elem.key)}>
-                        <IoTrashBinOutline className="del-icon" />
-                      </button>
-                    </div>
-                  }
-
+                  <div className="detail">
+                    <button className="del-btn" onClick={() => onRemovalCalled(elem.key)}>
+                      <IoTrashBinOutline className="del-icon" />
+                    </button>
+                  </div>
                   <span className="index">
                     {(history.length - history.findIndex(item => item.key === elem.key))}
                   </span>

@@ -23,14 +23,10 @@ $gradiant-color: white;
     gap: 0.5rem;
 
     li {
-      &.show-del {
-        display: grid;
-        grid-template-columns: 1fr 2rem;
-        justify-content: center;
-      }
-
       position: relative;
-      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 2rem;
+      justify-content: center;
       gap: 0.25em;
       cursor: pointer;
 
@@ -103,7 +99,7 @@ $gradiant-color: white;
         }
       }
 
-      &.show-del .detail {
+      .detail {
         > button {
           cursor: pointer;
         }
