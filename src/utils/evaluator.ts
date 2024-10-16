@@ -1,7 +1,7 @@
 import { angleUnit } from "./types";
 // type SeperatedInput = [string[], string | null, string[]]
 
-const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ"]);
+const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ", "∞"]);
 
 let currentAngle: angleUnit = "radian";
 
@@ -53,6 +53,7 @@ export const functions: { [key: string]: ((...args: number[]) => number) | numbe
   //* INFO: Mathematical Constants
   pi: Math.PI,
   phi: phiVal,
+  "∞": Infinity,  
   ϕ: phiVal,
   π: Math.PI,
   e: Math.E,

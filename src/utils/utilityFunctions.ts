@@ -31,7 +31,7 @@ export function autoCompleteBrackets(input: string): string {
 }
 
 export function suggestMathFunctions(input: string): suggestionObject {
-  const functionMatch = input.match(/([a-z]+)\(?$/i);
+  const functionMatch = input.toLowerCase().match(/([a-z]+)\(?$/i);
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];

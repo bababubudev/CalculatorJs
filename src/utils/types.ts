@@ -126,6 +126,11 @@ export const functionKeys: Record<string, functionValue> = {
     pasteAs: "ϕ", 
     description: "Represents the golden ratio ϕ" 
   },
+  "infinity": {
+    displayAs: "∞",
+    pasteAs: "∞",
+    description: "Represents the concept of infinity"
+  },
   "e": { 
     displayAs: "e",
     pasteAs: "e", 
