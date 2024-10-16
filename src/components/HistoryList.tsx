@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IoTrashBinOutline } from "react-icons/io5";
 import { PiBroomFill } from "react-icons/pi";
 import { historyObject } from "../utils/types";
 import Modal from "./Modal";
+import { AiFillDelete } from "react-icons/ai";
 
 interface HistoryListProps {
   history: historyObject[];
@@ -126,7 +126,7 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
                 </div>
                 <div className="detail">
                   <button className="del-btn" onClick={() => onRemovalCalled(elem.key)}>
-                    <IoTrashBinOutline className="del-icon" />
+                    <AiFillDelete className="del-icon" />
                   </button>
                   <span className="index">
                     {(history.length - transitionItems.findIndex(item => item.key === elem.key))}
@@ -142,7 +142,7 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
       <button
         onClick={handleClearAllClicked}
         className="clear-all-btn"
-        disabled={history.length === 0}
+        disabled={history.length < 2}
       >
         <PiBroomFill />
       </button>

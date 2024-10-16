@@ -288,7 +288,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         operation: inputValue,
         displayOperation: bracketPreview,
         result: displayResult,
-        counter: 0,
         needsRounding: roundedResult.requires,
         angleUnit: output?.angleUnit
       };

@@ -46,17 +46,17 @@ export const functionKeys: Record<string, functionValue> = {
   "asin": {
     displayAs: "asin(n)",
     pasteAs: "asin(", 
-    description: "Inverse sine of a value (arcsin) in degrees" 
+    description: "Inverse sine of a value (arc sine)" 
   },
   "acos": {
     displayAs: "acos(n)",
     pasteAs: "acos(", 
-    description: "Inverse cosine of a value (arccos) in degrees" 
+    description: "Inverse cosine of a value (arc cosine)" 
   },
   "atan": {
     displayAs: "atan(n)",
     pasteAs: "atan(", 
-    description: "Inverse tangent of a value (arctan) in degrees" 
+    description: "Inverse tangent of a value (arc tangent)" 
   },
 
   "sqrt": {
