@@ -7,19 +7,19 @@ let currentAngle: angleUnit = "radian";
 
 const factorial = (n: number): number => n <= 1 ? 1 : n * factorial(n - 1);
 
-const phiVal = (1 + Math.sqrt(5)) / 2; 
+const phiVal = (1 + Math.sqrt(5)) / 2;
 
 const toAngle: { [key: string]: number } = {
   degree: Math.PI / 180,
   gradian: Math.PI / 200,
   radian: 1,
-}
+};
 
 const toValue: { [key: string]: number } = {
   degree: 180 / Math.PI,
   gradian: 200 / Math.PI,
   radian: 1,
-}
+};
 
 const angle = (x: number): number => x * (toAngle[currentAngle] || 1);
 
@@ -36,12 +36,12 @@ export const functions: { [key: string]: ((...args: number[]) => number) | numbe
   acos: (x: number) => Math.acos(x) * toValue[currentAngle],
   atan: (x: number) => Math.atan(x) * toValue[currentAngle],
 
-  //* INFO: Algebraic functions 
+  //* INFO: Algebraic functions
   sqrt: (x: number) => Math.sqrt(x),
   cbrt: (x: number) => Math.cbrt(x),
   lg: (x: number) => Math.log10(x),
-  ln: (x: number) =>  Math.log(x),
-  abs:(x: number) =>  Math.abs(x),
+  ln: (x: number) => Math.log(x),
+  abs: (x: number) => Math.abs(x),
 
   //* INFO: Custom functions
   add: (...args: number[]) => args.reduce((acc, val) => acc + val, 0),
@@ -49,11 +49,13 @@ export const functions: { [key: string]: ((...args: number[]) => number) | numbe
   high: (...args: number[]) => Math.max(...args),
   root: (x: number, n: number) => Math.pow(x, 1 / n),
   log: (x: number, n: number) => Math.log(n) / Math.log(x),
+  nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
+  nCr: (n: number, r: number) => factorial(n) / (factorial(r) * factorial(n - r)),
 
   //* INFO: Mathematical Constants
   pi: Math.PI,
   phi: phiVal,
-  "∞": Infinity,  
+  "∞": Infinity,
   ϕ: phiVal,
   π: Math.PI,
   e: Math.E,
@@ -239,16 +241,16 @@ function evaluateRPN(rpn: string[]): number {
     }
     else if (token in functions) {
       const valOrFunc = functions[token];
-     
+
       if (typeof valOrFunc === "number") {
         stack.push(valOrFunc);
       }
-      else if (typeof valOrFunc === "function") {  
+      else if (typeof valOrFunc === "function") {
         const func = valOrFunc;
 
         const isVariadic = func.length === 0;
         const args = [];
-        
+
         if (isVariadic) {
           while (stack.length > 0 && typeof stack[stack.length - 1] === "number") {
             args.push(stack.pop() as number);

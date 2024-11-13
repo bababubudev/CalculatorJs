@@ -209,10 +209,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       e.preventDefault();
       autoFillPreview(selectedPreview);
       setSelectedPreview(0);
-    } else if (e.key === "ArrowDown") {
+    } else if (e.key === "ArrowRight") {
       e.preventDefault();
       setSelectedPreview(prev => (prev + 1) % suggestions.length);
-    } else if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       setSelectedPreview(prev => (prev - 1 + suggestions.length) % suggestions.length)
     }

@@ -63,5 +63,5 @@ main {
 }
 
 html {
-  scroll-padding-bottom: calc(env(safe-area-inset-bottom) + 3rem);
+  scroll-padding-bottom: env(safe-area-inset-bottom);
 }

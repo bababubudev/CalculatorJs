@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { functionKeys, type suggestionObject } from "../utils/types";
-import { TbInfoSquareRounded } from "react-icons/tb";
+import { LuInfo } from "react-icons/lu";
 import Modal from "./Modal";
 
 interface PreviewDisplayProp {
@@ -13,25 +13,34 @@ interface PreviewDisplayProp {
   setPreviewSelection: (index: number) => void;
 }
 
-function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSelection, autoFillPreview, setPreviewSelection }: PreviewDisplayProp) {
+function PreviewDisplay({
+  attempt,
+  isInputBlur,
+  hidePreview,
+  previews,
+  previewSelection,
+  autoFillPreview,
+  setPreviewSelection
+}: PreviewDisplayProp) {
   const previewListRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
   const [showInfo, setShowInfo] = useState<boolean>(false);
 
   useEffect(() => {
-    const previewList = previewListRef.current;
-    if (previewList) {
-      const handleWheel = (event: WheelEvent) => {
-        if (event.deltaY !== 0) {
-          event.preventDefault();
-          previewList.scrollLeft += event.deltaY;
-        }
-      };
-      previewList.addEventListener("wheel", handleWheel);
-      return () => {
-        previewList.removeEventListener("wheel", handleWheel);
-      };
+    const selectedItem = itemRefs.current[previewSelection];
+    if (selectedItem) {
+      selectedItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }
-  }, []);
+
+    setShowInfo(false);
+  }, [previewSelection]);
+
+  useEffect(() => {
+    if (isInputBlur) {
+      setShowInfo(false);
+    }
+  }, [isInputBlur]);
 
   const renderDisplayWithBoldParams = (display: string) => {
     const result: JSX.Element[] = [];
@@ -68,7 +77,6 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
     setShowInfo(true);
   };
 
-
   return (
     <>
       {!hidePreview &&
@@ -84,22 +92,22 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
               const selected = previewSelection === index;
 
               return (
-                <div className="list-diplay">
-                  <li
-                    className={selected ? "selected" : ""}
-                    onPointerDown={() => { setPreviewSelection(index) }}
-                    onClick={() => { autoFillPreview(index); }}
-                  >
-                    <p className="display">{renderDisplayWithBoldParams(autoFill)}</p>
-                  </li>
-                </div>
+                <li
+                  key={index}
+                  ref={(el) => (itemRefs.current[index] = el)}
+                  className={selected ? "selected" : ""}
+                  onPointerDown={() => { setPreviewSelection(index); }}
+                  onClick={() => { autoFillPreview(index); }}
+                >
+                  <p className="display">{renderDisplayWithBoldParams(autoFill)}</p>
+                </li>
               )
             })}
             <button
               onClick={handleInfoClick}
               disabled={showInfo}
             >
-              <TbInfoSquareRounded className="info-icon" />
+              <LuInfo className="info-icon" />
             </button>
           </ul>
           <Modal
