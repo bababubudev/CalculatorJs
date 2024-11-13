@@ -27,8 +27,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const [bracketPreview, setBracketPreview] = useState<string>("");
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isInputBlur, setIsInputBlur] = useState<boolean>(false);
-
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
   const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
@@ -46,14 +44,12 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     if (focus) {
       inputRef.current.focus();
-      setIsInputBlur(false);
       inputRef.current.scrollLeft = inputRef.current.scrollWidth;
 
       return;
     }
 
     inputRef.current.blur();
-    setIsInputBlur(false);
   };
 
   const updateDisplay = useCallback((operation: string, displayOperation?: string, angle?: angleUnit, isFlipped: boolean = false, precision: number = 5) => {
@@ -124,8 +120,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         inputRef.current.focus();
         if (event.key === "Backspace" && currentCalc) {
           event.preventDefault();
-          setIsInputBlur(false);
-
           const { operation, result } = currentCalc;
 
           setInputValue(operation);
@@ -199,7 +193,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       return prev;
     });
 
-    setIsInputBlur(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -219,7 +212,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
-    setIsInputBlur(false);
     setIsSubmitted(false);
 
     setCurrentCalc(undefined);
@@ -319,8 +311,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
               value={inputValue}
               onChange={onInputChange}
               onKeyDown={handleKeyDown}
-              onBlur={() => setIsInputBlur(true)}
-              onFocus={() => setIsInputBlur(false)}
               autoFocus
             />
             {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}
@@ -333,7 +323,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       </form>
       <PreviewDisplay
         attempt={functionPreview.attemptString}
-        isInputBlur={isInputBlur}
         hidePreview={hidePreview || false}
         previews={functionPreview}
         previewSelection={selectedPreview}

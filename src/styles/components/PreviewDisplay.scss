@@ -3,6 +3,8 @@
   overflow: hidden;
 
   width: 100%;
+  min-height: 2.5rem;
+  overflow: hidden;
 
   bottom: 0;
   display: grid;
@@ -10,7 +12,7 @@
 
   z-index: 1000;
   animation-name: stretch-out;
-  animation-duration: 0.25s;
+  animation-duration: 0.2s;
   animation-timing-function: ease-in-out;
   opacity: 1;
 
@@ -25,8 +27,8 @@
       transform: scaleY(0.1);
     }
 
-    50% {
-      transform: scaleY(1.05);
+    75% {
+      transform: scaleY(1.5);
     }
 
     100% {
@@ -39,6 +41,11 @@
     z-index: -10000;
     opacity: 0;
     transform: scaleY(0.1);
+    transform-origin: top center;
+
+    transition:
+      transform 0.2s,
+      opacity 0.3s ease;
 
     .preview-list {
       li {
