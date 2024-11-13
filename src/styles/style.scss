@@ -58,14 +58,10 @@ main {
   }
 }
 
-.seperator {
-  flex-grow: 1;
-}
-
-input {
-  margin-bottom: env(safe-area-inset-bottom);
+.calculation-display {
+  margin-bottom: calc(env(safe-area-inset-bottom) + 3rem);
 }
 
 html {
-  scroll-padding-bottom: env(safe-area-inset-bottom);
+  scroll-padding-bottom: calc(env(safe-area-inset-bottom) + 3rem);
 }

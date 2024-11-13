@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { functionKeys, type suggestionObject } from "../utils/types";
 import { TbInfoSquareRounded } from "react-icons/tb";
+import Modal from "./Modal";
 
 interface PreviewDisplayProp {
   attempt: string;
@@ -13,7 +14,24 @@ interface PreviewDisplayProp {
 }
 
 function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSelection, autoFillPreview, setPreviewSelection }: PreviewDisplayProp) {
-  const [descriptionText, setDescriptionText] = useState<string>("");
+  const previewListRef = useRef<HTMLUListElement>(null);
+  const [showInfo, setShowInfo] = useState<boolean>(false);
+
+  useEffect(() => {
+    const previewList = previewListRef.current;
+    if (previewList) {
+      const handleWheel = (event: WheelEvent) => {
+        if (event.deltaY !== 0) {
+          event.preventDefault();
+          previewList.scrollLeft += event.deltaY;
+        }
+      };
+      previewList.addEventListener("wheel", handleWheel);
+      return () => {
+        previewList.removeEventListener("wheel", handleWheel);
+      };
+    }
+  }, []);
 
   const renderDisplayWithBoldParams = (display: string) => {
     const result: JSX.Element[] = [];
@@ -46,20 +64,27 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
     return result;
   };
 
+  const handleInfoClick = () => {
+    setShowInfo(true);
+  };
+
 
   return (
     <>
       {!hidePreview &&
         <div className={`preview-display ${isInputBlur ? "" : ""}`}>
-          <p className="description">{descriptionText}</p>
-          <ul className="preview-list" onMouseDown={e => e.preventDefault()}>
+          <ul
+            className="preview-list"
+            onMouseDown={e => e.preventDefault()}
+            ref={previewListRef}
+          >
             {previews.suggestions.map((preview, index) => {
               const currentPrev = functionKeys[preview];
               const autoFill = currentPrev.displayAs;
               const selected = previewSelection === index;
 
               return (
-                <div key={index} className={`list-display ${selected ? "selected" : ""}`}>
+                <div className="list-diplay">
                   <li
                     className={selected ? "selected" : ""}
                     onPointerDown={() => { setPreviewSelection(index) }}
@@ -67,22 +92,37 @@ function PreviewDisplay({ attempt, isInputBlur, hidePreview, previews, previewSe
                   >
                     <p className="display">{renderDisplayWithBoldParams(autoFill)}</p>
                   </li>
-
-                  <button
-                    className="info-btn"
-                    onClick={() => {
-                      if (selected) {
-                        setDescriptionText(currentPrev.description);
-                        return;
-                      }
-                    }}
-                  >
-                    <TbInfoSquareRounded />
-                  </button>
                 </div>
               )
             })}
+            <button
+              onClick={handleInfoClick}
+              disabled={showInfo}
+            >
+              <TbInfoSquareRounded className="info-icon" />
+            </button>
           </ul>
+          <Modal
+            isInfo={true}
+            isOpen={showInfo}
+            dialogue={"Information"}
+            description={
+              <ul className="infoList">
+                {previews.suggestions.map((preview, index) => {
+                  const currentPrev = functionKeys[preview];
+
+                  return (
+                    <li key={index}>
+                      <h3 className="display-as">{currentPrev.displayAs}</h3>
+                      <p className="description">{currentPrev.description}</p>
+                    </li>
+                  )
+                })}
+              </ul>
+            }
+            onConfirm={() => setShowInfo(false)}
+            onCancel={() => setShowInfo(false)}
+          />
         </div >
       }
     </>

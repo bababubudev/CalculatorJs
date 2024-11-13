@@ -7,7 +7,6 @@ function App() {
     <OptionsProvider>
       <main>
         <Header />
-        <div className="seperator"></div>
         <Calculator />
       </main>
     </OptionsProvider>

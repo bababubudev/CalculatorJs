@@ -1,5 +1,3 @@
-@use "./PreviewDisplay.scss";
-
 .calculation-display {
   z-index: -1;
   color: var(--col-window-bg);
@@ -76,7 +74,7 @@
   }
 
   .submission-area,
-  .submission-area > * {
+  .submission-area>* {
     transition: background-color 0.5s ease-out;
   }
 
@@ -120,8 +118,9 @@
   }
 
   &.submitted {
+
     .submission-area,
-    .submission-area > * {
+    .submission-area>* {
       background: var(--col-accent);
       transition: background-color 0.5s ease-out;
 

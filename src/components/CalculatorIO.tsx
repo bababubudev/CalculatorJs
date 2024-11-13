@@ -299,15 +299,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   return (
     <>
-      <PreviewDisplay
-        attempt={functionPreview.attemptString}
-        isInputBlur={isInputBlur}
-        hidePreview={hidePreview || false}
-        previews={functionPreview}
-        previewSelection={selectedPreview}
-        autoFillPreview={autoFillPreview}
-        setPreviewSelection={setSelectedPreview}
-      />
       <form
         className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
         onSubmit={onCalculationSubmit}
@@ -340,6 +331,15 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
           <p className="submit-icon">{isSubmitted ? "AC" : "="}</p>
         </button>
       </form>
+      <PreviewDisplay
+        attempt={functionPreview.attemptString}
+        isInputBlur={isInputBlur}
+        hidePreview={hidePreview || false}
+        previews={functionPreview}
+        previewSelection={selectedPreview}
+        autoFillPreview={autoFillPreview}
+        setPreviewSelection={setSelectedPreview}
+      />
     </>
   );
 }
