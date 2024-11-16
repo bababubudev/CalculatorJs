@@ -20,15 +20,17 @@ function PreviewDisplay({
   autoFillPreview,
   setPreviewSelection,
 }: PreviewDisplayProp) {
-  const previewListRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const [showInfo, setShowInfo] = useState<boolean>(false);
 
   useEffect(() => {
-    const selectedItem = itemRefs.current[previewSelection];
-    if (selectedItem) {
-      selectedItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    if (!isMobile) {
+      const selectedItem = itemRefs.current[previewSelection];
+      if (selectedItem) {
+        selectedItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
     }
 
     setShowInfo(false);
@@ -74,58 +76,61 @@ function PreviewDisplay({
   };
 
   return (
-    <div className={`preview-display ${hidePreview ? "blurred" : ""}`}>
-      <ul
-        className="preview-list"
-        onMouseDown={e => e.preventDefault()}
-        ref={previewListRef}
-      >
-        {previews.suggestions.map((preview, index) => {
-          const currentPrev = functionKeys[preview];
-          const autoFill = currentPrev.displayAs;
-          const selected = previewSelection === index;
-
-          return (
-            <li
-              key={index}
-              ref={(el) => (itemRefs.current[index] = el)}
-              className={selected ? "selected" : ""}
-              onPointerDown={() => { setPreviewSelection(index); }}
-              onClick={() => { autoFillPreview(index); }}
-            >
-              <p className="display">{renderDisplayWithBoldParams(autoFill)}</p>
-            </li>
-          )
-        })}
-        <button
-          onClick={handleInfoClick}
-          disabled={showInfo}
-        >
-          <LuInfo className="info-icon" />
-        </button>
-      </ul>
-      <Modal
-        isInfo={true}
-        isOpen={showInfo}
-        dialogue={"Information"}
-        description={
-          <ul className="infoList">
+    <>
+      {!hidePreview && previews.suggestions.length > 0 && (
+        <div className={"preview-display"}>
+          <ul
+            className="preview-list"
+            onMouseDown={e => e.preventDefault()}
+          >
             {previews.suggestions.map((preview, index) => {
               const currentPrev = functionKeys[preview];
+              const autoFill = currentPrev.displayAs;
+              const selected = previewSelection === index;
 
               return (
-                <li key={index}>
-                  <h3 className="display-as">{currentPrev.displayAs}</h3>
-                  <p className="description">{currentPrev.description}</p>
+                <li
+                  key={index}
+                  ref={(el) => (itemRefs.current[index] = el)}
+                  className={selected ? "selected" : ""}
+                  onPointerDown={() => { setPreviewSelection(index); }}
+                  onClick={() => { autoFillPreview(index); }}
+                >
+                  <p className="display">{renderDisplayWithBoldParams(autoFill)}</p>
                 </li>
               )
             })}
+            <button
+              onClick={handleInfoClick}
+              disabled={showInfo}
+            >
+              <LuInfo className="info-icon" />
+            </button>
           </ul>
-        }
-        onConfirm={handleModalClose}
-        onCancel={handleModalClose}
-      />
-    </div >
+          <Modal
+            isInfo={true}
+            isOpen={showInfo}
+            dialogue={"Information"}
+            description={
+              <ul className="infoList">
+                {previews.suggestions.map((preview, index) => {
+                  const currentPrev = functionKeys[preview];
+
+                  return (
+                    <li key={index}>
+                      <h3 className="display-as">{currentPrev.displayAs}</h3>
+                      <p className="description">{currentPrev.description}</p>
+                    </li>
+                  )
+                })}
+              </ul>
+            }
+            onConfirm={handleModalClose}
+            onCancel={handleModalClose}
+          />
+        </div >
+      )}
+    </>
   );
 }
 

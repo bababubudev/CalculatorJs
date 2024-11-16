@@ -192,7 +192,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
       return prev;
     });
-
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
