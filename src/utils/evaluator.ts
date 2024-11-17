@@ -282,7 +282,6 @@ function shuntingYard(tokens: string[]): string[] {
 
 function evaluateRPN(rpn: string[]): number {
   const stack: number[] = [];
-  console.log(rpn);
 
   rpn.forEach(token => {
     if (!isNaN(parseFloat(token))) {
