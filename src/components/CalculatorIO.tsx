@@ -1,10 +1,10 @@
-import { functionKeys } from "../utils/types";
 import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
   calculate,
+  functionKeys,
   roundNumbers,
   suggestMathFunctions,
 } from "../utils/utilityFunctions";

@@ -141,9 +141,13 @@
 }
 
 .information {
-  h2 {
-    margin-bottom: 1rem;
-    color: var(--col-window-bg);
+  .modal-content {
+    background: var(--col-window-bg);
+
+    h2 {
+      margin-block: 1rem;
+      color: var(--col-primary);
+    }
   }
 
   ul {
@@ -151,14 +155,16 @@
     display: grid;
     gap: 0.25rem;
 
+    max-height: 50vh;
+    overflow-y: auto;
 
     li {
       display: grid;
       gap: 0.25rem;
 
-      background: var(--col-window-bg);
+      background: var(--col-secondary-faded);
       color: var(--col-white);
-      padding: 0.25rem 1rem;
+      padding: 0.75rem;
       border-radius: 0.5rem;
 
       h3 {
@@ -166,9 +172,8 @@
       }
 
       p {
-        opacity: 0.6;
         margin-left: 1rem;
-        color: var(--col-white);
+        color: var(--col-primary);
       }
     }
   }
