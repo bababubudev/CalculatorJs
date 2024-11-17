@@ -191,10 +191,6 @@ function tokenize(input: string): string[] {
       currentToken += char;
 
       if (functionSet.has(currentToken)) {
-        if (i + 1 >= size || input[i + 1] !== '(') {
-          throw new Error(`Function "${currentToken}" requires an opening parenthesis.`);
-        }
-
         tokens.push(currentToken);
         currentToken = "";
       }
@@ -202,6 +198,7 @@ function tokenize(input: string): string[] {
   }
 
   if (currentToken) tokens.push(currentToken);
+  console.log(tokens);
   return tokens;
 }
 
