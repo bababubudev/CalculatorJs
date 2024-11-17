@@ -140,16 +140,6 @@ export const functionKeys: Record<string, functionValue> = {
     pasteAs: "e",
     description: "Represents the Euler's number e"
   },
-  "false": {
-    displayAs: "false",
-    pasteAs: "0",
-    description: "Represents the boolean value false as a numeric value 0"
-  },
-  "true": {
-    displayAs: "true",
-    pasteAs: "1",
-    description: "Represents the boolean value true as a numeric value 1"
-  },
 }
 
 const FILTER_KEYS = Object.keys(functionKeys).sort();

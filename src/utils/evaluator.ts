@@ -198,7 +198,6 @@ function tokenize(input: string): string[] {
   }
 
   if (currentToken) tokens.push(currentToken);
-  console.log(tokens);
   return tokens;
 }
 
