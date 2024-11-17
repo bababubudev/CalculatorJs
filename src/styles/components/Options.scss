@@ -12,9 +12,11 @@
     border-radius: 0.5rem;
 
     &.shown {
+      z-index: 100000;
       max-height: 12rem;
       opacity: 1;
       visibility: visible;
+      pointer-events: auto;
       transition: max-height 0.2s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
 
       ul>* {
@@ -24,9 +26,11 @@
     }
 
     &.hidden {
+      z-index: auto;
       max-height: 0;
       opacity: 0;
       visibility: hidden;
+      pointer-events: none;
       transition: max-height 0.2s ease-in-out, opacity 0.5s, visibility 0s linear 0.5s;
 
       ul>* {
@@ -115,7 +119,6 @@
   display: grid;
   gap: 0.25em;
 
-  z-index: 1000;
   background: var(--col-white-faded);
   border-radius: 0.5rem 0 0.5rem 0.5rem;
 
@@ -138,7 +141,7 @@
   }
 
   div {
-    padding: 0.5rem;
+    padding: 0.7rem 0.5rem;
     border-radius: 0.5rem;
     border-radius: 0.2rem;
     background: var(--col-white);

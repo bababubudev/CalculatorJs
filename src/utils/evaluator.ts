@@ -2,11 +2,10 @@ import { angleUnit } from "./types";
 
 const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ", "∞", "true", "false"]);
 
-let currentAngle: angleUnit = "radian";
-
 const factorial = (n: number): number => n <= 1 ? 1 : n * factorial(n - 1);
-
 const phiVal = (1 + Math.sqrt(5)) / 2;
+
+let currentAngle: angleUnit = "radian";
 
 const toAngle: { [key: string]: number } = {
   degree: Math.PI / 180,

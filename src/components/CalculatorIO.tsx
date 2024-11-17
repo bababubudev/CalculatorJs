@@ -208,7 +208,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       e.preventDefault();
       autoFillPreview(selectedPreview);
       setSelectedPreview(0);
-    } else if (!hidePreview) {
+    } else if (!hidePreview && suggestions.length > 1) {
       if (e.key === "ArrowRight") {
         e.preventDefault();
         setSelectedPreview(prev => (prev + 1) % suggestions.length);
