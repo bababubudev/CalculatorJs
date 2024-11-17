@@ -20,12 +20,12 @@ function PreviewDisplay({
   autoFillPreview,
   setPreviewSelection,
 }: PreviewDisplayProp) {
+  const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const [showInfo, setShowInfo] = useState<boolean>(false);
 
   useEffect(() => {
-    const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
     if (!isMobile) {
       const selectedItem = itemRefs.current[previewSelection];
       if (selectedItem) {
@@ -34,7 +34,7 @@ function PreviewDisplay({
     }
 
     setShowInfo(false);
-  }, [previewSelection]);
+  }, [isMobile, previewSelection]);
 
   const renderDisplayWithBoldParams = (display: string) => {
     const result: JSX.Element[] = [];
@@ -81,7 +81,6 @@ function PreviewDisplay({
         <div className={"preview-display"}>
           <ul
             className="preview-list"
-            onMouseDown={e => e.preventDefault()}
           >
             {previews.suggestions.map((preview, index) => {
               const currentPrev = functionKeys[preview];

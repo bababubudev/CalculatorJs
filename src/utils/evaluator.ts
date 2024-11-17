@@ -1,7 +1,6 @@
 import { angleUnit } from "./types";
-// type SeperatedInput = [string[], string | null, string[]]
 
-const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ", "∞"]);
+const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ", "∞", "true", "false"]);
 
 let currentAngle: angleUnit = "radian";
 
@@ -23,11 +22,11 @@ const toValue: { [key: string]: number } = {
 
 const angle = (x: number): number => x * (toAngle[currentAngle] || 1);
 
-export const setAngleUnit = (_angleUnit: angleUnit = "radian"): void => { currentAngle = _angleUnit; }
+const setAngleUnit = (_angleUnit: angleUnit = "radian"): void => { currentAngle = _angleUnit; }
 
-export const getAngleUnit = (): angleUnit => currentAngle;
+const getAngleUnit = (): angleUnit => currentAngle;
 
-export const functions: { [key: string]: ((...args: number[]) => number) | number } = {
+const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   //* INFO: Trig functions
   sin: (x: number) => Math.sin(angle(x)),
   cos: (x: number) => Math.cos(angle(x)),
@@ -55,17 +54,43 @@ export const functions: { [key: string]: ((...args: number[]) => number) | numbe
   //* INFO: Mathematical Constants
   pi: Math.PI,
   phi: phiVal,
-  "∞": Infinity,
+  '∞': Infinity,
   ϕ: phiVal,
   π: Math.PI,
   e: Math.E,
+  false: Number(false),
+  true: Number(true),
 };
 
-function evaluateExpression(input: string): number {
+function evaluateExpression(input: string): boolean | number {
   input = autoCompleteParentheses(input);
-  const tokens: string[] | null = tokenize(input);
-  const rpn = shuntingYard(tokens);
-  return evaluateRPN(rpn);
+  const comparisonMatch = input.match(/(<=|>=|<|>|=|!=)/);
+
+  if (comparisonMatch) {
+    const operator = comparisonMatch[0];
+    return evaluateComparison(input, operator);
+  }
+
+  return evaluateInput(input);
+}
+
+function evaluateComparison(input: string, operator: string): boolean | number {
+  const [left, right] = input.split(operator).map(part => part.trim());
+
+  const leftValue = evaluateInput(left);
+  const rightValue = evaluateInput(right);
+
+  if (isNaN(leftValue) || isNaN(rightValue)) return NaN;
+
+  switch (operator) {
+    case "<": return leftValue < rightValue;
+    case ">": return leftValue > rightValue;
+    case "<=": return leftValue <= rightValue;
+    case ">=": return leftValue >= rightValue;
+    case "=": return leftValue === rightValue;
+    case "!=": return leftValue !== rightValue;
+    default: return NaN;
+  }
 }
 
 function autoCompleteParentheses(input: string): string {
@@ -83,6 +108,13 @@ function autoCompleteParentheses(input: string): string {
   }
 
   return input;
+}
+
+function evaluateInput(input: string): number {
+  const tokens: string[] | null = tokenize(input);
+  const rpn = shuntingYard(tokens);
+
+  return evaluateRPN(rpn);
 }
 
 function tokenize(input: string): string[] {
@@ -298,7 +330,11 @@ function evaluateRPN(rpn: string[]): number {
     }
   });
 
-  return stack[0];
+  return stack[0] !== undefined ? stack[0] : NaN;
 }
 
-export default evaluateExpression;
+export {
+  functions,
+  setAngleUnit, getAngleUnit,
+  evaluateExpression
+};

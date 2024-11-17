@@ -13,7 +13,7 @@ import PreviewDisplay from "./PreviewDisplay";
 interface CalculatorIOProps {
   passedInput: string;
   options: optionObject;
-  askForAnswer: (x: number) => number;
+  askForAnswer: (x: number) => string;
   removePassedInput: () => void;
   addToHistory: (info: historyObject) => void;
 }
@@ -52,10 +52,18 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     inputRef.current.blur();
   };
 
+  const formattedResult = (result: string, precision: number = 5): [string, boolean] => {
+    if (result === "true" || result === "false") {
+      return [result, false];
+    }
+
+    const roundedResult = roundNumbers(Number(result), precision);
+    return roundedResult.requires ? [roundedResult.rounded, true] : [result, false];
+  };
+
   const updateDisplay = useCallback((operation: string, displayOperation?: string, angle?: angleUnit, isFlipped: boolean = false, precision: number = 5) => {
     const { result } = calculate(operation, angle);
-    const roundedResult = roundNumbers(Number(result), precision);
-    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+    const [displayResult, _] = formattedResult(result, precision);
 
     if (!isFlipped) {
       setInputValue(operation);
@@ -68,7 +76,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       setTopDisplay(displayOperation ?? operation);
     }
   }, []);
-
 
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
@@ -201,12 +208,14 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       e.preventDefault();
       autoFillPreview(selectedPreview);
       setSelectedPreview(0);
-    } else if (e.key === "ArrowRight") {
-      e.preventDefault();
-      setSelectedPreview(prev => (prev + 1) % suggestions.length);
-    } else if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      setSelectedPreview(prev => (prev - 1 + suggestions.length) % suggestions.length)
+    } else if (!hidePreview) {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setSelectedPreview(prev => (prev + 1) % suggestions.length);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setSelectedPreview(prev => (prev - 1 + suggestions.length) % suggestions.length)
+      }
     }
   };
 
@@ -231,13 +240,12 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     const ansPattern = /ans\((\d+)([^)]*)/g;
     currentValue = currentValue.replace(ansPattern, (_, index) => {
       const ansValue = askForAnswer(Number(index));
-      return isNaN(ansValue) ? `0` : String(ansValue);
+      return ansValue.toString();
     });
 
     const updatedValue = autoCompleteBrackets(currentValue);
     const { result } = calculate(currentValue, options.angleUnit);
-    const roundedResult = roundNumbers(Number(result), options.precision);
-    const displayResult = roundedResult.requires ? roundedResult.rounded : result;
+    const [displayResult, _] = formattedResult(result, options.precision);
 
     const { attemptString, suggestions } = suggestMathFunctions(currentValue);
 
@@ -263,11 +271,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
 
     const output = calculate(inputValue, options.angleUnit);
-    const roundedResult = roundNumbers(Number(output.result), options.precision);
-
-    const displayResult = roundedResult.requires
-      ? roundedResult.rounded
-      : output.result
+    const [displayResult, rounded] = formattedResult(output.result, options.precision);
 
     if (output.result !== "") {
       setTopDisplay(bracketPreview);
@@ -279,7 +283,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         operation: inputValue,
         displayOperation: bracketPreview,
         result: displayResult,
-        needsRounding: roundedResult.requires,
+        needsRounding: rounded,
         angleUnit: output?.angleUnit
       };
 

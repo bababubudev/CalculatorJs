@@ -32,9 +32,9 @@ function Calculator() {
     }
   }
 
-  const ans = (index: number): number => {
-    if (index < 1 || index >= historyList.length + 1) return NaN;
-    return Number(historyList[historyList.length - index].result);
+  const ans = (index: number): string => {
+    if (index < 1 || index >= historyList.length + 1) return "Not found";
+    return historyList[historyList.length - index].result;
   }
 
   return (

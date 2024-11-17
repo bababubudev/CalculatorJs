@@ -1,6 +1,6 @@
-import evaluateExpression, { getAngleUnit, setAngleUnit } from "./evaluator";
-import { functionKeys } from "./types";
+import { evaluateExpression, getAngleUnit, setAngleUnit } from "./evaluator";
 import type { angleUnit, calculationInfo, suggestionObject } from "./types.ts";
+import { functionKeys } from "./types";
 
 const FILTER_KEYS = Object.keys(functionKeys).sort();
 
@@ -62,17 +62,13 @@ export function roundNumbers(num: number, precision: number = 5) {
 }
 
 export function calculate(input: string, angleUnit?: angleUnit): calculationInfo {
-  let output: number = 0;
-
   try {
     setAngleUnit(angleUnit);
-    output = evaluateExpression(input);
-
-    const modifiedResult = output === undefined ? "" : output.toString();
+    const expression = evaluateExpression(input);
 
     return {
       operation: input,
-      result: modifiedResult,
+      result: input === "" ? "" : expression.toString(),
       angleUnit: getAngleUnit()
     }
   } catch (error) {
