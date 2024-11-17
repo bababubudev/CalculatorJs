@@ -33,6 +33,7 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   asin: (x: number) => Math.asin(x) * toValue[currentAngle],
   acos: (x: number) => Math.acos(x) * toValue[currentAngle],
   atan: (x: number) => Math.atan(x) * toValue[currentAngle],
+  attan: (y: number, x: number) => Math.atan2(y, x) * toValue[currentAngle],
 
   //* INFO: Algebraic functions
   sqrt: (x: number) => Math.sqrt(x),
@@ -49,6 +50,9 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   log: (x: number, n: number) => Math.log(n) / Math.log(x),
   nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
   nCr: (n: number, r: number) => factorial(n) / (factorial(r) * factorial(n - r)),
+  ceil: (x: number) => Math.ceil(x),
+  floor: (x: number) => Math.floor(x),
+  mod: (x: number, y: number) => x % y,
 
   //* INFO: Mathematical Constants
   pi: Math.PI,
@@ -150,8 +154,17 @@ function tokenize(input: string): string[] {
       }
     }
     //* INFO: Handles unary operators (-3 or +3)
-    else if ((char === '-' || char === '+') && (i === 0 || input[i - 1] === '(' || comparators.has(input[i - 1]))) {
+    else if (
+      (char === '-' || char === '+') &&
+      (
+        i === 0 ||
+        input[i - 1] === '(' ||
+        input[i - 1] === ',' ||
+        comparators.has(input[i - 1])
+      )
+    ) {
       currentToken += char;
+
       if (i + 1 < size && !isNaN(parseFloat(input[i + 1]))) {
         continue;
       }
@@ -178,6 +191,10 @@ function tokenize(input: string): string[] {
       currentToken += char;
 
       if (functionSet.has(currentToken)) {
+        if (i + 1 >= size || input[i + 1] !== '(') {
+          throw new Error(`Function "${currentToken}" requires an opening parenthesis.`);
+        }
+
         tokens.push(currentToken);
         currentToken = "";
       }
@@ -265,6 +282,7 @@ function shuntingYard(tokens: string[]): string[] {
 
 function evaluateRPN(rpn: string[]): number {
   const stack: number[] = [];
+  console.log(rpn);
 
   rpn.forEach(token => {
     if (!isNaN(parseFloat(token))) {

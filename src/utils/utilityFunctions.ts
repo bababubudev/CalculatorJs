@@ -5,69 +5,74 @@ export const functionKeys: Record<string, functionValue> = {
   "sin": {
     displayAs: "sin(n)",
     pasteAs: "sin(",
-    description: "Sine of an angle"
+    description: "Sine of an angle 'n'"
   },
   "cos": {
     displayAs: "cos(n)",
     pasteAs: "cos(",
-    description: "Cosine of an angle"
+    description: "Cosine of an angle 'n'"
   },
   "tan": {
     displayAs: "tan(n)",
     pasteAs: "tan(",
-    description: "Tangent of an angle"
+    description: "Tangent of an angle 'n'"
   },
   "asin": {
     displayAs: "asin(n)",
     pasteAs: "asin(",
-    description: "Inverse sine of a value (arc sine)"
+    description: "Inverse sine of a value 'n' (arc sine)"
   },
   "acos": {
     displayAs: "acos(n)",
     pasteAs: "acos(",
-    description: "Inverse cosine of a value (arc cosine)"
+    description: "Inverse cosine of a value 'n' (arc cosine)"
   },
   "atan": {
     displayAs: "atan(n)",
     pasteAs: "atan(",
-    description: "Inverse tangent of a value (arc tangent)"
+    description: "Inverse tangent of a value 'n' (arc tangent)"
   },
 
   "sqrt": {
     displayAs: "sqrt(n)",
     pasteAs: "sqrt(",
-    description: "Square root of a value"
+    description: "Square root of a value 'n'"
   },
   "cbrt": {
     displayAs: "cbrt(n)",
     pasteAs: "cbrt(",
-    description: "Cube root of a value"
+    description: "Cube root of a value 'n'"
   },
   "lg": {
     displayAs: "lg(n)",
     pasteAs: "lg(",
-    description: "Logarithm to base 10 of a number"
+    description: "Logarithm to base 10 of a number 'n'"
   },
   "ln": {
     displayAs: "ln(n)",
     pasteAs: "ln(",
-    description: "Natural logarithm of a number"
+    description: "Natural logarithm of a number 'n'"
   },
   "abs": {
     displayAs: "abs(n)",
     pasteAs: "abs(",
-    description: "Absolute value of a number"
+    description: "Absolute value of a number 'n'"
+  },
+  "attan": {
+    displayAs: "attan(y, x)",
+    pasteAs: "attan(",
+    description: "Returns the angle in the plane between the positive x-axis and the ray from (0,0) to the point ('y', 'x')"
   },
 
   "ans": {
     displayAs: "ans(n)",
     pasteAs: "ans(",
-    description: "Returns answer from history with a given number"
+    description: "Returns answer from history with a given number 'n'"
   },
   "fact": {
     displayAs: "fact(n)",
     pasteAs: "fact(",
-    description: "Factorial of a number"
+    description: "Factorial of a number 'n'"
   },
   "add": {
     displayAs: "add(n₁, n₂, ...)",
@@ -82,22 +87,37 @@ export const functionKeys: Record<string, functionValue> = {
   "root": {
     displayAs: "root(m, n)",
     pasteAs: "root(",
-    description: "Calculates the 'n:th' root of number 'm' (ex. root(8, 3) = 2)"
+    description: "Calculates the 'n':th root of a number 'm' (ex. root(8, 3) = 2)"
   },
   "log": {
     displayAs: "log(m, n)",
     pasteAs: "log(",
-    description: "Calculates the log 'n' with a base 'm' (ex. log(2, 8) = 3)"
+    description: "Calculates the log 'n' with a base number 'm' (ex. log(2, 8) = 3)"
   },
   "nCr": {
     displayAs: "nCr(n, r)",
     pasteAs: "nCr(",
-    description: "Represents the combination formula used to calculate the number of ways to choose r items from n items where order does not matter"
+    description: "Represents the combination formula used to calculate the number of ways to choose 'r' items from 'n' items where order does not matter"
   },
   "nPr": {
     displayAs: "nPr(n, r)",
     pasteAs: "nPr(",
-    description: "Represents the permutation formula used to calculate the number of ways to arrange r items from n items where order matters"
+    description: "Represents the permutation formula used to calculate the number of ways to arrange 'r' items from 'n' items where order matters"
+  },
+  "mod": {
+    displayAs: "mod(n, m)",
+    pasteAs: "mod(",
+    description: "Returns the remainder of the division of 'n' by 'm'"
+  },
+  "ceil": {
+    displayAs: "ceil(n)",
+    pasteAs: "ceil(",
+    description: "Rounds a number 'n' upwards to the nearest integer"
+  },
+  "floor": {
+    displayAs: "floor(n)",
+    pasteAs: "floor(",
+    description: "Rounds a number 'n' downwards to the nearest integer"
   },
 
   "pi": {
@@ -119,6 +139,16 @@ export const functionKeys: Record<string, functionValue> = {
     displayAs: "e",
     pasteAs: "e",
     description: "Represents the Euler's number e"
+  },
+  "false": {
+    displayAs: "false",
+    pasteAs: "0",
+    description: "Represents the boolean value false as a numeric value 0"
+  },
+  "true": {
+    displayAs: "true",
+    pasteAs: "1",
+    description: "Represents the boolean value true as a numeric value 1"
   },
 }
 
