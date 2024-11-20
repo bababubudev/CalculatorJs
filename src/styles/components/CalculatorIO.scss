@@ -50,6 +50,11 @@
         &:focus {
           outline: none;
         }
+
+        &::placeholder {
+          color: var(--col-window-bg);
+          opacity: 0.5;
+        }
       }
 
       .bracket-preview {
