@@ -1,5 +1,7 @@
 export type angleUnit = "degree" | "radian" | "gradian";
 
+export type variableType = { [key: string]: number };
+
 export type suggestionObject = {
   attemptString: string,
   suggestions: string[],

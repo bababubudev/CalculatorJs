@@ -1,5 +1,5 @@
 import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
-import { FormEvent, useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { FormEvent, useEffect, useRef, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   autoCompleteBrackets,
@@ -9,6 +9,8 @@ import {
   suggestMathFunctions,
 } from "../utils/utilityFunctions";
 import PreviewDisplay from "./PreviewDisplay";
+import Keypad from "./Keypad";
+import CalculatorForm from "./CalculatorForm";
 
 interface CalculatorIOProps {
   passedInput: string;
@@ -31,26 +33,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
   const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
 
-  const angleUnitLabels = useMemo<Record<angleUnit, string>>(() => ({
-    degree: "deg",
-    radian: "rad",
-    gradian: "grad",
-  }), []);
-
   const [currentCalc, setCurrentCalc] = useState<historyObject | undefined>(undefined);
-
-  const inputFocus = (focus = true) => {
-    if (!inputRef.current) return;
-
-    if (focus) {
-      inputRef.current.focus();
-      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
-
-      return;
-    }
-
-    inputRef.current.blur();
-  };
 
   const formattedResult = (result: string, precision: number = 5): [string, boolean] => {
     if (result === "true" || result === "false") {
@@ -76,6 +59,19 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       setTopDisplay(displayOperation ?? operation);
     }
   }, []);
+
+  const inputFocus = (focus = true) => {
+    if (!inputRef.current) return;
+
+    if (focus) {
+      inputRef.current.focus();
+      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+
+      return;
+    }
+
+    inputRef.current.blur();
+  };
 
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
@@ -219,6 +215,14 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
   };
 
+  const handleKeypadInput = (input: string) => {
+    const currentInput = inputValue;
+    const updatedInput = currentInput + input;
+
+    const currentEvent = { target: { value: updatedInput } } as React.ChangeEvent<HTMLInputElement>;
+    onInputChange(currentEvent, true);
+  }
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     setIsSubmitted(false);
 
@@ -294,36 +298,23 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   return (
     <>
-      <form
-        className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
-        onSubmit={onCalculationSubmit}
-      >
-        <div className="display">
-          <p
-            className="top-display"
-            onClick={() => inputFocus(true)}
-          >
-            {topDisplay}
-          </p>
-          <div className="interaction">
-            {isSubmitted && <p className="submit-text">{currentCalc?.needsRounding ? "≈" : "="}</p>}
-            <input
-              type="text"
-              className="bottom-display"
-              ref={inputRef}
-              value={inputValue}
-              onChange={onInputChange}
-              onKeyDown={handleKeyDown}
-              autoFocus
-            />
-            {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}
-          </div>
-        </div>
-        <button className="submission-area" type="submit">
-          <p className="angle-unit">{angleUnitLabels[options.angleUnit ?? "radian"]}</p>
-          <p className="submit-icon">{isSubmitted ? "AC" : "="}</p>
-        </button>
-      </form>
+      <CalculatorForm
+        inputValue={inputValue}
+        topDisplay={topDisplay}
+        bracketPreview={bracketPreview}
+        isSubmitted={isSubmitted}
+        options={options}
+        currentCalc={currentCalc}
+        onCalculationSubmit={onCalculationSubmit}
+        onInputChange={onInputChange}
+        handleKeyDown={handleKeyDown}
+        inputFocus={inputFocus}
+        inputRef={inputRef}
+        bracketPrevRef={bracketPrevRef}
+      />
+      <Keypad
+        onKeyClick={handleKeypadInput}
+      />
       <PreviewDisplay
         attempt={functionPreview.attemptString}
         hidePreview={hidePreview || false}

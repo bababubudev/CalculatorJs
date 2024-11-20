@@ -71,17 +71,17 @@ function evaluateExpression(input: string): boolean | number {
 
   if (comparisonMatch) {
     const operator = comparisonMatch[0];
-    return evaluateComparison(input, operator);
+    return evaluateComparison(input, operator) as boolean;
   }
 
-  return evaluateInput(input);
+  return evaluateInput(input) as number;
 }
 
 function evaluateComparison(input: string, operator: string): boolean | number {
   const [left, right] = input.split(operator).map(part => part.trim());
 
-  const leftValue = evaluateInput(left);
-  const rightValue = evaluateInput(right);
+  const leftValue = evaluateInput(left) as number;
+  const rightValue = evaluateInput(right) as number;
 
   if (isNaN(leftValue) || isNaN(rightValue)) return NaN;
 
@@ -94,6 +94,13 @@ function evaluateComparison(input: string, operator: string): boolean | number {
     case "!=": return leftValue !== rightValue;
     default: return NaN;
   }
+}
+
+function evaluateInput(input: string): number {
+  const tokens: string[] | null = tokenize(input);
+  const rpn = shuntingYard(tokens);
+
+  return evaluateRPN(rpn);
 }
 
 function autoCompleteParentheses(input: string): string {
@@ -111,13 +118,6 @@ function autoCompleteParentheses(input: string): string {
   }
 
   return input;
-}
-
-function evaluateInput(input: string): number {
-  const tokens: string[] | null = tokenize(input);
-  const rpn = shuntingYard(tokens);
-
-  return evaluateRPN(rpn);
 }
 
 function tokenize(input: string): string[] {

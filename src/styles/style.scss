@@ -58,8 +58,8 @@ main {
   }
 }
 
-.calculation-display {
-  margin-bottom: calc(env(safe-area-inset-bottom) + 3rem);
+.calculator {
+  margin-bottom: env(safe-area-inset-bottom);
 }
 
 html {

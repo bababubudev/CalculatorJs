@@ -61,7 +61,6 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
     setIsModalOpen(false);
   };
 
-  //! FIXME: What the fuck is this code?
   useEffect(() => {
     if (UListRef.current) {
       UListRef.current.scrollTop = UListRef.current.scrollHeight;

@@ -6,7 +6,7 @@
   min-height: 2.5rem;
   overflow: hidden;
 
-  bottom: 0;
+  bottom: -0.5rem;
   display: grid;
   justify-content: stretch;
 
@@ -38,6 +38,7 @@
 }
 
 .preview-list {
+  z-index: 1000;
   list-style-type: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -55,7 +56,7 @@
   overflow-x: scroll;
   scrollbar-gutter: stable;
 
-  background: var(--col-white-faded);
+  background: var(--col-secondary-faded);
   border-radius: 0.25rem;
 
 

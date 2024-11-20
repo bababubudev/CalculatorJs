@@ -1,3 +1,5 @@
+@use "./Keypad.scss";
+
 .calculation-display {
   z-index: -1;
   color: var(--col-window-bg);
