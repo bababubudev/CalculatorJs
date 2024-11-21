@@ -10,14 +10,14 @@ function Keypad({ onKeyClick }: KeypadProps) {
         className="key"
         onClick={() => onKeyClick("+")}
       >
-        +
+        &#43;
       </button>
       <button
         type="button"
         className="key"
         onClick={() => onKeyClick("-")}
       >
-        -
+        &minus;
       </button>
       <button
         type="button"
@@ -31,7 +31,7 @@ function Keypad({ onKeyClick }: KeypadProps) {
         className="key"
         onClick={() => onKeyClick("/")}
       >
-        /
+        &divide;
       </button>
     </div>
   );
