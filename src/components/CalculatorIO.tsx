@@ -23,6 +23,7 @@ interface CalculatorIOProps {
 function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
+  const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
@@ -142,19 +143,25 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentCalc]);
 
-  const syncBracketPreview = () => {
+  const syncBracketPreview = useCallback(() => {
     if (inputRef.current) {
       const inputElement = inputRef.current;
       const scrollOffset = inputElement.scrollLeft;
 
       requestAnimationFrame(() => {
         if (bracketPrevRef.current) {
-          bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
-          bracketPrevRef.current.style.willChange = "transform";
+          if (isAppleDevice) {
+            bracketPrevRef.current.style.display = "none";
+          }
+          else {
+            bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
+            bracketPrevRef.current.style.willChange = "transform";
+            bracketPrevRef.current.style.display = "block";
+          }
         }
       });
     }
-  };
+  }, [isAppleDevice])
 
   //* INFO: Handles positioning bracket preview
   useEffect(() => {
@@ -166,7 +173,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     return () => {
       inputElement.removeEventListener("scroll", syncBracketPreview);
     };
-  }, []);
+  }, [syncBracketPreview]);
 
   const autoFillPreview = (index: number) => {
     const suggestions = functionPreview.suggestions;

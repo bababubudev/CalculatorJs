@@ -3,7 +3,17 @@ import { angleUnit } from "./types";
 const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ", "∞", "true", "false"]);
 
 const factorial = (n: number): number => n <= 1 ? 1 : n * factorial(n - 1);
+
 const phiVal = (1 + Math.sqrt(5)) / 2;
+
+const sum = (...args: number[]) => args.reduce((acc, val) => acc + val, 0);
+
+const mean = (...args: number[]) => sum(...args) / args.length;
+
+const stdev = (...args: number[]) => {
+  const m = mean(...args);
+  return Math.sqrt(args.reduce((acc, val) => acc + (val - m) ** 2, 0) / args.length);
+};
 
 let currentAngle: angleUnit = "radian";
 
@@ -43,9 +53,7 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   abs: (x: number) => Math.abs(x),
 
   //* INFO: Custom functions
-  add: (...args: number[]) => args.reduce((acc, val) => acc + val, 0),
   fact: (x: number) => factorial(x),
-  high: (...args: number[]) => Math.max(...args),
   root: (x: number, n: number) => Math.pow(x, 1 / n),
   log: (x: number, n: number) => Math.log(n) / Math.log(x),
   nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
@@ -53,6 +61,10 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   ceil: (x: number) => Math.ceil(x),
   floor: (x: number) => Math.floor(x),
   mod: (x: number, y: number) => x % y,
+  mean: (...args: number[]) => mean(...args),
+  stdev: (...args: number[]) => stdev(...args),
+  add: (...args: number[]) => sum(...args),
+  high: (...args: number[]) => Math.max(...args),
 
   //* INFO: Mathematical Constants
   pi: Math.PI,

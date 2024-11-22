@@ -65,6 +65,7 @@ function CalculatorForm({
             onChange={onInputChange}
             onKeyDown={handleKeyDown}
             placeholder="eg. 2+2-(-3*4)"
+            spellCheck="false"
             autoFocus
           />
           {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}

@@ -119,6 +119,16 @@ export const functionKeys: Record<string, functionValue> = {
     pasteAs: "floor(",
     description: "Rounds a number 'n' downwards to the nearest integer"
   },
+  "mean": {
+    displayAs: "mean(n₁, n₂, ...)",
+    pasteAs: "mean(",
+    description: "Returns the average of 'n' numbers"
+  },
+  "stdev": {
+    displayAs: "stdev(n₁, n₂, ...)",
+    pasteAs: "stdev(",
+    description: "Returns the standard deviation of 'n' numbers"
+  },
 
   "pi": {
     displayAs: "pi",
