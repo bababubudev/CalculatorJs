@@ -305,6 +305,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   return (
     <>
+      <p>{isAppleDevice + " " + navigator.userAgent}</p>
       <CalculatorForm
         inputValue={inputValue}
         topDisplay={topDisplay}
