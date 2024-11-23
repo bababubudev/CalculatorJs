@@ -159,12 +159,15 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     const inputElement = inputRef.current;
     if (!inputElement) return;
 
-    inputElement.addEventListener("scroll", syncBracketPreview);
-    inputElement.addEventListener("touchmove", syncBracketPreview);
+    const handleScroll = () => syncBracketPreview();
+    const handleTouchMove = () => syncBracketPreview();
+
+    inputElement.addEventListener("scroll", handleScroll);
+    inputElement.addEventListener("touchmove", handleTouchMove);
 
     return () => {
-      inputElement.removeEventListener("scroll", syncBracketPreview);
-      inputElement.removeEventListener("touchmove", syncBracketPreview);
+      inputElement.removeEventListener("scroll", handleScroll);
+      inputElement.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
