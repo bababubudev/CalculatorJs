@@ -236,7 +236,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       const bracket = bracketPrevRef.current;
 
       if (isAppleDevice && bracket) {
-        if (inputRef.current.scrollWidth > 0) {
+        if (inputRef.current.scrollLeft > 0) {
           bracket.style.display = "none";
         }
         else {
