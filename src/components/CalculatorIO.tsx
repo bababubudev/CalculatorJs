@@ -23,6 +23,7 @@ interface CalculatorIOProps {
 function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
+  const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
 
   const [inputValue, setInputValue] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
@@ -232,11 +233,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     let currentValue = e.target.value;
 
     if (inputRef.current) {
-      const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
       const bracket = bracketPrevRef.current;
 
       if (isAppleDevice && bracket) {
-        if (inputRef.current.scrollLeft > 0) {
+        if (inputRef.current.scrollWidth > inputRef.current.clientWidth) {
           bracket.style.display = "none";
         }
         else {
