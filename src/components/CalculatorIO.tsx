@@ -223,7 +223,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         const selectedAutofill = functionKeys[selectedFunc].pasteAs;
 
         const currentChanges = before + selectedAutofill + after;
-        handleBracketsOnInput(currentChanges);
 
         // ? REFACTOR: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
