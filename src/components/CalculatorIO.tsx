@@ -223,6 +223,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
         // ? REFACTOR: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
+        handleBracketsOnInput(currentChanges);
         onInputChange(currentEvent, true);
 
         return currentChanges;
