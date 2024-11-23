@@ -1,16 +1,16 @@
 import Header from "./components/Header";
+import { useOptions } from "./context/OptionsContext";
 import Calculator from "./pages/Calculator";
-import OptionsProvider from "./context/OptionsProvider";
 
 function App() {
+  const { options } = useOptions();
+
   return (
-    <OptionsProvider>
-      <main>
-        <Header />
-        <Calculator />
-      </main>
-    </OptionsProvider>
-  )
+    <main className={`${options.theme}-theme`}>
+      <Header />
+      <Calculator />
+    </main>
+  );
 }
 
 export default App

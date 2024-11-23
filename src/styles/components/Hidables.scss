@@ -36,7 +36,7 @@
     }
   }
 
-  > button {
+  >button {
     cursor: pointer;
     position: absolute;
     bottom: 0;
@@ -119,8 +119,7 @@
   }
 
   .show-hide-btn {
-    color: var(--col-white);
-    fill: var(--col-white);
+    color: var(--col-window-bg);
   }
 
   .clear-all-btn:disabled {
@@ -144,7 +143,7 @@
 .hidables.hidden {
   .show-hide-btn {
     background-color: var(--col-primary);
-    box-shadow: inset 1px 1px hsla(0, 0%, 0%, 0.2);
+    box-shadow: inset 1px 1px 5px hsla(0, 0%, 0%, 0.2);
     animation-name: bounce-out;
     animation-duration: 0.3s;
     animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);

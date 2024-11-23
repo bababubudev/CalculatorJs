@@ -82,7 +82,7 @@
           background: var(--col-secondary);
           color: var(--col-white);
 
-          & ~ .detail .index {
+          &~.detail .index {
             color: var(--col-white);
           }
         }
@@ -124,7 +124,7 @@
       }
 
       .detail {
-        > button {
+        >button {
           cursor: pointer;
         }
 

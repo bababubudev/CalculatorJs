@@ -212,7 +212,7 @@
   }
 
   .selected-option {
-    background: #f0f0f0;
+    background: var(--col-window-bg-faded);
     border-radius: .25rem;
     padding: 0.25rem;
   }
