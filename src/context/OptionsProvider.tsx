@@ -14,7 +14,11 @@ function OptionsProvider({ children }: OptionsProviderProps) {
   });
 
   const handleSetOptions = (changes: Partial<optionObject>) => {
-    setOptions((prevOptions: optionObject) => ({ ...prevOptions, ...changes }));
+    setOptions((prevOptions: optionObject) => {
+      const newOptions = { ...prevOptions, ...changes };
+      localStorage.setItem("options", JSON.stringify(newOptions));
+      return newOptions;
+    });
   };
 
   return (

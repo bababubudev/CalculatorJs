@@ -152,9 +152,12 @@
     list-style-type: none;
     display: grid;
     gap: 0.15rem;
+    padding: 1rem 0.5rem;
 
     max-height: 50vh;
     overflow-y: auto;
+    box-shadow: inset 1px -2px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 0.25rem;
 
     li {
       display: grid;

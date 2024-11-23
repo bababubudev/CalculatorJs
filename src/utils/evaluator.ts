@@ -62,7 +62,7 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   floor: (x: number) => Math.floor(x),
   mod: (x: number, y: number) => x % y,
   mean: (...args: number[]) => mean(...args),
-  stdev: (...args: number[]) => stdev(...args),
+  stddev: (...args: number[]) => stdev(...args),
   add: (...args: number[]) => sum(...args),
   high: (...args: number[]) => Math.max(...args),
 
