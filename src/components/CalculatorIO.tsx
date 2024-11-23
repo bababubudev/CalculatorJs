@@ -160,20 +160,11 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     if (!inputElement) return;
 
     const handleScroll = () => syncBracketPreview();
-    const handleTouchMove = () => syncBracketPreview();
-    const handleTouchStart = () => syncBracketPreview();
-    const handleTouchEnd = () => syncBracketPreview();
 
     inputElement.addEventListener("scroll", handleScroll);
-    inputElement.addEventListener("touchmove", handleTouchMove);
-    inputElement.addEventListener("touchstart", handleTouchStart);
-    inputElement.addEventListener("touchend", handleTouchEnd);
 
     return () => {
       inputElement.removeEventListener("scroll", handleScroll);
-      inputElement.removeEventListener("touchmove", handleTouchMove);
-      inputElement.removeEventListener("touchstart", handleTouchStart);
-      inputElement.removeEventListener("touchend", handleTouchEnd);
     };
   }, []);
 
