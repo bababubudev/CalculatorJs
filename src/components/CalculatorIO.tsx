@@ -86,30 +86,28 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
   };
 
-  const handleBracketsOnInput = useCallback((currentValue: string) => {
+  const modifyBrackets = (bracket: HTMLDivElement | null, input: HTMLInputElement | null) => {
+    if (!bracket || !input) return;
+    if (input.scrollWidth > input.clientWidth) {
+      bracket.style.display = "none";
+      input.style.paddingRight = "unset";
+    }
+    else {
+      bracket.style.display = "block";
+    }
+  };
+
+  const handleBracketsOnInput = (currentValue: string) => {
     const input = inputRef.current;
     if (!input) return;
 
-    if (currentValue.includes("(")) {
+    if (currentValue.includes("(") && !isSubmitted) {
       input.style.paddingRight = "1rem";
     }
     else {
       input.style.paddingRight = "unset";
     }
-
-    const bracket = bracketPrevRef.current;
-    if (!bracket) return;
-
-    if (isAppleDevice && bracket) {
-      if (input.scrollWidth > input.clientWidth) {
-        bracket.style.display = "none";
-        input.style.paddingRight = "unset";
-      }
-      else {
-        bracket.style.display = "block";
-      }
-    }
-  }, [isAppleDevice]);
+  };
 
   const handleAnswerRequest = (currentValue: string) => {
     const ansPattern = /ans\((\d+)([^)]*)/g;
@@ -119,20 +117,25 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     });
   };
 
+  useEffect(() => {
+    if (!isAppleDevice) return;
+
+    modifyBrackets(bracketPrevRef.current, inputRef.current);
+  }, [inputValue, isAppleDevice]);
+
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
     if (passedInput === "") return;
-
     inputFocus();
+
     setIsSubmitted(false);
-    handleBracketsOnInput(passedInput);
     updateDisplay(passedInput, undefined, options.angleUnit, false, options.precision);
     setFunctionPreview({
       attemptString: "",
       suggestions: [],
       suggestionUsed: true
     });
-  }, [passedInput, updateDisplay, options.precision, options.angleUnit, handleBracketsOnInput]);
+  }, [passedInput, updateDisplay, options.precision, options.angleUnit, isAppleDevice]);
 
   //* INFO: Update submitted input when options change
   useEffect(() => {
@@ -220,10 +223,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         const selectedAutofill = functionKeys[selectedFunc].pasteAs;
 
         const currentChanges = before + selectedAutofill + after;
+        handleBracketsOnInput(currentChanges);
 
         // ? REFACTOR: There must be a better way of updating this
         const currentEvent = { target: { value: currentChanges } } as React.ChangeEvent<HTMLInputElement>;
-        handleBracketsOnInput(currentChanges);
         onInputChange(currentEvent, true);
 
         return currentChanges;
