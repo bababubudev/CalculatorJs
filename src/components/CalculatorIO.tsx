@@ -74,19 +74,65 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     inputRef.current.blur();
   };
 
+  const syncBracketPreview = () => {
+    if (inputRef.current) {
+      const inputElement = inputRef.current;
+      const scrollOffset = inputElement.scrollLeft;
+
+      if (bracketPrevRef.current) {
+        bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
+        bracketPrevRef.current.style.willChange = "transform";
+      }
+    }
+  };
+
+  const handleBracketsOnInput = useCallback((currentValue: string) => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    if (currentValue.includes("(")) {
+      input.style.paddingRight = "1rem";
+    }
+    else {
+      input.style.paddingRight = "unset";
+    }
+
+    const bracket = bracketPrevRef.current;
+    if (!bracket) return;
+
+    if (isAppleDevice && bracket) {
+      if (input.scrollWidth > input.clientWidth) {
+        bracket.style.display = "none";
+        input.style.paddingRight = "unset";
+      }
+      else {
+        bracket.style.display = "block";
+      }
+    }
+  }, [isAppleDevice]);
+
+  const handleAnswerRequest = (currentValue: string) => {
+    const ansPattern = /ans\((\d+)([^)]*)/g;
+    return currentValue.replace(ansPattern, (_, index) => {
+      const ansValue = askForAnswer(Number(index));
+      return ansValue.toString();
+    });
+  };
+
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
     if (passedInput === "") return;
 
     inputFocus();
     setIsSubmitted(false);
+    handleBracketsOnInput(passedInput);
     updateDisplay(passedInput, undefined, options.angleUnit, false, options.precision);
     setFunctionPreview({
       attemptString: "",
       suggestions: [],
       suggestionUsed: true
     });
-  }, [passedInput, updateDisplay, options.precision, options.angleUnit]);
+  }, [passedInput, updateDisplay, options.precision, options.angleUnit, handleBracketsOnInput]);
 
   //* INFO: Update submitted input when options change
   useEffect(() => {
@@ -142,18 +188,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentCalc]);
-
-  const syncBracketPreview = () => {
-    if (inputRef.current) {
-      const inputElement = inputRef.current;
-      const scrollOffset = inputElement.scrollLeft;
-
-      if (bracketPrevRef.current) {
-        bracketPrevRef.current.style.transform = `translateX(${-scrollOffset}px)`;
-        bracketPrevRef.current.style.willChange = "transform";
-      }
-    }
-  };
 
   //* INFO: Handles positioning bracket preview
   useEffect(() => {
@@ -222,7 +256,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     const currentEvent = { target: { value: updatedInput } } as React.ChangeEvent<HTMLInputElement>;
     onInputChange(currentEvent, true);
-  }
+  };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>, usedCall: boolean = false) => {
     setIsSubmitted(false);
@@ -232,33 +266,9 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     let currentValue = e.target.value;
 
-    if (inputRef.current) {
-      const bracket = bracketPrevRef.current;
-
-      if (isAppleDevice && bracket) {
-        if (inputRef.current.scrollWidth > inputRef.current.clientWidth) {
-          bracket.style.display = "none";
-        }
-        else {
-          bracket.style.display = "block";
-        }
-      }
-
-
-      if (!isAppleDevice || (currentValue.includes("(") && !isSubmitted)) {
-        inputRef.current.style.paddingRight = "1rem";
-      }
-      else {
-        inputRef.current.style.paddingRight = "unset";
-      }
-    }
-
     //*NOTE: Replace ans(n) with the value from history
-    const ansPattern = /ans\((\d+)([^)]*)/g;
-    currentValue = currentValue.replace(ansPattern, (_, index) => {
-      const ansValue = askForAnswer(Number(index));
-      return ansValue.toString();
-    });
+    currentValue = handleAnswerRequest(currentValue);
+    handleBracketsOnInput(currentValue);
 
     const updatedValue = autoCompleteBrackets(currentValue);
     const { result } = calculate(currentValue, options.angleUnit);
