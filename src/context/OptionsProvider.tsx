@@ -7,10 +7,14 @@ interface OptionsProviderProps {
 }
 
 function OptionsProvider({ children }: OptionsProviderProps) {
-  const [options, setOptions] = useState<optionObject>({
-    angleUnit: "degree",
-    precision: 5,
-    theme: "default",
+  const [options, setOptions] = useState<optionObject>(() => {
+    const savedOptions = localStorage.getItem("options");
+
+    return savedOptions ? JSON.parse(savedOptions) : {
+      angleUnit: "degree",
+      precision: 5,
+      theme: "dark",
+    };
   });
 
   const handleSetOptions = (changes: Partial<optionObject>) => {

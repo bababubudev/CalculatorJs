@@ -16,7 +16,7 @@
   "start_url": "/CalculatorJs/",
   "scope": "/CalculatorJs/",
   "display": "standalone",
-  "theme_color": "#ded7e1",
+  "theme_color": "#000000",
   "background_color": "#1d1b20",
   "screenshots": [
     {
