@@ -232,7 +232,20 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     let currentValue = e.target.value;
 
     if (inputRef.current) {
-      if (currentValue.includes("(") && !isSubmitted) {
+      const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
+      const bracket = bracketPrevRef.current;
+
+      if (isAppleDevice && bracket) {
+        if (inputRef.current.scrollWidth > 0) {
+          bracket.style.display = "none";
+        }
+        else {
+          bracket.style.display = "block";
+        }
+      }
+
+
+      if (!isAppleDevice || (currentValue.includes("(") && !isSubmitted)) {
         inputRef.current.style.paddingRight = "1rem";
       }
       else {
