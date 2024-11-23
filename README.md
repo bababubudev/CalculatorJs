@@ -6,10 +6,8 @@ Calculator web application that can handle arithmetic and trigonometric calculat
 
 ## Styling (WIP)
 
-#### Arithmetic Calculation
-![CalcDemoArith](https://github.com/user-attachments/assets/05d32a5f-ff08-4f7e-b434-34890f609d38)
-
-#### Function Calculations
-![CalcDemoFunc](https://github.com/user-attachments/assets/cf32aaa5-59d6-47d8-b199-ea38146b17b3)
+<img src="https://github.com/user-attachments/assets/65f65a65-0f6a-4cb7-8d62-74b6a11dd83e" width="500">
+<img src="https://github.com/user-attachments/assets/5f2343b5-0722-41c5-b6a8-fdef81b75a0d" width="493">
+<img src="https://github.com/user-attachments/assets/7e50b29b-31f3-4391-bffc-29d605f1c9b3" width="493">
 
 ### Website link: [Calculator](https://bababubudev.github.io/CalculatorJs/)
