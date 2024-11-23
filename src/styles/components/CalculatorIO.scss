@@ -57,8 +57,11 @@
         }
 
         &::placeholder {
+          font-family: "ExtraLight";
+          opacity: 0.4;
+          font-style: italic;
+
           color: var(--col-window-bg);
-          opacity: 0.5;
         }
       }
 

@@ -36,12 +36,32 @@ function CalculatorForm({
   inputRef,
   bracketPrevRef,
 }: CalculatorFormProps) {
+  const placeholderTexts = useMemo<string[]>(() => [
+    "eg. nPr(5, 2) * (sin(pi / 6) + cos(pi / 3))",
+    "eg. root(4, 2)",
+    "eg. sin(30)",
+    "eg. 2*pi*cos(pi / 3)",
+    "eg. sqrt(2)+3^2",
+    "eg. 2*(3+4)",
+    "eg. 2+2-(-3*4)",
+    "eg. 2^3",
+  ], []);
 
   const angleUnitLabels = useMemo<Record<angleUnit, string>>(() => ({
     degree: "deg",
     radian: "rad",
     gradian: "grad",
   }), []);
+
+  const getRandomPlaceholder = () => {
+    //* NOTE: Higher index means more likely to be selected
+    const weightedPlaceholders = placeholderTexts.flatMap((text, index) =>
+      Array(index + 1).fill(text)
+    );
+
+    const randomIndex = Math.floor(Math.random() * weightedPlaceholders.length);
+    return weightedPlaceholders[randomIndex];
+  };
 
   return (
     <form
@@ -64,7 +84,7 @@ function CalculatorForm({
             value={inputValue}
             onChange={onInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="eg. 2+2-(-3*4)"
+            placeholder={getRandomPlaceholder()}
             spellCheck="false"
             autoFocus
           />
