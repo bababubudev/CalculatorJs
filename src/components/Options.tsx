@@ -94,7 +94,7 @@ function Options() {
           <CustomSelect
             label="Theme"
             options={["light", "dark", "default"]}
-            displayOptions={["Skin", "Emo", "Amazon"]}
+            displayOptions={["Earth", "Night", "Jade"]}
             selectedOption={options.theme ?? "default"}
             onChange={optionChange}
             name="theme"

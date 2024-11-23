@@ -23,15 +23,15 @@
 .light-theme {
   --col-window-bg: #F4EDEA;
 
-  --col-primary: #E2A76D;
+  --col-primary: #dfb385;
   --col-secondary: #F4DFCC;
-  --col-tertiary: #49a3a2;
+  --col-tertiary: #5f7055;
   --col-accent: #F79489;
 
-  --col-white: #40576a;
+  --col-white: rgb(122, 89, 79);
   --std-col-box-shadow: hsla(0, 0%, 0%, 0.3);
 
-  --col-white-faded: rgba(64, 87, 106, 0.5);
+  --col-white-faded: rgba(122, 89, 79, 0.6);
   --col-window-bg-faded: rgb(244, 237, 234, 0.3);
   --col-secondary-faded: rgba(244, 223, 204);
 }
