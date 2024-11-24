@@ -15,6 +15,7 @@ const stdev = (...args: number[]) => {
   return Math.sqrt(args.reduce((acc, val) => acc + (val - m) ** 2, 0) / args.length);
 };
 
+let currentRPN: string[] = [];
 let currentAngle: angleUnit = "radian";
 
 const toAngle: { [key: string]: number } = {
@@ -31,9 +32,10 @@ const toValue: { [key: string]: number } = {
 
 const angle = (x: number): number => x * (toAngle[currentAngle] || 1);
 
+const getAngleUnit = (): angleUnit => currentAngle;
 const setAngleUnit = (_angleUnit: angleUnit = "radian"): void => { currentAngle = _angleUnit; }
 
-const getAngleUnit = (): angleUnit => currentAngle;
+const getCurrentRPN = (): string[] => currentRPN;
 
 const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   //* INFO: Trig functions
@@ -111,6 +113,7 @@ function evaluateComparison(input: string, operator: string): boolean | number {
 function evaluateInput(input: string): number {
   const tokens: string[] | null = tokenize(input);
   const rpn = shuntingYard(tokens);
+  currentRPN = rpn;
 
   return evaluateRPN(rpn);
 }
@@ -141,7 +144,7 @@ function tokenize(input: string): string[] {
 
   const tokens = [];
   const size = input.length;
-  const operators = new Set(['+', '-', '*', '/', '^', '(', ')', ',']);
+  const operators = new Set(['+', '-', '*', '/', '^', '(', ')', ',', '!']);
   const comparators = new Set(['=', '<', '>']);
   const functionSet = new Set(Object.keys(functions));
 
@@ -215,6 +218,7 @@ function tokenize(input: string): string[] {
 
 function shuntingYard(tokens: string[]): string[] {
   const precedence: { [key: string]: number } = {
+    '!': 5,
     '^': 4,
     '*': 3,
     '/': 3,
@@ -224,8 +228,8 @@ function shuntingYard(tokens: string[]): string[] {
     ',': 0
   };
 
-  const rightAssociative = new Set(['^']);
-  const operators = new Set(['+', '-', '*', '/', '^']);
+  const rightAssociative = new Set(['^', '!']);
+  const operators = new Set(['+', '-', '*', '/', '^', '!']);
   const functionSet = new Set(Object.keys(functions));
 
   const outputQueue: string[] = [];
@@ -328,7 +332,7 @@ function evaluateRPN(rpn: string[]): number {
       const b = stack.pop() as number;
       const a = stack.pop() as number;
 
-      if (a === undefined || b === undefined) {
+      if (a === undefined && b === undefined) {
         return NaN;
       }
 
@@ -348,6 +352,9 @@ function evaluateRPN(rpn: string[]): number {
         case '^':
           stack.push(Math.pow(a, b));
           break;
+        case '!':
+          stack.push(factorial(b));
+          break;
         default:
           stack.push(NaN);
       }
@@ -359,6 +366,7 @@ function evaluateRPN(rpn: string[]): number {
 
 export {
   functions,
+  getCurrentRPN,
   setAngleUnit, getAngleUnit,
   evaluateExpression
 };

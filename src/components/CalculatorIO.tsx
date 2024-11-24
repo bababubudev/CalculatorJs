@@ -26,17 +26,18 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
 
   const [inputValue, setInputValue] = useState<string>("");
+  const [latexInput, setLatexInput] = useState<string>("");
   const [topDisplay, setTopDisplay] = useState<string>("");
   const [bracketPreview, setBracketPreview] = useState<string>("");
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({ attemptString: "", suggestions: [] });
-  const hidePreview = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
+  const isPreviewHidden = isSubmitted || functionPreview?.suggestions.length <= 0 || functionPreview?.suggestionUsed;
 
   const [currentCalc, setCurrentCalc] = useState<historyObject | undefined>(undefined);
 
-  const formattedResult = (result: string, precision: number = 5): [string, boolean] => {
+  const roundAndFormatResult = (result: string, precision: number = 5): [string, boolean] => {
     if (result === "true" || result === "false") {
       return [result, false];
     }
@@ -45,9 +46,9 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     return roundedResult.requires ? [roundedResult.rounded, true] : [result, false];
   };
 
-  const updateDisplay = useCallback((operation: string, displayOperation?: string, angle?: angleUnit, isFlipped: boolean = false, precision: number = 5) => {
+  const refreshCalculatorDisplay = useCallback((operation: string, displayOperation?: string, angle?: angleUnit, isFlipped: boolean = false, precision: number = 5) => {
     const { result } = calculate(operation, angle);
-    const [displayResult, _] = formattedResult(result, precision);
+    const [displayResult, _] = roundAndFormatResult(result, precision);
 
     if (!isFlipped) {
       setInputValue(operation);
@@ -61,7 +62,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
   }, []);
 
-  const inputFocus = (focus = true) => {
+  const setInputFocus = (focus = true) => {
     if (!inputRef.current) return;
 
     if (focus) {
@@ -74,7 +75,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     inputRef.current.blur();
   };
 
-  const syncBracketPreview = () => {
+  const syncScrollToBracket = () => {
     if (inputRef.current) {
       const inputElement = inputRef.current;
       const scrollOffset = inputElement.scrollLeft;
@@ -86,7 +87,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
   };
 
-  const modifyBrackets = (bracket: HTMLDivElement | null, input: HTMLInputElement | null) => {
+  const adjustBracketVisibility = (bracket: HTMLDivElement | null, input: HTMLInputElement | null) => {
     if (!bracket || !input) return;
     if (input.scrollWidth > input.clientWidth) {
       bracket.style.display = "none";
@@ -97,45 +98,25 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
   };
 
-  const handleBracketsOnInput = (currentValue: string) => {
-    const input = inputRef.current;
-    if (!input) return;
-
-    if (currentValue.includes("(") && !isSubmitted) {
-      input.style.paddingRight = "1rem";
-    }
-    else {
-      input.style.paddingRight = "unset";
-    }
-  };
-
-  const handleAnswerRequest = (currentValue: string) => {
-    const ansPattern = /ans\((\d+)([^)]*)/g;
-    return currentValue.replace(ansPattern, (_, index) => {
-      const ansValue = askForAnswer(Number(index));
-      return ansValue.toString();
-    });
-  };
-
   useEffect(() => {
     if (!isAppleDevice) return;
 
-    modifyBrackets(bracketPrevRef.current, inputRef.current);
+    adjustBracketVisibility(bracketPrevRef.current, inputRef.current);
   }, [inputValue, isAppleDevice]);
 
   //* INFO: Update input with passed input & when options change
   useEffect(() => {
     if (passedInput === "") return;
-    inputFocus();
+    setInputFocus();
 
     setIsSubmitted(false);
-    updateDisplay(passedInput, undefined, options.angleUnit, false, options.precision);
+    refreshCalculatorDisplay(passedInput, undefined, options.angleUnit, false, options.precision);
     setFunctionPreview({
       attemptString: "",
       suggestions: [],
       suggestionUsed: true
     });
-  }, [passedInput, updateDisplay, options.precision, options.angleUnit, isAppleDevice]);
+  }, [passedInput, refreshCalculatorDisplay, options.precision, options.angleUnit, isAppleDevice]);
 
   //* INFO: Update submitted input when options change
   useEffect(() => {
@@ -143,10 +124,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       return;
     }
 
-    inputFocus();
+    setInputFocus();
     const { operation, displayOperation } = currentCalc;
-    updateDisplay(operation, displayOperation, options.angleUnit, true, options.precision);
-  }, [currentCalc, updateDisplay, options.angleUnit, options.precision, passedInput]);
+    refreshCalculatorDisplay(operation, displayOperation, options.angleUnit, true, options.precision);
+  }, [currentCalc, refreshCalculatorDisplay, options.angleUnit, options.precision, passedInput]);
 
   //* INFO: Update input value when options change
   useEffect(() => {
@@ -155,9 +136,9 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       return;
     }
 
-    inputFocus();
-    updateDisplay(inputValue, undefined, options.angleUnit, false, options.precision);
-  }, [inputValue, topDisplay, updateDisplay, currentCalc, passedInput, options.angleUnit, options.precision]);
+    setInputFocus();
+    refreshCalculatorDisplay(inputValue, undefined, options.angleUnit, false, options.precision);
+  }, [inputValue, topDisplay, refreshCalculatorDisplay, currentCalc, passedInput, options.angleUnit, options.precision]);
 
   //* INFO: Handle input focus
   useEffect(() => {
@@ -184,7 +165,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         }
       }
       else if (event.key === "Escape") {
-        inputFocus(false);
+        setInputFocus(false);
       }
     };
 
@@ -197,7 +178,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     const inputElement = inputRef.current;
     if (!inputElement) return;
 
-    const handleScroll = () => syncBracketPreview();
+    const handleScroll = () => syncScrollToBracket();
 
     inputElement.addEventListener("scroll", handleScroll);
 
@@ -206,7 +187,79 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     };
   }, []);
 
-  const autoFillPreview = (index: number) => {
+  const adjustPaddingForBrackets = (currentValue: string) => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    if (currentValue.includes("(") && !isSubmitted) {
+      input.style.paddingRight = "1rem";
+    }
+    else {
+      input.style.paddingRight = "unset";
+    }
+  };
+
+  const processAnswerRequests = (currentValue: string) => {
+    const ansPattern = /ans\((\d+)([^)]*)/g;
+    return currentValue.replace(ansPattern, (_, index) => {
+      const ansValue = askForAnswer(Number(index));
+      return ansValue.toString();
+    });
+  };
+
+  const functionOutput = (rawInput: string, token: string) => {
+    const val = functionKeys[token];
+    return val ? val.pasteAs.slice(0, -1) : rawInput;
+  };
+
+  const processInputToLatex = (rawInput: string, RPN: string[]): string => {
+    const stack: string[] = [];
+    console.log(RPN);
+
+    RPN.forEach(token => {
+      if (!isNaN(parseFloat(token)) || token in functionKeys) {
+        stack.push(token);
+      } else {
+        let b = stack.pop();
+        let a = stack.pop();
+
+        console.log(a, b, token);
+
+        if (!a && b) {
+          a = b;
+          b = "";
+        }
+
+        switch (token) {
+          case '+':
+            stack.push(`${a} + ${b}`);
+            break;
+          case '-':
+            stack.push(`${a} - ${b}`);
+            break;
+          case '*':
+            stack.push(`${a}\\cdot${b}`);
+            break;
+          case '/':
+            stack.push(`\\frac{${a}}{${b}}`);
+            break;
+          case '^':
+            stack.push(`${a}^{${b}}`);
+            break;
+          case '!':
+            stack.push(`${b}!`);
+            break;
+          default:
+            stack.push(functionOutput(rawInput, token));
+            break;
+        }
+      }
+    });
+
+    return stack.length ? stack[0] : rawInput;
+  };
+
+  const autofillInput = (index: number) => {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
 
@@ -240,9 +293,11 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     if (e.key === "Tab" && suggestions.length > 0) {
       e.preventDefault();
-      autoFillPreview(selectedPreview);
+      autofillInput(selectedPreview);
       setSelectedPreview(0);
-    } else if (!hidePreview && suggestions.length > 1) {
+    }
+
+    if (!isPreviewHidden && suggestions.length > 1) {
       if (e.key === "ArrowRight") {
         e.preventDefault();
         setSelectedPreview(prev => (prev + 1) % suggestions.length);
@@ -270,15 +325,18 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     let currentValue = e.target.value;
 
     //*NOTE: Replace ans(n) with the value from history
-    currentValue = handleAnswerRequest(currentValue);
-    handleBracketsOnInput(currentValue);
+    currentValue = processAnswerRequests(currentValue);
+    adjustPaddingForBrackets(currentValue);
 
     const updatedValue = autoCompleteBrackets(currentValue);
-    const { result } = calculate(currentValue, options.angleUnit);
-    const [displayResult, _] = formattedResult(result, options.precision);
 
+    const { result, currentRPN } = calculate(currentValue, options.angleUnit);
+    const [displayResult, _] = roundAndFormatResult(result, options.precision);
     const { attemptString, suggestions } = suggestMathFunctions(currentValue);
 
+    const latexOutput = currentRPN ? processInputToLatex(currentValue, currentRPN) : currentValue;
+
+    setLatexInput(latexOutput);
     setInputValue(currentValue);
     setBracketPreview(updatedValue);
     setTopDisplay(displayResult);
@@ -301,7 +359,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     }
 
     const output = calculate(inputValue, options.angleUnit);
-    const [displayResult, rounded] = formattedResult(output.result, options.precision);
+    const [displayResult, rounded] = roundAndFormatResult(output.result, options.precision);
 
     if (output.result !== "") {
       setTopDisplay(bracketPreview);
@@ -326,6 +384,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     <>
       <CalculatorForm
         inputValue={inputValue}
+        processedInput={latexInput}
         topDisplay={topDisplay}
         bracketPreview={bracketPreview}
         isSubmitted={isSubmitted}
@@ -334,7 +393,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         onCalculationSubmit={onCalculationSubmit}
         onInputChange={onInputChange}
         handleKeyDown={handleKeyDown}
-        inputFocus={inputFocus}
+        inputFocus={setInputFocus}
         inputRef={inputRef}
         bracketPrevRef={bracketPrevRef}
       />
@@ -343,10 +402,10 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       />
       <PreviewDisplay
         attempt={functionPreview.attemptString}
-        hidePreview={hidePreview || false}
+        hidePreview={isPreviewHidden || false}
         previews={functionPreview}
         previewSelection={selectedPreview}
-        autoFillPreview={autoFillPreview}
+        autoFillPreview={autofillInput}
         setPreviewSelection={setSelectedPreview}
       />
     </>

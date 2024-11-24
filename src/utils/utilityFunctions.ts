@@ -1,4 +1,4 @@
-import { evaluateExpression, getAngleUnit, setAngleUnit } from "./evaluator";
+import { evaluateExpression, getAngleUnit, getCurrentRPN, setAngleUnit } from "./evaluator";
 import type { angleUnit, calculationInfo, functionValue, suggestionObject } from "./types.ts";
 
 export const functionKeys: Record<string, functionValue> = {
@@ -219,7 +219,8 @@ export function calculate(input: string, angleUnit?: angleUnit): calculationInfo
     return {
       operation: input,
       result: input === "" ? "" : expression.toString(),
-      angleUnit: getAngleUnit()
+      angleUnit: getAngleUnit(),
+      currentRPN: getCurrentRPN(),
     }
   } catch (error) {
     return { operation: input, result: (error as Error).message };

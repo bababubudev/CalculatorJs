@@ -3,6 +3,7 @@
 @use "./components/Header.scss";
 @use "./components/Modal.scss";
 @use "./media-query.scss";
+@use "../../node_modules/katex/src/styles/katex.scss";
 
 .default-theme {
   --col-window-bg: #1F3333;
