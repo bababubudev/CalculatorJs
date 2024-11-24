@@ -5,12 +5,12 @@ export const functionKeys: Record<string, functionValue> = {
   "sin": {
     displayAs: "sin(n)",
     pasteAs: "sin(",
-    description: "Sine of an angle 'n'"
+    description: "Sine of an angle 'n'",
   },
   "cos": {
     displayAs: "cos(n)",
     pasteAs: "cos(",
-    description: "Cosine of an angle 'n'"
+    description: "Cosine of an angle 'n'",
   },
   "tan": {
     displayAs: "tan(n)",
@@ -36,7 +36,7 @@ export const functionKeys: Record<string, functionValue> = {
   "sqrt": {
     displayAs: "sqrt(n)",
     pasteAs: "sqrt(",
-    description: "Square root of a value 'n'"
+    description: "Square root of a value 'n'",
   },
   "cbrt": {
     displayAs: "cbrt(n)",
@@ -72,7 +72,7 @@ export const functionKeys: Record<string, functionValue> = {
   "fact": {
     displayAs: "fact(n)",
     pasteAs: "fact(",
-    description: "Factorial of a number 'n'"
+    description: "Factorial of a number 'n'. Alternative input: n!"
   },
   "add": {
     displayAs: "add(n₁, n₂, ...)",
@@ -87,7 +87,7 @@ export const functionKeys: Record<string, functionValue> = {
   "root": {
     displayAs: "root(m, n)",
     pasteAs: "root(",
-    description: "Calculates the 'n':th root of a number 'm' (ex. root(8, 3) = 2)"
+    description: "Calculates the 'n':th root of a number 'm' (ex. root(3, 8) = 2)"
   },
   "log": {
     displayAs: "log(m, n)",
@@ -154,6 +154,72 @@ export const functionKeys: Record<string, functionValue> = {
 
 const FILTER_KEYS = Object.keys(functionKeys).sort();
 
+export function processInputToLatex(currentInput: string): string {
+  const RPN: string[] = getCurrentRPN();
+  const stack: string[] = [];
+
+  function renderOperator(operator: string, a: string, b: string) {
+    switch (operator) {
+      case "+":
+        return `${a} + ${b}`;
+      case "-":
+        return `${a} - ${b}`;
+      case "*":
+        return `${a} \\cdot ${b}`;
+      case "/":
+        return `\\cfrac{${a}}{${b}}`;
+      case "^":
+        return `${a}^{${b}}`;
+      case "!":
+        return `${b}!`;
+      default:
+        return `${a} ${operator} ${b}`;
+    }
+  }
+
+  function formatLatexFunction(token: string, args: string[]) {
+    const constants = ["pi", "phi", "infinity", "e", "true", "false"];
+
+    switch (token) {
+      case "sqrt":
+        return `\\sqrt{${args[0] || ""}}`;
+      case "cbrt":
+        return `\\sqrt[3]{${args[0] || ""}}`;
+      case "root":
+        return `\\sqrt[${args[0] || ""}]{${args[1] || ""}}`;
+      case "nCr":
+        return `\\binom{${args[0] || ""}}{${args[1] || ""}}`;
+      default:
+        if (constants.includes(token)) {
+          console.log(token);
+          return `\\${token}`;
+        }
+        return `\\text{${token}}(${args.join(", ")})`;
+    }
+  }
+
+  RPN.forEach(token => {
+    if (!isNaN(parseFloat(token))) {
+      stack.push(token);
+    }
+    else if (token in functionKeys) {
+      const args = stack.splice(-stack.length);
+      stack.push(formatLatexFunction(token, args));
+    }
+    else {
+      const b = stack.pop() || "";
+      const a = stack.pop() || "";
+
+      const render = a === "" ?
+        renderOperator(token, b, a) :
+        renderOperator(token, a, b);
+      stack.push(render);
+    }
+  });
+
+  return stack[0];
+}
+
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
   let result = "";
@@ -185,10 +251,11 @@ export function suggestMathFunctions(input: string): suggestionObject {
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
+    const priorityMatches = FILTER_KEYS.filter(func => func.toLowerCase().startsWith(partialFunciton));
 
     return {
       attemptString: partialFunciton,
-      suggestions: FILTER_KEYS.filter(func => func.startsWith(partialFunciton)),
+      suggestions: priorityMatches,
       suggestionUsed: false,
     };
   }
@@ -220,7 +287,6 @@ export function calculate(input: string, angleUnit?: angleUnit): calculationInfo
       operation: input,
       result: input === "" ? "" : expression.toString(),
       angleUnit: getAngleUnit(),
-      currentRPN: getCurrentRPN(),
     }
   } catch (error) {
     return { operation: input, result: (error as Error).message };

@@ -4,26 +4,31 @@ import { useEffect, useMemo, useRef } from "react";
 
 interface LatexRendererProps {
   expression: string;
-  onError?: (error: Error) => void;
+  isError?: () => void;
 }
 
-function LatexRenderer({ expression, onError }: LatexRendererProps) {
+function LatexRenderer({ expression, isError }: LatexRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const katexOptions: KatexOptions = useMemo(() => ({
     throwOnError: true,
     displayMode: true,
+    output: "html",
+    macros: {
+      "\\true": "\\checkmark",
+      "\\false": "\\neq",
+    }
   }), []);
 
   useEffect(() => {
     if (containerRef.current) {
       try {
         katex.render(expression, containerRef.current, katexOptions);
-      } catch (error) {
-        onError?.(error as Error ?? new Error("Don't know what happened"));
+      } catch (_) {
+        isError?.();
       }
     }
-  }, [expression, onError, katexOptions]);
+  }, [expression, katexOptions, isError]);
 
 
   return (

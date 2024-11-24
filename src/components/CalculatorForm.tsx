@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import type { angleUnit, historyObject, optionObject } from "../utils/types";
-import LatexRenderer from "./LatexRenderer";
 
 interface CalculatorFormProps {
   inputValue: string;
-  processedInput: string;
   topDisplay: string;
   bracketPreview: string;
 
@@ -23,7 +21,6 @@ interface CalculatorFormProps {
 
 function CalculatorForm({
   inputValue,
-  processedInput,
   topDisplay,
   bracketPreview,
 
@@ -66,10 +63,6 @@ function CalculatorForm({
     return weightedPlaceholders[randomIndex];
   };
 
-  const onLatexError = (error: Error) => {
-
-  };
-
   return (
     <form
       className={`calculation-display ${isSubmitted ? "submitted" : ""}`}
@@ -96,10 +89,6 @@ function CalculatorForm({
             autoFocus
           />
           {!isSubmitted && <div className="bracket-preview" ref={bracketPrevRef}>{bracketPreview}</div>}
-          <LatexRenderer
-            expression={processedInput}
-            onError={onLatexError}
-          />
         </div>
       </div>
       <button className="submission-area" type="submit">

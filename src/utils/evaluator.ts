@@ -56,10 +56,10 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
 
   //* INFO: Custom functions
   fact: (x: number) => factorial(x),
-  root: (x: number, n: number) => Math.pow(x, 1 / n),
+  root: (root: number, x: number) => Math.pow(x, 1 / root),
   log: (x: number, n: number) => Math.log(n) / Math.log(x),
-  nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
   nCr: (n: number, r: number) => factorial(n) / (factorial(r) * factorial(n - r)),
+  nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
   ceil: (x: number) => Math.ceil(x),
   floor: (x: number) => Math.floor(x),
   mod: (x: number, y: number) => x % y,
@@ -353,6 +353,7 @@ function evaluateRPN(rpn: string[]): number {
           stack.push(Math.pow(a, b));
           break;
         case '!':
+          if (a && b) return NaN;
           stack.push(factorial(b));
           break;
         default:

@@ -5,12 +5,14 @@ import {
   autoCompleteBrackets,
   calculate,
   functionKeys,
+  processInputToLatex,
   roundNumbers,
   suggestMathFunctions,
 } from "../utils/utilityFunctions";
 import PreviewDisplay from "./PreviewDisplay";
 import Keypad from "./Keypad";
 import CalculatorForm from "./CalculatorForm";
+import LatexRenderer from "./LatexRenderer";
 
 interface CalculatorIOProps {
   passedInput: string;
@@ -27,6 +29,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   const [inputValue, setInputValue] = useState<string>("");
   const [latexInput, setLatexInput] = useState<string>("");
+
   const [topDisplay, setTopDisplay] = useState<string>("");
   const [bracketPreview, setBracketPreview] = useState<string>("");
 
@@ -207,58 +210,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
     });
   };
 
-  const functionOutput = (rawInput: string, token: string) => {
-    const val = functionKeys[token];
-    return val ? val.pasteAs.slice(0, -1) : rawInput;
-  };
-
-  const processInputToLatex = (rawInput: string, RPN: string[]): string => {
-    const stack: string[] = [];
-    console.log(RPN);
-
-    RPN.forEach(token => {
-      if (!isNaN(parseFloat(token)) || token in functionKeys) {
-        stack.push(token);
-      } else {
-        let b = stack.pop();
-        let a = stack.pop();
-
-        console.log(a, b, token);
-
-        if (!a && b) {
-          a = b;
-          b = "";
-        }
-
-        switch (token) {
-          case '+':
-            stack.push(`${a} + ${b}`);
-            break;
-          case '-':
-            stack.push(`${a} - ${b}`);
-            break;
-          case '*':
-            stack.push(`${a}\\cdot${b}`);
-            break;
-          case '/':
-            stack.push(`\\frac{${a}}{${b}}`);
-            break;
-          case '^':
-            stack.push(`${a}^{${b}}`);
-            break;
-          case '!':
-            stack.push(`${b}!`);
-            break;
-          default:
-            stack.push(functionOutput(rawInput, token));
-            break;
-        }
-      }
-    });
-
-    return stack.length ? stack[0] : rawInput;
-  };
-
   const autofillInput = (index: number) => {
     const suggestions = functionPreview.suggestions;
     const attempt = functionPreview.attemptString;
@@ -330,16 +281,16 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
     const updatedValue = autoCompleteBrackets(currentValue);
 
-    const { result, currentRPN } = calculate(currentValue, options.angleUnit);
+    const { result } = calculate(currentValue, options.angleUnit);
     const [displayResult, _] = roundAndFormatResult(result, options.precision);
     const { attemptString, suggestions } = suggestMathFunctions(currentValue);
 
-    const latexOutput = currentRPN ? processInputToLatex(currentValue, currentRPN) : currentValue;
-
-    setLatexInput(latexOutput);
     setInputValue(currentValue);
     setBracketPreview(updatedValue);
     setTopDisplay(displayResult);
+
+    const latexOutput = processInputToLatex(currentValue);
+    setLatexInput(latexOutput);
 
     suggestions.length > 0
       ? setFunctionPreview({ attemptString, suggestions, suggestionUsed: usedCall })
@@ -382,9 +333,9 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   return (
     <>
+      <LatexRenderer expression={latexInput} />
       <CalculatorForm
         inputValue={inputValue}
-        processedInput={latexInput}
         topDisplay={topDisplay}
         bracketPreview={bracketPreview}
         isSubmitted={isSubmitted}

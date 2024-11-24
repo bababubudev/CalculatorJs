@@ -37,7 +37,6 @@ export type inputInfo = {
 export type calculationInfo = {
   operation: string,
   result: string,
-  currentRPN?: string[],
   angleUnit?: angleUnit,
 }
 
