@@ -154,7 +154,10 @@ export const functionKeys: Record<string, functionValue> = {
 
 const FILTER_KEYS = Object.keys(functionKeys).sort();
 
-export function processInputToLatex(currentInput: string): string {
+export function processInputToLatex(rawInput: string): string {
+  const constants = new Set(["pi", "phi", "infinity", "e", "true", "false"]);
+  const comparators = new Set(["=", "!=", "<", "<=", ">", ">="]);
+
   const RPN: string[] = getCurrentRPN();
   const stack: string[] = [];
 
@@ -178,8 +181,6 @@ export function processInputToLatex(currentInput: string): string {
   }
 
   function formatLatexFunction(token: string, args: string[]) {
-    const constants = ["pi", "phi", "infinity", "e", "true", "false"];
-
     switch (token) {
       case "sqrt":
         return `\\sqrt{${args[0] || ""}}`;
@@ -190,13 +191,33 @@ export function processInputToLatex(currentInput: string): string {
       case "nCr":
         return `\\binom{${args[0] || ""}}{${args[1] || ""}}`;
       default:
-        if (constants.includes(token)) {
-          console.log(token);
+        if (constants.has(token)) {
           return `\\${token}`;
         }
         return `\\text{${token}}(${args.join(", ")})`;
     }
   }
+
+  function renderComparisons(operator: string, leftValue: string, rightValue: string) {
+    switch (operator) {
+      case "=":
+        return `${leftValue} = ${rightValue}`;
+      case "!=":
+        return `${leftValue} \\neq ${rightValue}`;
+      case "<":
+        return `${leftValue} < ${rightValue}`;
+      case "<=":
+        return `${leftValue} \\leq ${rightValue}`;
+      case ">":
+        return `${leftValue} > ${rightValue}`;
+      case ">=":
+        return `${leftValue} \\geq ${rightValue}`;
+      default:
+        return `${leftValue} ${operator} ${rightValue}`;
+    }
+  }
+
+  const comparisonOperator = [...comparators].find(op => rawInput.includes(op));
 
   RPN.forEach(token => {
     if (!isNaN(parseFloat(token))) {
@@ -216,6 +237,13 @@ export function processInputToLatex(currentInput: string): string {
       stack.push(render);
     }
   });
+
+  if (comparisonOperator) {
+    const rightValue = stack.pop() || "";
+    const leftValue = stack.pop() || "";
+
+    stack.push(renderComparisons(comparisonOperator, leftValue, rightValue));
+  }
 
   return stack[0];
 }

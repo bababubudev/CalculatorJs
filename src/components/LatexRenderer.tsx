@@ -12,11 +12,13 @@ function LatexRenderer({ expression, isError }: LatexRendererProps) {
 
   const katexOptions: KatexOptions = useMemo(() => ({
     throwOnError: true,
-    displayMode: true,
-    output: "html",
+    displayMode: false,
+    output: "mathml",
     macros: {
       "\\true": "\\checkmark",
       "\\false": "\\neq",
+      "\\infinity": "\\infty",
+      "\\e": "\\text{e}",
     }
   }), []);
 

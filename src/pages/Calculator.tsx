@@ -3,10 +3,12 @@ import type { historyObject } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
 import { useOptions } from "../context/OptionsContext";
+import LatexRenderer from "../components/LatexRenderer";
 
 function Calculator() {
   const [passedInput, setPassedInput] = useState<string>("");
   const [historyList, setHistoryList] = useState<historyObject[]>([]);
+  const [latexInput, setLatexInput] = useState<string>("");
 
   const { options } = useOptions();
 
@@ -39,6 +41,7 @@ function Calculator() {
 
   return (
     <div className="calculator">
+      <LatexRenderer expression={latexInput} />
       <History
         history={historyList}
         removeFromHistory={removeFromHistory}
@@ -48,6 +51,7 @@ function Calculator() {
         passedInput={passedInput}
         options={options}
         askForAnswer={ans}
+        setLatexInput={setLatexInput}
         addToHistory={addToHistory}
         removePassedInput={removePassedInput}
       />

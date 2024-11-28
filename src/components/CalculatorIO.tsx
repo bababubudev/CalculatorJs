@@ -12,24 +12,22 @@ import {
 import PreviewDisplay from "./PreviewDisplay";
 import Keypad from "./Keypad";
 import CalculatorForm from "./CalculatorForm";
-import LatexRenderer from "./LatexRenderer";
 
 interface CalculatorIOProps {
   passedInput: string;
   options: optionObject;
   askForAnswer: (x: number) => string;
   removePassedInput: () => void;
+  setLatexInput: (input: string) => void;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, setLatexInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
   const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
 
   const [inputValue, setInputValue] = useState<string>("");
-  const [latexInput, setLatexInput] = useState<string>("");
-
   const [topDisplay, setTopDisplay] = useState<string>("");
   const [bracketPreview, setBracketPreview] = useState<string>("");
 
@@ -333,7 +331,6 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
 
   return (
     <>
-      <LatexRenderer expression={latexInput} />
       <CalculatorForm
         inputValue={inputValue}
         topDisplay={topDisplay}

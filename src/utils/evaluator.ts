@@ -16,6 +16,9 @@ const stdev = (...args: number[]) => {
 };
 
 let currentRPN: string[] = [];
+let firstOperand: string = "";
+let secondOperand: string = "";
+
 let currentAngle: angleUnit = "radian";
 
 const toAngle: { [key: string]: number } = {
@@ -93,6 +96,8 @@ function evaluateExpression(input: string): boolean | number {
 
 function evaluateComparison(input: string, operator: string): boolean | number {
   const [left, right] = input.split(operator).map(part => part.trim());
+  firstOperand = left;
+  secondOperand = right;
 
   const leftValue = evaluateInput(left) as number;
   const rightValue = evaluateInput(right) as number;
@@ -111,11 +116,23 @@ function evaluateComparison(input: string, operator: string): boolean | number {
 }
 
 function evaluateInput(input: string): number {
-  const tokens: string[] | null = tokenize(input);
-  const rpn = shuntingYard(tokens);
-  currentRPN = rpn;
+  if (input === "") {
+    firstOperand = "";
+    secondOperand = "";
+    currentRPN = [];
+  }
 
+  const rpn = inputToRPN(input);
+  const left = firstOperand !== "" ? inputToRPN(firstOperand) : "";
+  const right = secondOperand !== "" ? inputToRPN(secondOperand) : "";
+
+  currentRPN = left && right ? [...left, ...right] : rpn;
   return evaluateRPN(rpn);
+}
+
+function inputToRPN(input: string): string[] {
+  const tokens: string[] | null = tokenize(input);
+  return shuntingYard(tokens);
 }
 
 function autoCompleteParentheses(input: string): string {
