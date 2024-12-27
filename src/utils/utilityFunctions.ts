@@ -152,7 +152,7 @@ export const functionKeys: Record<string, functionValue> = {
   },
 }
 
-const FILTER_KEYS = Object.keys(functionKeys).sort();
+const FILTER_KEYS = Object.keys(functionKeys);
 
 export function autoCompleteBrackets(input: string): string {
   let openBrackets = 0;
@@ -180,16 +180,45 @@ export function autoCompleteBrackets(input: string): string {
   return result;
 }
 
+export function fuzzySearch(query: string, keys: string[]): string[] {
+  if (!query) return [];
+
+  const results = keys.map((key) => {
+    let score = 0;
+    let index = 0;
+
+    for (const char of query) {
+      const matchIndex = key.indexOf(char, index);
+      if (matchIndex !== -1) {
+        score += 1;
+        index = matchIndex + 1;
+      }
+      else {
+        score -= 1;
+      }
+    }
+
+    return { key, score };
+  });
+
+  return results
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ key }) => key);
+}
+
 export function suggestMathFunctions(input: string): suggestionObject {
   const functionMatch = input.toLowerCase().match(/([a-z]+)\(?$/i);
 
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
+    const suggestions = fuzzySearch(partialFunciton, FILTER_KEYS);
+    console.log(`partial: ${partialFunciton}, suggestions: ${suggestions}`);
 
     return {
       attemptString: partialFunciton,
-      suggestions: FILTER_KEYS.filter(func => func.startsWith(partialFunciton)),
-      suggestionUsed: false,
+      suggestions,
+      suggestionUsed: suggestions.length > 0,
     };
   }
   else {
