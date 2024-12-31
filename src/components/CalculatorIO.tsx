@@ -238,15 +238,19 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const suggestions = functionPreview.suggestions;
 
-    if (e.key === "Tab" && suggestions.length > 0) {
+    //* INFO: If nothing shown return *//
+    if (hidePreview) return;
+
+    if ((e.key === "Tab" || e.key === "Enter") && suggestions.length > 0) {
       e.preventDefault();
       autoFillPreview(selectedPreview);
       setSelectedPreview(0);
-    } else if (!hidePreview && suggestions.length > 1) {
+    } else if (suggestions.length > 1) {
       if (e.key === "ArrowRight") {
         e.preventDefault();
         setSelectedPreview(prev => (prev + 1) % suggestions.length);
-      } else if (e.key === "ArrowLeft") {
+      }
+      else if (e.key === "ArrowLeft") {
         e.preventDefault();
         setSelectedPreview(prev => (prev - 1 + suggestions.length) % suggestions.length)
       }
