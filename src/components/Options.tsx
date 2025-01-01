@@ -102,7 +102,7 @@ function Options() {
             onClick={handleDropDownClick}
           />
           <CustomSelect
-            label="Show Keypad"
+            label="Keypad"
             options={[true, false]}
             displayOptions={["Show", "Hide"]}
             selectedOption={options.showKeypad}
