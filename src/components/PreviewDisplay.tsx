@@ -7,6 +7,7 @@ import { functionKeys } from "../utils/utilityFunctions";
 interface PreviewDisplayProp {
   attempt: string;
   hidePreview: boolean;
+  addPadding: boolean;
   previews: suggestionObject;
   previewSelection: number;
   autoFillPreview: (index: number) => void;
@@ -16,6 +17,7 @@ interface PreviewDisplayProp {
 function PreviewDisplay({
   attempt,
   hidePreview,
+  addPadding,
   previews,
   previewSelection,
   autoFillPreview,
@@ -79,7 +81,7 @@ function PreviewDisplay({
   return (
     <>
       {!hidePreview && previews.suggestions.length > 0 && (
-        <div className={"preview-display"}>
+        <div className={`preview-display${addPadding ? " padded" : ""}`}>
           <ul
             className="preview-list"
           >

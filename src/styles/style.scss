@@ -92,6 +92,10 @@ main {
 
 .calculator {
   margin-bottom: env(safe-area-inset-bottom);
+
+  &.padded {
+    margin-bottom: calc(env(safe-area-inset-bottom) + 5.75rem);
+  }
 }
 
 html {

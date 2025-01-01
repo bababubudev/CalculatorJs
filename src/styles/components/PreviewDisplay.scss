@@ -9,8 +9,12 @@
 
   min-height: 2.5rem;
   overflow: hidden;
-
   bottom: -0.25rem;
+
+  &.padded {
+    bottom: -3rem;
+  }
+
   display: grid;
   justify-content: stretch;
 
@@ -21,9 +25,8 @@
   opacity: 1;
 
   transform-origin: top center;
-  transition:
-    transform 0.2s,
-    opacity 0.3s ease;
+  transition: transform 0.2s,
+  opacity 0.3s ease;
 
 
   @keyframes stretch-out {

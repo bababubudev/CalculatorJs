@@ -38,7 +38,7 @@ function Calculator() {
   };
 
   return (
-    <div className="calculator">
+    <div className={`calculator${options.showKeypad ? "" : " padded"}`}>
       <History
         history={historyList}
         removeFromHistory={removeFromHistory}

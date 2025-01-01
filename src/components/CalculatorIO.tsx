@@ -353,6 +353,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         previewSelection={selectedPreview}
         autoFillPreview={autoFillPreview}
         setPreviewSelection={setSelectedPreview}
+        addPadding={options.showKeypad ? false : true}
       />
     </>
   );
