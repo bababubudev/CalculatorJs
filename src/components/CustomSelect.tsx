@@ -23,6 +23,8 @@ function CustomSelect({
 }: CustomSelectProp) {
   const currentOptionType = displayOptions ? displayOptions : options;
   const selectedIndex = options.indexOf(selectedOption);
+  console.log(`options: ${options}, selectedOption: ${selectedOption}`);
+  console.log(`currentOptionType: ${currentOptionType}`);
 
   const handleOptionClick = (e: React.MouseEvent, value: string) => {
     e.stopPropagation();

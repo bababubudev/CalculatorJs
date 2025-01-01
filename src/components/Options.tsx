@@ -41,6 +41,7 @@ function Options() {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
+
   return (
     <div className="option-area" ref={optionRef}>
       <button
@@ -105,7 +106,7 @@ function Options() {
             label="Show Keypad"
             options={[true, false]}
             displayOptions={["Show", "Hide"]}
-            selectedOption={options.showKeypad}
+            selectedOption={options.showKeypad ? true : false}
             onChange={optionChange}
             name="showKeypad"
             isActive={activeDropdown === "showKeypad"}
