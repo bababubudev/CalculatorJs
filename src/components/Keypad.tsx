@@ -1,9 +1,12 @@
+import { optionObject } from "../utils/types";
+
 interface KeypadProps {
   onKeyClick: (key: string) => void;
+  options: optionObject;
 }
 
-function Keypad({ onKeyClick }: KeypadProps) {
-  return (
+function Keypad({ onKeyClick, options }: KeypadProps) {
+  return options.showKeypad && (
     <div className="keypad">
       <button
         type="button"

@@ -14,6 +14,7 @@ function OptionsProvider({ children }: OptionsProviderProps) {
       angleUnit: "degree",
       precision: 5,
       theme: "dark",
+      showKeypad: true
     };
   });
 

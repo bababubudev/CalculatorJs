@@ -344,6 +344,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
       />
       <Keypad
         onKeyClick={handleKeypadInput}
+        options={options}
       />
       <PreviewDisplay
         attempt={functionPreview.attemptString}

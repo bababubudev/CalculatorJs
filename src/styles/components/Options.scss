@@ -13,7 +13,6 @@
 
     &.shown {
       z-index: 100000;
-      max-height: 12rem;
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
@@ -76,13 +75,13 @@
     gap: 0.2rem;
 
     min-width: 12em;
-    min-height: 11em;
+    min-height: 12em;
 
     li {
       position: relative;
       color: var(--col-window-bg);
       background: var(--col-white);
-      min-height: 2.5rem;
+      min-height: 3rem;
 
       border-radius: 0.2rem;
       padding: 0.5em;

@@ -20,6 +20,7 @@ export type comparisonObject = {
 export type optionObject = {
   angleUnit?: angleUnit,
   precision?: number,
+  showKeypad?: boolean,
   theme?: "light" | "dark" | "default",
 }
 

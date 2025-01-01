@@ -3,12 +3,12 @@ import { FaArrowCircleRight } from "react-icons/fa";
 interface CustomSelectProp {
   label: string;
   name: string;
-  options: string[];
+  options: any[];
   displayOptions?: string[];
-  selectedOption: string;
+  selectedOption: any;
   isActive: boolean;
   onClick: (name: string) => void;
-  onChange: (name: string, value: string) => void;
+  onChange: (name: string, value: any) => void;
 }
 
 function CustomSelect({

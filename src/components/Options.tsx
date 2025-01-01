@@ -9,7 +9,7 @@ function Options() {
   const [activeDropdown, setActiveDropDown] = useState<string | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
 
-  const optionChange = (name: string, value: string) => {
+  const optionChange = (name: string, value: any) => {
     setOptions({ [name]: value });
   };
 
@@ -99,6 +99,16 @@ function Options() {
             onChange={optionChange}
             name="theme"
             isActive={activeDropdown === "theme"}
+            onClick={handleDropDownClick}
+          />
+          <CustomSelect
+            label="Show Keypad"
+            options={[true, false]}
+            displayOptions={["Show", "Hide"]}
+            selectedOption={options.showKeypad}
+            onChange={optionChange}
+            name="showKeypad"
+            isActive={activeDropdown === "showKeypad"}
             onClick={handleDropDownClick}
           />
         </ul>
