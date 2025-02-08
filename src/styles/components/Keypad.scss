@@ -1,26 +1,173 @@
 .keypad {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
 
   background: var(--col-primary);
   border-radius: 0.25rem;
-  padding: 0.25rem 0;
+  padding: 0.25rem;
 
-  .key {
-    user-select: none;
-    cursor: pointer;
+  .basic-keys,
+  .function-keys,
+  .advanced-keys {
+    position: relative;
 
-    background: var(--col-window-bg);
-    border: none;
-    border-radius: 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.25rem;
 
-    box-shadow: 0 0 5px rgba(#000000, 0.3);
+    .key {
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-    font-size: 1.5rem;
-    align-self: center;
-    padding: 0 1.5rem;
+      user-select: none;
+      cursor: pointer;
 
-    color: var(--col-white);
+      background: var(--col-window-bg);
+      border: none;
+      border-radius: 0.25rem;
+
+      font-family: "ExtraLight";
+      min-width: 1rem;
+
+      color: var(--col-white);
+      padding: 0.75rem;
+    }
+
+    &:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -7px;
+
+      align-self: center;
+      opacity: 0.2;
+
+      width: 3px;
+      height: 1rem;
+      background: var(--col-window-bg);
+      border-radius: 1rem;
+    }
+  }
+
+  .function-keys {
+    .angle-convert {
+      display: flex;
+      gap: 0.2rem;
+
+      color: var(--col-white-faded);
+
+      hr {
+        align-self: center;
+        height: 0.5rem;
+        opacity: 0.2;
+        border-radius: 1rem;
+      }
+
+      .current {
+        color: var(--col-white);
+      }
+    }
+  }
+
+  .advanced-keys {
+    .focus-sup {
+      color: var(--col-white-faded);
+
+      sup {
+        color: var(--col-white);
+      }
+    }
+
+    .braces {
+      display: flex;
+      gap: 0.25rem;
+      color: var(--col-white-faded);
+
+      .current {
+        color: var(--col-white);
+      }
+    }
+  }
+
+
+  // .key {
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+
+  //   user-select: none;
+  //   cursor: pointer;
+
+  //   background: var(--col-window-bg);
+  //   border: none;
+  //   border-radius: 0.25rem;
+
+  //   font-size: 1.5rem;
+  //   font-family: "ExtraLight";
+
+  //   color: var(--col-white);
+  //   min-height: 100%;
+
+  //   // svg {
+  //   //   width: 1.7rem;
+  //   //   height: 1.7rem;
+  //   // }
+
+  //   span {
+  //     font-size: 1rem;
+  //     color: var(--col-white-faded);
+
+  //     sup {
+  //       color: var(--col-white);
+  //     }
+  //   }
+  // }
+
+  &.cover {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  &.uncover {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  &.hidden {
+    position: absolute;
+    pointer-events: none;
+
+    visibility: hidden;
+    transform: scaleY(0.1);
+  }
+
+  &.shown {
+    position: relative;
+    pointer-events: auto;
+
+    animation-name: stretch-keypad-out;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in-out;
+
+    transform-origin: top center;
+    transition: transform 0.2s,
+      opacity 0.3s ease;
+
+  }
+
+  @keyframes stretch-keypad-out {
+    0% {
+      transform: scaleY(0.1);
+    }
+
+    75% {
+      transform: scaleY(1.1);
+    }
+
+    100% {
+      transform: scaleY(1);
+    }
   }
 }

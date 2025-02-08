@@ -141,7 +141,7 @@ function tokenize(input: string): string[] {
 
   const tokens = [];
   const size = input.length;
-  const operators = new Set(['+', '-', '*', '/', '^', '(', ')', ',']);
+  const operators = new Set(['+', '-', '*', '/', '^', '(', ')', ',', '%']);
   const comparators = new Set(['=', '<', '>']);
   const functionSet = new Set(Object.keys(functions));
 
@@ -218,6 +218,7 @@ function shuntingYard(tokens: string[]): string[] {
     '^': 4,
     '*': 3,
     '/': 3,
+    '%': 3,
     '+': 2,
     '-': 2,
     '(': 1,
@@ -225,7 +226,7 @@ function shuntingYard(tokens: string[]): string[] {
   };
 
   const rightAssociative = new Set(['^']);
-  const operators = new Set(['+', '-', '*', '/', '^']);
+  const operators = new Set(['+', '-', '*', '/', '^', '%']);
   const functionSet = new Set(Object.keys(functions));
 
   const outputQueue: string[] = [];
@@ -347,6 +348,9 @@ function evaluateRPN(rpn: string[]): number {
           break;
         case '^':
           stack.push(Math.pow(a, b));
+          break;
+        case '%':
+          stack.push((a / 100) * b);
           break;
         default:
           stack.push(NaN);

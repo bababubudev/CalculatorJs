@@ -1,14 +1,17 @@
+import { useEffect, useRef } from "react";
 import { FaArrowCircleRight } from "react-icons/fa";
+
+type OptionValue = string | number | boolean;
 
 interface CustomSelectProp {
   label: string;
   name: string;
-  options: any[];
+  options: OptionValue[];
   displayOptions?: string[];
-  selectedOption: any;
+  selectedOption: OptionValue;
   isActive: boolean;
   onClick: (name: string) => void;
-  onChange: (name: string, value: any) => void;
+  onChange: (name: string, value: OptionValue) => void;
 }
 
 function CustomSelect({
@@ -21,13 +24,27 @@ function CustomSelect({
   onClick,
   onChange,
 }: CustomSelectProp) {
+  const listRef = useRef<HTMLDivElement>(null);
   const currentOptionType = displayOptions ? displayOptions : options;
   const selectedIndex = options.indexOf(selectedOption);
-  const handleOptionClick = (e: React.MouseEvent, value: string) => {
+
+  useEffect(() => {
+    if (!isActive && listRef.current) {
+      const listElement = listRef.current;
+      const selectedElement = listElement.querySelector(".current");
+
+      if (selectedElement) {
+        selectedElement.scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [isActive, selectedOption]);
+
+  const handleOptionClick = (e: React.MouseEvent, value: OptionValue) => {
     e.stopPropagation();
     onChange(name, value);
   };
-
 
   const handlePrevClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
     e.stopPropagation();
@@ -52,7 +69,10 @@ function CustomSelect({
   )
 
   const listType: JSX.Element = (
-    <div className={`list-type ${name} ${isActive ? "shown" : "hidden"}`}>
+    <div
+      ref={listRef}
+      className={`list-type ${name} ${isActive ? "shown" : "hidden"}`}
+    >
       {displayOptions ?
         displayOptions.map((option, idx) => (
           <div
@@ -64,11 +84,11 @@ function CustomSelect({
           </div>)) :
         options.map((option) => (
           <div
-            key={option}
+            key={String(option)}
             onClick={e => handleOptionClick(e, option)}
             className={`${selectedOption === option ? "current" : ""}`}
           >
-            {option}
+            {String(option)}
           </div>
         ))}
     </div>

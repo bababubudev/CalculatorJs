@@ -9,7 +9,7 @@ function Options() {
   const [activeDropdown, setActiveDropDown] = useState<string | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
 
-  const optionChange = (name: string, value: any) => {
+  const optionChange = (name: string, value: unknown) => {
     setOptions({ [name]: value });
   };
 
@@ -68,7 +68,7 @@ function Options() {
 
       <form
         onSubmit={e => e.preventDefault()}
-        className={`option-form ${showForm ? "shown" : "hidden"}`}
+        className={`option-form ${showForm ? "shown" : "hidden"} ${activeDropdown !== null ? "cover" : "uncover"}`}
       >
         <ul>
           <CustomSelect
@@ -95,7 +95,7 @@ function Options() {
           <CustomSelect
             label="Theme"
             options={["light", "dark", "default"]}
-            displayOptions={["Earth", "Night", "Jade"]}
+            displayOptions={["earth", "night", "jade"]}
             selectedOption={options.theme ?? "default"}
             onChange={optionChange}
             name="theme"
@@ -105,7 +105,7 @@ function Options() {
           <CustomSelect
             label="Show Keypad"
             options={[true, false]}
-            displayOptions={["Show", "Hide"]}
+            displayOptions={["show", "hide"]}
             selectedOption={options.showKeypad ? true : false}
             onChange={optionChange}
             name="showKeypad"

@@ -5,18 +5,14 @@
   width: 100%;
   padding-right: 2.75rem;
   background: var(--col-window-bg);
+  border: 1px solid var(--col-white-faded);
   border-radius: 0.25rem;
-
-  min-height: 2.5rem;
   overflow: hidden;
-  bottom: -0.25rem;
+  bottom: 3.5rem;
 
   &.padded {
     bottom: -3rem;
   }
-
-  display: grid;
-  justify-content: stretch;
 
   z-index: 1000;
   animation-name: stretch-out;
@@ -107,8 +103,7 @@
   button {
     position: absolute;
     align-self: center;
-    top: 0.33rem;
-    right: 0.5rem;
+    right: 0.25rem;
 
     background: none;
     border: none;

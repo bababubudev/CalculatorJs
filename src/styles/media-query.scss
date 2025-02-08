@@ -1,6 +1,7 @@
 @media screen and (max-width: 650px) {
   main .calculator {
     width: clamp(15rem, 80vw, 80rem) !important;
+    font-size: 0.8rem !important;
   }
 
   main .calculator {
@@ -9,5 +10,43 @@
 
   .hidables {
     width: clamp(15rem, 80vw, 50rem) !important;
+  }
+
+  .keypad {
+    .key {
+      padding: none;
+
+      .angle-convert {
+        gap: 0;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .preview-display {
+    bottom: 3.75rem;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  main {
+    align-items: center;
+  }
+
+  main .calculator {
+    margin-inline: 1rem !important;
+    width: auto !important;
+  }
+
+  header {
+    .option-form {
+      right: -1rem !important;
+
+      ul {
+        font-size: 0.85rem;
+        min-width: 10rem;
+        grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+      }
+    }
   }
 }
