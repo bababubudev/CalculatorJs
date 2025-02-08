@@ -1,7 +1,11 @@
 @media screen and (max-width: 650px) {
+  header {
+    font-size: 0.8rem;
+  }
+
   main .calculator {
     width: clamp(15rem, 80vw, 80rem) !important;
-    font-size: 0.8rem !important;
+    font-size: 0.8rem;
   }
 
   main .calculator {
@@ -13,6 +17,24 @@
   }
 
   .keypad {
+    .function-keys .angle-convert {
+      position: relative;
+      display: flex;
+
+      hr {
+        display: none;
+      }
+
+      p:not(.current) {
+        display: none;
+      }
+
+      .current {
+        justify-self: center;
+        align-self: center;
+      }
+    }
+
     .key {
       padding: none;
 

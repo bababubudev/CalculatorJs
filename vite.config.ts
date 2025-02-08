@@ -6,6 +6,13 @@ export default defineConfig({
   plugins: [react()],
   base: "/CalculatorJs/",
   build: {
-    outDir: 'dist', // Ensure this matches your GitHub Actions config
+    outDir: "dist",
   },
-})
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: "modern-compiler"
+      },
+    },
+  },
+});

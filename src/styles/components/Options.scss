@@ -141,9 +141,10 @@
   border: 1px solid var(--col-primary);
   border-radius: 0.25rem;
 
-  padding-block: 0.5rem;
-  padding-inline: 0.2rem;
-  padding-left: 0.4rem;
+  //* Accounting for scrollgutter
+  padding: 0.3rem;
+  padding-left: 0.35rem;
+  padding-right: 0.2rem;
 
   &.hidden {
     max-height: 0;
