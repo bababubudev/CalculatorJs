@@ -15,12 +15,13 @@ import CalculatorForm from "./CalculatorForm";
 interface CalculatorIOProps {
   passedInput: string;
   options: optionObject;
+  setOptions: (changes: Partial<optionObject>) => void;
   askForAnswer: (x: number) => string;
   removePassedInput: () => void;
   addToHistory: (info: historyObject) => void;
 }
 
-function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
+function CalculatorIO({ addToHistory, options, setOptions, askForAnswer, passedInput, removePassedInput }: CalculatorIOProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
   const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
@@ -343,6 +344,7 @@ function CalculatorIO({ addToHistory, options, askForAnswer, passedInput, remove
         bracketPrevRef={bracketPrevRef}
       />
       <Keypad
+        setOption={setOptions}
         onKeyClick={handleKeypadInput}
         isKeypadCovered={!hidePreview}
         currentValue={inputValue}

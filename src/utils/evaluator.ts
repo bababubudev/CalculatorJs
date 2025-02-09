@@ -31,9 +31,8 @@ const toValue: { [key: string]: number } = {
 
 const angle = (x: number): number => x * (toAngle[currentAngle] || 1);
 
-const setAngleUnit = (_angleUnit: angleUnit = "radian"): void => { currentAngle = _angleUnit; }
-
 const getAngleUnit = (): angleUnit => currentAngle;
+const setAngleUnit = (_angleUnit: angleUnit = "radian"): void => { currentAngle = _angleUnit; }
 
 const functions: { [key: string]: ((...args: number[]) => number) | number } = {
   //* INFO: Trig functions
@@ -54,10 +53,10 @@ const functions: { [key: string]: ((...args: number[]) => number) | number } = {
 
   //* INFO: Custom functions
   fact: (x: number) => factorial(x),
-  root: (x: number, n: number) => Math.pow(x, 1 / n),
+  root: (root: number, x: number) => Math.pow(x, 1 / root),
   log: (x: number, n: number) => Math.log(n) / Math.log(x),
-  nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
   nCr: (n: number, r: number) => factorial(n) / (factorial(r) * factorial(n - r)),
+  nPr: (n: number, r: number) => factorial(n) / factorial(n - r),
   ceil: (x: number) => Math.ceil(x),
   floor: (x: number) => Math.floor(x),
   mod: (x: number, y: number) => x % y,
@@ -141,7 +140,7 @@ function tokenize(input: string): string[] {
 
   const tokens = [];
   const size = input.length;
-  const operators = new Set(['+', '-', '*', '/', '^', '(', ')', ',', '%']);
+  const operators = new Set(['+', '-', '*', '/', '^', '(', ')', ',', '!', '%']);
   const comparators = new Set(['=', '<', '>']);
   const functionSet = new Set(Object.keys(functions));
 
@@ -215,6 +214,7 @@ function tokenize(input: string): string[] {
 
 function shuntingYard(tokens: string[]): string[] {
   const precedence: { [key: string]: number } = {
+    '!': 5,
     '^': 4,
     '*': 3,
     '/': 3,
@@ -225,8 +225,8 @@ function shuntingYard(tokens: string[]): string[] {
     ',': 0
   };
 
-  const rightAssociative = new Set(['^']);
-  const operators = new Set(['+', '-', '*', '/', '^', '%']);
+  const rightAssociative = new Set(['^', '!']);
+  const operators = new Set(['+', '-', '*', '/', '^', '!', '%']);
   const functionSet = new Set(Object.keys(functions));
 
   const outputQueue: string[] = [];
@@ -329,7 +329,7 @@ function evaluateRPN(rpn: string[]): number {
       const b = stack.pop() as number;
       const a = stack.pop() as number;
 
-      if (a === undefined || b === undefined) {
+      if (a === undefined && b === undefined) {
         return NaN;
       }
 
@@ -351,6 +351,10 @@ function evaluateRPN(rpn: string[]): number {
           break;
         case '%':
           stack.push((a / 100) * b);
+          break;
+        case '!':
+          if (a && b) return NaN;
+          stack.push(factorial(b));
           break;
         default:
           stack.push(NaN);

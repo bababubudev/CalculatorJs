@@ -9,7 +9,7 @@ function Calculator() {
   const [passedInput, setPassedInput] = useState<string>("");
   const [historyList, setHistoryList] = useLocalStorage<historyObject[]>("calculator-history", []);
 
-  const { options } = useOptions();
+  const { options, setOptions } = useOptions();
 
   const addToHistory = (info: historyObject) => {
     setHistoryList(prev => [...prev, info]);
@@ -48,6 +48,7 @@ function Calculator() {
       <CalculatorIO
         passedInput={passedInput}
         options={options}
+        setOptions={setOptions}
         askForAnswer={ans}
         addToHistory={addToHistory}
         removePassedInput={removePassedInput}

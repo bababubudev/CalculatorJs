@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { useOptions } from "../context/OptionsContext";
 
 interface KeypadProps {
+  setOption: (changes: Partial<optionObject>) => void;
   onKeyClick: (key: string) => void;
   isKeypadCovered: boolean;
   currentValue: string;
