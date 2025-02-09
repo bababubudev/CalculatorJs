@@ -43,9 +43,11 @@ function HistoryList({ history, removeFromHistory, onHistoryClicked, toggleHisto
   }, []);
 
   const handleClearAll = useCallback(() => {
-    for (const item of transitionItems) {
-      onRemovalCalled(item.key);
-    }
+    transitionItems.forEach((item, idx) => {
+      setTimeout(() => {
+        onRemovalCalled(item.key);
+      }, 100 * (idx * 0.5));
+    });
   }, [transitionItems, onRemovalCalled]);
 
   const handleClearAllClicked = () => {

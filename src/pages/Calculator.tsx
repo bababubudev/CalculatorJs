@@ -3,10 +3,11 @@ import type { historyObject } from "../utils/types";
 import CalculatorIO from "../components/CalculatorIO";
 import History from "../components/History";
 import { useOptions } from "../context/OptionsContext";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 function Calculator() {
   const [passedInput, setPassedInput] = useState<string>("");
-  const [historyList, setHistoryList] = useState<historyObject[]>([]);
+  const [historyList, setHistoryList] = useLocalStorage<historyObject[]>("calculator-history", []);
 
   const { options } = useOptions();
 

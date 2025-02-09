@@ -16,6 +16,7 @@ enum KeypadEnum {
 }
 
 interface KeypadType {
+  id: number;
   label: ReactNode;
   value: string;
   category: KeypadEnum;
@@ -39,28 +40,32 @@ function Keypad({ onKeyClick, isKeypadCovered, currentValue, options }: KeypadPr
 
   const allKeys: KeypadType[] = [
     //* BASIC KEYS
-    { label: "+", value: "+", category: KeypadEnum.Basic },
-    { label: "-", value: "-", category: KeypadEnum.Basic },
-    { label: "*", value: "*", category: KeypadEnum.Basic },
-    { label: "/", value: "/", category: KeypadEnum.Basic },
+    { id: 1, label: "+", value: "+", category: KeypadEnum.Basic },
+    { id: 2, label: "-", value: "-", category: KeypadEnum.Basic },
+    { id: 3, label: "*", value: "*", category: KeypadEnum.Basic },
+    { id: 4, label: "/", value: "/", category: KeypadEnum.Basic },
 
     //* FUNCTIONAL KEYS
     {
+      id: 5,
       label: "sin",
       value: "sin(",
       category: KeypadEnum.Function,
     },
     {
+      id: 6,
       label: "cos",
       value: "cos(",
       category: KeypadEnum.Function,
     },
     {
+      id: 7,
       label: "tan",
       value: "tan(",
       category: KeypadEnum.Function,
     },
     {
+      id: 8,
       label:
         <span className="angle-convert">
           <p className={`${currentAngleUnit === "deg" ? "current" : ""}`}>
@@ -78,18 +83,21 @@ function Keypad({ onKeyClick, isKeypadCovered, currentValue, options }: KeypadPr
 
     //* ADVANCED KEYS
     {
+      id: 9,
       label: <span className="focus-sup">x<sup>y</sup></span>,
       value: "^",
       category: KeypadEnum.Advanced,
       requiresParentheses: false,
     },
     {
+      id: 10,
       label: <span><b>&radic;</b>x</span >,
       value: "sqrt",
       category: KeypadEnum.Advanced,
       requiresParentheses: true,
     },
     {
+      id: 11,
       label:
         <span className="braces">
           <p className={`${getCurrentBracket() === "(" ? "current" : ""}`}>
@@ -103,6 +111,7 @@ function Keypad({ onKeyClick, isKeypadCovered, currentValue, options }: KeypadPr
       category: KeypadEnum.Advanced,
     },
     {
+      id: 12,
       label: <span>x<b>!</b></span >,
       value: "!",
       category: KeypadEnum.Advanced,
@@ -114,13 +123,13 @@ function Keypad({ onKeyClick, isKeypadCovered, currentValue, options }: KeypadPr
     key.action?.() ?? onKeyClick(`${key.value}${key.requiresParentheses ? "(" : ""}`);
   };
 
-  const renderKeys = (category: KeypadEnum) => (
-    <div className={`${category}-keys`}>
+  const renderKeys = (key: string, category: KeypadEnum) => (
+    <div key={key} className={`${category}-keys`}>
       {allKeys
         .filter(key => key.category === category)
         .map(key => (
           <button
-            key={key.value}
+            key={key.id}
             type="button"
             className={`key ${category}-key`}
             onClick={() => handleKeyClick(key)}
@@ -133,7 +142,7 @@ function Keypad({ onKeyClick, isKeypadCovered, currentValue, options }: KeypadPr
 
   return (
     <div className={`keypad ${isKeypadCovered ? "cover" : "uncover"} ${options.showKeypad ? "shown" : "hidden"}`}>
-      {Object.values(KeypadEnum).map(category => renderKeys(category))}
+      {Object.values(KeypadEnum).map(category => renderKeys(category, category))}
     </div>
   );
 }
