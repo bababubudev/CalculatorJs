@@ -1,9 +1,8 @@
 import { optionObject } from "../utils/types";
 import { ReactNode } from "react";
-import { useOptions } from "../context/OptionsContext";
 
 interface KeypadProps {
-  setOption: (changes: Partial<optionObject>) => void;
+  setOptions: (changes: Partial<optionObject>) => void;
   onKeyClick: (key: string) => void;
   isKeypadCovered: boolean;
   currentValue: string;
@@ -25,8 +24,7 @@ interface KeypadType {
   requiresParentheses?: boolean;
 }
 
-function Keypad({ onKeyClick, isKeypadCovered, currentValue, options }: KeypadProps) {
-  const { setOptions } = useOptions();
+function Keypad({ onKeyClick, setOptions, isKeypadCovered, currentValue, options }: KeypadProps) {
   const currentAngleUnit = options.angleUnit?.slice(0, -3) || "deg";
 
   const getCurrentBracket = (): string => {

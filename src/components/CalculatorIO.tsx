@@ -344,7 +344,7 @@ function CalculatorIO({ addToHistory, options, setOptions, askForAnswer, passedI
         bracketPrevRef={bracketPrevRef}
       />
       <Keypad
-        setOption={setOptions}
+        setOptions={setOptions}
         onKeyClick={handleKeypadInput}
         isKeypadCovered={!hidePreview}
         currentValue={inputValue}
