@@ -1,5 +1,7 @@
 import { useMemo } from "react";
-import type { angleUnit, historyObject, optionObject } from "../utils/types";
+import type { optionObject } from "../../types/options";
+import type { historyObject } from "../../types/calculator";
+import type { angleUnit } from "../../types";
 
 interface CalculatorFormProps {
   inputValue: string;

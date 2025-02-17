@@ -1,5 +1,5 @@
-import { optionObject } from "../utils/types";
 import { ReactNode } from "react";
+import type { optionObject } from "../../types/options";
 
 interface KeypadProps {
   setOptions: (changes: Partial<optionObject>) => void;

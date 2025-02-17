@@ -1,6 +1,7 @@
 import { OptionsContext } from "./OptionsContext";
-import { optionObject } from "../utils/types";
 import useLocalStorage from "../hooks/useLocalStorage";
+
+import type { optionObject } from "../types/options";
 
 interface OptionsProviderProps {
   children: React.ReactNode;

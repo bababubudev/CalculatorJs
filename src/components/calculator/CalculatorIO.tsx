@@ -1,16 +1,19 @@
-import type { angleUnit, historyObject, optionObject, suggestionObject } from "../utils/types";
 import { FormEvent, useEffect, useRef, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
+import PreviewDisplay from "./PreviewDisplay";
+import Keypad from "./Keypad";
+import CalculatorForm from "./CalculatorForm";
 import {
   autoCompleteBrackets,
   calculate,
   functionKeys,
   roundNumbers,
-  suggestMathFunctions,
-} from "../utils/utilityFunctions";
-import PreviewDisplay from "./PreviewDisplay";
-import Keypad from "./Keypad";
-import CalculatorForm from "./CalculatorForm";
+  suggestMathFunctions
+} from "../../utils/utilityFunctions";
+
+import type { optionObject } from "../../types/options";
+import type { historyObject, suggestionObject } from "../../types/calculator";
+import type { angleUnit } from "../../types";
 
 interface CalculatorIOProps {
   passedInput: string;

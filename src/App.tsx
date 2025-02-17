@@ -1,4 +1,4 @@
-import Header from "./components/Header";
+import Header from "./components/header/Header";
 import { useOptions } from "./context/OptionsContext";
 import Calculator from "./pages/Calculator";
 

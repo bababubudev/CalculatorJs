@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useOptions } from "../context/OptionsContext";
-import CustomSelect from "./CustomSelect";
+import CustomSelect from "./ui/CustomSelect";
 
 function Options() {
   const { options, setOptions } = useOptions();

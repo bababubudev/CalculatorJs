@@ -1,9 +1,11 @@
 import { useState } from "react";
-import type { historyObject } from "../utils/types";
-import CalculatorIO from "../components/CalculatorIO";
-import History from "../components/History";
 import { useOptions } from "../context/OptionsContext";
+
 import useLocalStorage from "../hooks/useLocalStorage";
+import History from "../components/history/History";
+import CalculatorIO from "../components/calculator/CalculatorIO";
+
+import type { historyObject } from "../types/calculator";
 
 function Calculator() {
   const [passedInput, setPassedInput] = useState<string>("");

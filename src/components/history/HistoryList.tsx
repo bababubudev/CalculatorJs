@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PiBroomFill } from "react-icons/pi";
-import { historyObject } from "../utils/types";
-import Modal from "./Modal";
 import { AiFillDelete } from "react-icons/ai";
+import Modal from "../ui/Modal";
+
+import type { historyObject } from "../../types/calculator";
 
 interface HistoryListProps {
   history: historyObject[];

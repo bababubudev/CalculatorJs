@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { suggestionObject } from "../utils/types";
 import { LuInfo } from "react-icons/lu";
-import Modal from "./Modal";
-import { functionKeys } from "../utils/utilityFunctions";
+import { functionKeys } from "../../utils/utilityFunctions";
+import Modal from "../ui/Modal";
+
+import type { suggestionObject } from "../../types/calculator";
 
 interface PreviewDisplayProp {
   attempt: string;

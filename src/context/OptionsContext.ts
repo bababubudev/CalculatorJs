@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { optionObject } from "../utils/types";
+import type { optionObject } from "../types/options";
 
 interface OptionContextType {
   options: optionObject;

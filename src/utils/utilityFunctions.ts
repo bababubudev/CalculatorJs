@@ -1,5 +1,7 @@
 import { evaluateExpression, getAngleUnit, setAngleUnit } from "./evaluator";
-import type { angleUnit, calculationInfo, functionValue, suggestionObject } from "./types.ts";
+
+import type { calculationInfo, functionValue, suggestionObject } from "../types/calculator";
+import type { angleUnit } from "../types";
 
 export const functionKeys: Record<string, functionValue> = {
   "sin": {

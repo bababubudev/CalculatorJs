@@ -1,4 +1,4 @@
-import { angleUnit } from "./types";
+import type { angleUnit } from "../types";
 
 const CONSTANTS = new Set(["pi", "e", "π", "phi", "ϕ", "∞", "true", "false"]);
 
