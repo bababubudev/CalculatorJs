@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HistoryList from "./HistoryList";
 
 import type { historyObject } from "../../types/calculator";
@@ -10,19 +10,34 @@ interface HistoryProp {
 }
 
 function History({ history, removeFromHistory, onHistoryClicked }: HistoryProp) {
-  const [historyShown, setHistoryShown] = useState<boolean>(true);
+  const [historyShown, setHistoryShown] = useState<boolean>(false);
+
+  const previousLength = useRef(history.length);
+  const hideTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (history.length > 0) {
+    if (history.length > previousLength.current) {
       setHistoryShown(true);
-      return;
+
+      if (hideTimeout.current) {
+        clearTimeout(hideTimeout.current);
+      }
+
+      hideTimeout.current = setTimeout(() => {
+        setHistoryShown(false);
+      }, 5000);
     }
 
-    setHistoryShown(false);
+    previousLength.current = history.length;
   }, [history]);
 
   const toggleHistoryShown = (): void => {
     if (!historyShown) setHistoryShown(prev => !prev);
+
+    if (!historyShown && hideTimeout.current) {
+      clearTimeout(hideTimeout.current);
+      hideTimeout.current = null;
+    }
   }
 
   return (
