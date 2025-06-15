@@ -12,18 +12,30 @@ export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePrevie
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({
     attemptString: "",
-    suggestions: []
+    suggestions: [],
   });
 
   const calculatedPreview = useMemo(() => {
     const preview = suggestMathFunctions(inputValue);
-    return preview;
+    return {
+      ...preview,
+      suggestionsUsed: false
+    };
   }, [inputValue]);
 
   useEffect(() => {
-    setFunctionPreview(calculatedPreview);
-    setSelectedPreview(0);
-  }, [calculatedPreview]);
+    if (
+      calculatedPreview.attemptString !== functionPreview.attemptString ||
+      JSON.stringify(calculatedPreview.suggestions) !== JSON.stringify(functionPreview.suggestions)
+    ) {
+      setFunctionPreview({
+        ...calculatedPreview,
+        suggestionUsed: false
+      });
+
+      setSelectedPreview(0);
+    }
+  }, [calculatedPreview, functionPreview.attemptString, functionPreview.suggestions]);
 
   const hidePreview = useMemo(() => {
     return isSubmitted || functionPreview.suggestions.length <= 0 || functionPreview.suggestionUsed;
@@ -38,7 +50,8 @@ export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePrevie
     setSelectedPreview(index);
 
     const previousValue = inputValue.toLowerCase();
-    const lastIndex = previousValue.lastIndexOf(attempt.toLowerCase());
+    const lastIndex = previousValue.lastIndexOf(attempt);
+    console.log("Current Attempt: " + attempt)
 
     if (lastIndex !== -1) {
       const before = inputValue.slice(0, lastIndex);
@@ -49,8 +62,6 @@ export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePrevie
 
       const newValue = before + selectedAutofill + after;
       onInputChange(newValue);
-
-      // Mark as used
       setFunctionPreview(prev => ({ ...prev, suggestionUsed: true }));
     }
   }, [functionPreview.suggestions, functionPreview.attemptString, inputValue, onInputChange]);

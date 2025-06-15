@@ -232,6 +232,10 @@ export function useCalculatorState({
     inputFocus(true);
   }, [inputFocus]);
 
+  const handleKeyDown = useCallback((_: React.KeyboardEvent<HTMLInputElement>) => {
+    // This will be handled by preview hook if needed
+  }, []);
+
   useEffect(() => {
     if (!passedInput) return;
 
@@ -323,7 +327,7 @@ export function useCalculatorState({
 
     handleInputChange,
     handleSubmit,
-    //handleKeyDown
+    handleKeyDown,
     resetCalculator,
     inputFocus,
 
