@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import type { optionObject } from "../../types/options";
+import { suggestMathFunctions } from "../../utils/utilityFunctions";
 
 interface KeypadProps {
   setOptions: (changes: Partial<optionObject>) => void;
@@ -34,7 +35,30 @@ function Keypad({ onKeyClick, setOptions, isKeypadCovered, currentValue, options
       return count;
     }, 0);
 
-    return (currentValue.slice(-1) !== "(" && openCount > 0) ? ")" : "(";
+    if (openCount === 0) return "(";
+
+    const suggestions = suggestMathFunctions(currentValue);
+    if (suggestions.suggestions.length > 0) {
+      return "(";
+    }
+
+    const lastChar = currentValue.slice(-1);
+
+    const isAfterNumber = /[\d.]$/.test(lastChar);
+    const isAfterOperator = /[+\-*/^%]$/.test(lastChar);
+    const isAfterComparator = /[<>=!]$/.test(lastChar);
+    const isAfterComma = lastChar === ",";
+    const isAfterOpenBracket = lastChar === "(";
+
+    if (isAfterOperator || isAfterComparator || isAfterComma || isAfterOpenBracket) {
+      return "(";
+    }
+
+    if (isAfterNumber && openCount > 0) {
+      return ")";
+    }
+
+    return openCount > 0 ? ")" : "(";
   };
 
   const allKeys: KeypadType[] = [

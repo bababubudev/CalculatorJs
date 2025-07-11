@@ -3,6 +3,7 @@ import { historyObject } from "../types/calculator";
 import { autoCompleteBrackets, calculate, roundNumbers } from "../utils/utilityFunctions";
 import { optionObject } from "../types/options";
 import { useCallback, useEffect, useReducer, useRef } from "react";
+import { angleUnit } from "../types";
 
 interface CalculatorState {
   inputValue: string;
@@ -23,7 +24,7 @@ type CalculatorAction =
   | { type: "SET_ERROR", payload: string | null }
   | { type: "SET_LOADING", payload: boolean }
   | { type: "UPDATE_INPUT_AND_DISPLAY", payload: { input: string, display: string, preview: string } }
-  | { type: "SUBMIT_CALCULATION", payload: { input: string, preview: string, result: string, needsRounding: boolean, angleUnit?: string } }
+  | { type: "SUBMIT_CALCULATION", payload: { input: string, preview: string, result: string, needsRounding: boolean, angleUnit?: angleUnit } }
   | { type: "RESET_CALCULATOR" }
   | { type: "LOAD_FROM_HISTORY", payload: { operation: string, displayOperation?: string, result: string } }
   | { type: "UPDATE_FROM_OPTIONS", payload: { display: string, input?: string } };
@@ -70,21 +71,19 @@ function calculatorReducer(state: CalculatorState, action: CalculatorAction): Ca
       };
 
     case "SUBMIT_CALCULATION":
-      const historyItem: historyObject = {
-        key: uuidv4(),
-        operation: action.payload.input,
-        displayOperation: action.payload.preview,
-        result: action.payload.result,
-        needsRounding: action.payload.needsRounding,
-        angleUnit: action.payload.angleUnit as any,
-      };
-
       return {
         ...state,
         topDisplay: action.payload.preview,
         inputValue: action.payload.result,
         isSubmitted: true,
-        currentCalc: historyItem,
+        currentCalc: {
+          key: uuidv4(),
+          operation: action.payload.input,
+          displayOperation: action.payload.preview,
+          result: action.payload.result,
+          needsRounding: action.payload.needsRounding,
+          angleUnit: action.payload.angleUnit,
+        },
         error: null,
       };
 
@@ -172,6 +171,7 @@ export function useCalculatorState({
 
   const handleInputChange = useCallback((newValue: string) => {
     removePassedInput();
+
 
     const processedValue = handleAnswerRequest(newValue);
     const completedBracket = autoCompleteBrackets(processedValue);
