@@ -21,7 +21,7 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
     inputValue, topDisplay, bracketPreview,
     isSubmitted, isLoading, inputFocus,
     handleInputChange, handleSubmit, handleKeyDown: baseHandleKeydown,
-    inputRef, bracketPrevRef,
+    inputRef, bracketPrevRef, lastCursorPosition,
     currentCalc, error, resetCalculator
   } = useCalculatorState({ options, askForAnswer, passedInput, removePassedInput, addToHistory });
 
@@ -41,11 +41,11 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
   }, [handlePreviewKeyDown, baseHandleKeydown]);
 
   const handleKeypadInput = useCallback((input: string) => {
-    const currentInput = inputValue;
-    const updatedInput = currentInput + input;
-
+    const updatedInput = inputValue + input;
     handleInputChange(updatedInput);
-  }, [handleInputChange, inputValue]);
+
+    setTimeout(() => inputFocus(true, true), 0);
+  }, [inputValue, handleInputChange, inputFocus]);
 
   const onCalculationSubmit = useCallback((event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -59,7 +59,11 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
   }, [isSubmitted, handleSubmit, resetCalculator]);
 
   const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(e.target.value);
+    const target = e.target as HTMLInputElement;
+    const newValue = target.value;
+    const cursorPosition = target.selectionStart || 0;
+
+    handleInputChange(newValue, cursorPosition);
   }, [handleInputChange]);
 
   const ErrorDisplay = useMemo(() => {
@@ -99,6 +103,7 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
         inputFocus={inputFocus}
         inputRef={inputRef}
         bracketPrevRef={bracketPrevRef}
+        lastCursorPosition={lastCursorPosition}
       />
 
       <Keypad

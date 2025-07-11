@@ -51,7 +51,6 @@ export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePrevie
 
     const previousValue = inputValue.toLowerCase();
     const lastIndex = previousValue.lastIndexOf(attempt);
-    console.log("Current Attempt: " + attempt)
 
     if (lastIndex !== -1) {
       const before = inputValue.slice(0, lastIndex);

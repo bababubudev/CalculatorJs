@@ -134,8 +134,10 @@ export function useCalculatorState({
   const [state, dispatch] = useReducer(calculatorReducer, initialState);
   const inputRef = useRef<HTMLInputElement>(null);
   const bracketPrevRef = useRef<HTMLDivElement>(null);
+  const lastCursorPosition = useRef<number>(0);
 
   const formatResults = useCallback((result: string, precision: number = 5): [string, boolean] => {
+    if (result === "true" || result === "false") return [result, false];
     if (!isNaN(Number(result))) return [result, false];
 
     const roundedResult = roundNumbers(Number(result), precision);
@@ -147,17 +149,41 @@ export function useCalculatorState({
     return currentValue.replace(ansPattern, (_, index) => {
       const ansValue = askForAnswer(Number(index));
       return ansValue.toString();
-    })
-
+    });
   }, [askForAnswer]);
 
-  const inputFocus = useCallback((focus = true) => {
+  const inputFocus = useCallback((focus = true, forceEndPosition = false) => {
     if (!inputRef.current) return;
 
     if (focus) {
       inputRef.current.focus();
-      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+
+      if (forceEndPosition) {
+        const endPosition = inputRef.current.value.length;
+        inputRef.current.setSelectionRange(endPosition, endPosition);
+        inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+        lastCursorPosition.current = endPosition;
+      } else {
+        const currentLength = inputRef.current.value.length;
+        const targetPosition = Math.min(lastCursorPosition.current, currentLength);
+
+        const safePosition = Math.max(0, targetPosition);
+        inputRef.current.setSelectionRange(safePosition, safePosition);
+
+        const charWidth = 8;
+        const visibleWidth = inputRef.current.clientWidth;
+        const cursorPixelPosition = safePosition * charWidth;
+
+        if (cursorPixelPosition > inputRef.current.scrollLeft + visibleWidth - 20) {
+          inputRef.current.scrollLeft = cursorPixelPosition - visibleWidth + 20;
+        } else if (cursorPixelPosition < inputRef.current.scrollLeft + 20) {
+          inputRef.current.scrollLeft = Math.max(0, cursorPixelPosition - 20);
+        }
+
+        lastCursorPosition.current = safePosition;
+      }
     } else {
+      lastCursorPosition.current = inputRef.current.selectionStart || inputRef.current.value.length;
       inputRef.current.blur();
     }
   }, []);
@@ -169,9 +195,8 @@ export function useCalculatorState({
     }
   }, []);
 
-  const handleInputChange = useCallback((newValue: string) => {
+  const handleInputChange = useCallback((newValue: string, cursorPosition?: number) => {
     removePassedInput();
-
 
     const processedValue = handleAnswerRequest(newValue);
     const completedBracket = autoCompleteBrackets(processedValue);
@@ -191,6 +216,16 @@ export function useCalculatorState({
     if (inputRef.current) {
       const shouldShowPadding = processedValue.includes("(") && !state.isSubmitted;
       inputRef.current.style.paddingRight = shouldShowPadding ? "1rem" : "unset";
+
+      if (cursorPosition !== undefined) {
+        setTimeout(() => {
+          if (inputRef.current) {
+            const safePosition = Math.min(cursorPosition, processedValue.length);
+            inputRef.current.setSelectionRange(safePosition, safePosition);
+            lastCursorPosition.current = safePosition;
+          }
+        }, 0);
+      }
     }
   }, [handleAnswerRequest, options.angleUnit, options.precision, formatResults, removePassedInput, state.isSubmitted]);
 
@@ -199,23 +234,30 @@ export function useCalculatorState({
 
     try {
       const output = calculate(state.inputValue, options.angleUnit);
-      const [displayResult, needsRounding] = formatResults(output.result, options.precision || 5)
+      const [displayResult, needsRounding] = formatResults(output.result, options.precision || 5);
 
       if (output.result !== "") {
+        const historyItem: historyObject = {
+          key: uuidv4(),
+          operation: state.inputValue,
+          displayOperation: state.bracketPreview,
+          result: displayResult,
+          needsRounding,
+          angleUnit: options.angleUnit,
+        };
+
+        addToHistory(historyItem);
         dispatch({
-          type: "SUBMIT_CALCULATION",
-          payload: {
-            input: state.inputValue,
-            preview: state.bracketPreview,
-            result: displayResult,
-            needsRounding,
-            angleUnit: options.angleUnit
-          }
+          type: "SET_CURRENT_CALCULATION",
+          payload: historyItem
         });
 
-        if (state.currentCalc) {
-          addToHistory(state.currentCalc);
-        }
+        dispatch({ type: "SET_SUBMITTED", payload: true });
+        dispatch({ type: "SET_DISPLAY", payload: state.bracketPreview });
+        dispatch({ type: "SET_INPUT", payload: displayResult });
+
+
+        setTimeout(() => inputFocus(true, true), 0);
       }
     } catch (error) {
       dispatch({
@@ -225,11 +267,11 @@ export function useCalculatorState({
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
     }
-  }, [state.inputValue, state.bracketPreview, state.currentCalc, options.angleUnit, options.precision, formatResults, addToHistory]);
+  }, [state.inputValue, state.bracketPreview, options.angleUnit, options.precision, formatResults, addToHistory, inputFocus]);
 
   const resetCalculator = useCallback(() => {
     dispatch({ type: "RESET_CALCULATOR" });
-    inputFocus(true);
+    inputFocus(true, true);
   }, [inputFocus]);
 
   const handleKeyDown = useCallback((_: React.KeyboardEvent<HTMLInputElement>) => {
@@ -239,7 +281,7 @@ export function useCalculatorState({
   useEffect(() => {
     if (!passedInput) return;
 
-    inputFocus(true);
+    inputFocus(true, true);
     dispatch({
       type: "LOAD_FROM_HISTORY",
       payload: {
@@ -250,7 +292,6 @@ export function useCalculatorState({
 
     handleInputChange(passedInput);
   }, [passedInput, handleInputChange, inputFocus]);
-
 
   useEffect(() => {
     if (state.currentCalc && !passedInput) {
@@ -292,23 +333,25 @@ export function useCalculatorState({
       if (!inputRef.current) return;
 
       const validOptions = /^[a-zA-Z0-9+\-*/.=]$/;
-      const validKeys = event.key === "Backspace" || validOptions.test(event.key);
+      const validKeys = event.key === "Backspace" || event.key === "Delete" || validOptions.test(event.key);
       const isControlKey = event.ctrlKey || event.metaKey;
       const isSupportedKeyCombo = isControlKey && ["c", "v", "x"].includes(event.key);
 
       if (validKeys && !isSupportedKeyCombo) {
-        inputRef.current.focus();
-        if (event.key === "Backspace" && state.currentCalc) {
+        if (document.activeElement !== inputRef.current) {
+          inputFocus(true);
+        }
+
+        if ((event.key === "Backspace" || event.key === "Delete") && state.currentCalc) {
           event.preventDefault();
           const { operation, result } = state.currentCalc;
 
           dispatch({
-            type: 'LOAD_FROM_HISTORY',
-            payload: {
-              operation,
-              result
-            }
+            type: "LOAD_FROM_HISTORY",
+            payload: { operation, result }
           });
+
+          setTimeout(() => inputFocus(true, true), 0);
         }
       } else if (event.key === "Escape") {
         inputFocus(false);
@@ -319,11 +362,34 @@ export function useCalculatorState({
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, [state.currentCalc, inputFocus]);
 
+  useEffect(() => {
+    const inputElement = inputRef.current;
+    if (!inputElement) return;
+
+    const handleCursorMove = () => {
+      if (document.activeElement === inputElement) {
+        lastCursorPosition.current = inputElement.selectionStart || 0;
+      }
+    };
+
+    inputElement.addEventListener("click", handleCursorMove);
+    inputElement.addEventListener("keyup", handleCursorMove);
+    inputElement.addEventListener("mouseup", handleCursorMove);
+
+    return () => {
+      inputElement.removeEventListener("click", handleCursorMove);
+      inputElement.removeEventListener("keyup", handleCursorMove);
+      inputElement.removeEventListener("mouseup", handleCursorMove);
+    };
+
+  }, []);
+
   return {
     ...state,
 
     inputRef,
     bracketPrevRef,
+    lastCursorPosition,
 
     handleInputChange,
     handleSubmit,

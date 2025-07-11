@@ -215,7 +215,6 @@ export function suggestMathFunctions(input: string): suggestionObject {
   if (functionMatch) {
     const partialFunciton = functionMatch[1];
     const suggestions = fuzzySearch(partialFunciton, FILTER_KEYS);
-    console.log(partialFunciton);
 
     return {
       attemptString: partialFunciton,
