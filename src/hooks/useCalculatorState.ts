@@ -278,6 +278,44 @@ export function useCalculatorState({
     // This will be handled by preview hook if needed
   }, []);
 
+  const insertAtCursor = useCallback((textToInsert: string) => {
+    removePassedInput();
+
+    const currentValue = state.inputValue;
+    const cursorPos = lastCursorPosition.current;
+
+    const newValue = currentValue.slice(0, cursorPos) + textToInsert + currentValue.slice(cursorPos);
+    const newCursorPos = cursorPos + textToInsert.length;
+
+    const processedValue = handleAnswerRequest(newValue);
+    const completedBracket = autoCompleteBrackets(processedValue);
+
+    const { result } = calculate(processedValue, options.angleUnit);
+    const [displayResult] = formatResults(result, options.precision || 5);
+
+    dispatch({
+      type: "UPDATE_INPUT_AND_DISPLAY",
+      payload: {
+        input: processedValue,
+        display: displayResult,
+        preview: completedBracket
+      }
+    });
+
+    if (inputRef.current) {
+      const shouldShowPadding = processedValue.includes("(") && !state.isSubmitted;
+      inputRef.current.style.paddingRight = shouldShowPadding ? "1rem" : "unset";
+
+      setTimeout(() => {
+        if (inputRef.current) {
+          const safePosition = Math.min(newCursorPos, processedValue.length);
+          inputRef.current.setSelectionRange(safePosition, safePosition);
+          lastCursorPosition.current = safePosition;
+        }
+      }, 0);
+    }
+  }, [formatResults, handleAnswerRequest, options.angleUnit, options.precision, removePassedInput, state.inputValue, state.isSubmitted]);
+
   useEffect(() => {
     if (!passedInput) return;
 
@@ -396,6 +434,7 @@ export function useCalculatorState({
     handleKeyDown,
     resetCalculator,
     inputFocus,
+    insertAtCursor,
 
     dispatch,
   }

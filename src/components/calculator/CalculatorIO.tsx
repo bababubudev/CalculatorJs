@@ -21,7 +21,7 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
     inputValue, topDisplay, bracketPreview,
     isSubmitted, isLoading, inputFocus,
     handleInputChange, handleSubmit, handleKeyDown: baseHandleKeydown,
-    inputRef, bracketPrevRef, lastCursorPosition,
+    inputRef, bracketPrevRef, lastCursorPosition, insertAtCursor,
     currentCalc, error, resetCalculator
   } = useCalculatorState({ options, askForAnswer, passedInput, removePassedInput, addToHistory });
 
@@ -41,11 +41,9 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
   }, [handlePreviewKeyDown, baseHandleKeydown]);
 
   const handleKeypadInput = useCallback((input: string) => {
-    const updatedInput = inputValue + input;
-    handleInputChange(updatedInput);
-
-    inputFocus(true, true);
-  }, [inputValue, handleInputChange, inputFocus]);
+    insertAtCursor(input);
+    inputFocus(true);
+  }, [insertAtCursor, inputFocus]);
 
   const onCalculationSubmit = useCallback((event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
