@@ -29,7 +29,7 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
     functionPreview, selectedPreview,
     hidePreview, setSelectedPreview,
     autoFillPreview, handlePreviewKeyDown
-  } = usePreview({ inputValue, isSubmitted, onInputChange: handleInputChange, inputFocus });
+  } = usePreview({ inputValue, isSubmitted, onInputChange: handleInputChange });
 
   const formattedInputValue = useMemo(() => {
     return inputValue.trim();
@@ -119,6 +119,7 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
         previewSelection={selectedPreview}
         autoFillPreview={autoFillPreview}
         setPreviewSelection={setSelectedPreview}
+        inputFocus={inputFocus}
         addPadding={!options.showKeypad}
       />
     </>

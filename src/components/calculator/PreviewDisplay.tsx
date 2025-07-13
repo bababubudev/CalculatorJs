@@ -11,6 +11,7 @@ interface PreviewDisplayProp {
   addPadding: boolean;
   previews: suggestionObject;
   previewSelection: number;
+  inputFocus: (focus: boolean, forceEndPos?: boolean) => void;
   autoFillPreview: (index: number) => void;
   setPreviewSelection: (index: number) => void;
 }
@@ -21,6 +22,7 @@ function PreviewDisplay({
   addPadding,
   previews,
   previewSelection,
+  inputFocus,
   autoFillPreview,
   setPreviewSelection,
 }: PreviewDisplayProp) {
@@ -97,7 +99,7 @@ function PreviewDisplay({
                   ref={(el) => (itemRefs.current[index] = el)}
                   className={selected ? "selected" : ""}
                   onPointerDown={() => { setPreviewSelection(index); }}
-                  onClick={() => { autoFillPreview(index); }}
+                  onClick={() => { autoFillPreview(index); inputFocus(true); }}
                 >
                   <p className="display">{renderDisplayWithBoldParams(autoFill)}</p>
                 </li>

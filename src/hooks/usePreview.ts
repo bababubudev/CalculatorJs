@@ -5,11 +5,10 @@ import { functionKeys, suggestMathFunctions } from "../utils/utilityFunctions";
 interface UsePreviewProp {
   inputValue: string;
   isSubmitted: boolean;
-  inputFocus: (focus: boolean, forceEndPosition?: boolean) => void;
   onInputChange: (value: string) => void;
 }
 
-export function usePreview({ inputValue, isSubmitted, onInputChange, inputFocus }: UsePreviewProp) {
+export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePreviewProp) {
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({
     attemptString: "",
@@ -65,8 +64,7 @@ export function usePreview({ inputValue, isSubmitted, onInputChange, inputFocus 
       setFunctionPreview(prev => ({ ...prev, suggestionUsed: true }));
     }
 
-    inputFocus(true);
-  }, [functionPreview.suggestions, functionPreview.attemptString, inputValue, inputFocus, onInputChange]);
+  }, [functionPreview.suggestions, functionPreview.attemptString, inputValue, onInputChange]);
 
   const navigatePreview = useCallback((direction: 'next' | 'prev') => {
     const suggestionsLength = functionPreview.suggestions.length;
