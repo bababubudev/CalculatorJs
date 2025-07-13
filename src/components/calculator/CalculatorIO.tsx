@@ -44,7 +44,7 @@ function CalculatorIO({ addToHistory, options, setOptions, passedInput, askForAn
     const updatedInput = inputValue + input;
     handleInputChange(updatedInput);
 
-    setTimeout(() => inputFocus(true, true), 0);
+    inputFocus(true, true);
   }, [inputValue, handleInputChange, inputFocus]);
 
   const onCalculationSubmit = useCallback((event?: FormEvent<HTMLFormElement>) => {
