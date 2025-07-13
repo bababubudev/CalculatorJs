@@ -6,9 +6,11 @@ interface UsePreviewProp {
   inputValue: string;
   isSubmitted: boolean;
   onInputChange: (value: string) => void;
+  insertAtCursor?: (text: string) => void;
+  lastCursorPosition?: React.MutableRefObject<number>;
 }
 
-export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePreviewProp) {
+export function usePreview({ inputValue, isSubmitted, onInputChange, insertAtCursor, lastCursorPosition }: UsePreviewProp) {
   const [selectedPreview, setSelectedPreview] = useState<number>(0);
   const [functionPreview, setFunctionPreview] = useState<suggestionObject>({
     attemptString: "",
@@ -49,6 +51,31 @@ export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePrevie
 
     setSelectedPreview(index);
 
+    const selectedFunc = suggestions[index];
+    const selectedAutofill = functionKeys[selectedFunc].pasteAs;
+
+    if (insertAtCursor && lastCursorPosition) {
+      const cursorPos = lastCursorPosition.current;
+
+      const beforeCursor = inputValue.slice(0, cursorPos).toLowerCase();
+      const lastIndex = beforeCursor.lastIndexOf(attempt);
+
+      if (lastIndex !== -1) {
+        const beforeAttempt = inputValue.slice(0, lastIndex);
+        const afterAttempt = inputValue.slice(lastIndex + attempt.length);
+
+        const newValue = beforeAttempt + selectedAutofill + afterAttempt;
+        const newCursorPos = lastIndex + selectedAutofill.length;
+
+        lastCursorPosition.current = newCursorPos;
+
+        onInputChange(newValue);
+
+        setFunctionPreview(prev => ({ ...prev, suggestionUsed: true }));
+        return;
+      }
+    }
+
     const previousValue = inputValue.toLowerCase();
     const lastIndex = previousValue.lastIndexOf(attempt);
 
@@ -56,15 +83,12 @@ export function usePreview({ inputValue, isSubmitted, onInputChange }: UsePrevie
       const before = inputValue.slice(0, lastIndex);
       const after = inputValue.slice(lastIndex + attempt.length);
 
-      const selectedFunc = suggestions[index];
-      const selectedAutofill = functionKeys[selectedFunc].pasteAs;
-
       const newValue = before + selectedAutofill + after;
       onInputChange(newValue);
       setFunctionPreview(prev => ({ ...prev, suggestionUsed: true }));
     }
 
-  }, [functionPreview.suggestions, functionPreview.attemptString, inputValue, onInputChange]);
+  }, [functionPreview.suggestions, functionPreview.attemptString, insertAtCursor, lastCursorPosition, inputValue, onInputChange]);
 
   const navigatePreview = useCallback((direction: 'next' | 'prev') => {
     const suggestionsLength = functionPreview.suggestions.length;
