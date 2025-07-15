@@ -192,6 +192,6 @@ If you encounter any issues, please [create an issue](https://github.com/bababub
 
 ## Links
 
-- [Live Demo](https://bababubudev.github.io/CalculatorJs/)
+- [Live Demo](https://calculab.pareki.xyz/)
 - [Repository](https://github.com/bababubudev/calculator)
 - [Issues](https://github.com/bababubudev/calculator/issues)
