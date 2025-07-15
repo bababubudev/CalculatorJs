@@ -58,7 +58,7 @@
   "id": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
-  "theme_color": "#B2B59B",
+  "theme_color": "#000000",
   "background_color": "#1F3333",
   "edge_side_panel": {
     "preferred_width": 400
