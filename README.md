@@ -48,7 +48,7 @@ A modern, feature-rich calculator web application built with React and TypeScrip
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/calculator.git
+git clone https://github.com/bababubudev/calculator.git
 cd calculator
 ```
 
